@@ -39,16 +39,17 @@ else:
 files = os.listdir(path)
 files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
 
-arr_coord = []
-coordfile = open(path + "coord", 'rt')
-for everyline in coordfile:
-    if len(everyline) == 76:
-        arr_coord.append(everyline[9:31].strip())  # 按照字符的数量截取字符串
-        arr_coord.append(everyline[31:53].strip())  #
-        arr_coord.append(everyline[53:75].strip())  #
+# arr_coord = []okim ,,,,,,,,,,,,,,,,,,,
+# coordfile = open(path + "coord", 'rt')\'
+
+# for everyline in coordfile:
+#     if len(everyline) == 76:
+#         arr_coord.append(everyline[9:31].strip())  # 按照字符的数量截取字符串
+#         arr_coord.append(everyline[31:53].strip())  #
+#         arr_coord.append(everyline[53:75].strip())  #
 # print(arr_coord)
-# file_content = ','.join(arr_coord) + '\n' #带初始坐标信息
-file_content = ''  # 不带初始坐标信息
+# file_content = ','.join(arr_coord) + '\n'
+file_content = ''
 i = 1
 for file in files_cut:  # 遍历文件夹
     arr_sort = []
@@ -62,14 +63,14 @@ for file in files_cut:  # 遍历文件夹
         iCount = 0
         for line in infile:
             if len(line) == 62 and filename != 'coord':
-                arr_sort.append(str(float(line[9:22].strip()) + float(arr_coord[iCount])))
-                arr_sort.append(str(float(line[22:35].strip()) + float(arr_coord[iCount + 1])))
-                arr_sort.append(str(float(line[35:48].strip()) + float(arr_coord[iCount + 2])))
-                # arr_sort.append(line[49:61].strip())  #
-                iCount += 3
+                # arr_sort.append(str(float(line[9:22].strip()) + float(arr_coord[iCount])))
+                # arr_sort.append(str(float(line[22:35].strip()) + float(arr_coord[iCount + 1])))
+                # arr_sort.append(str(float(line[35:48].strip()) + float(arr_coord[iCount + 2])))
+                arr_sort.append(line[49:61].strip())
+                # iCount += 3
     # print(','.join(arr_sort))
     i += 1
     print("\r程序当前已完成：" + str(round(i / len(files) * 100)) + '%', end="")
     file_content += ','.join(arr_sort) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
 # print(file_content)
-text_create('dop_noCoord', file_content.rstrip('\n'))
+# text_create('dop_Sum', file_content.rstrip('\n'))

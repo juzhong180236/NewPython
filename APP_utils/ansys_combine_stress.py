@@ -39,6 +39,7 @@ else:
 # 获取当前文档下的文件
 files = os.listdir(path)
 file_content = ''
+files.sort(key=lambda x: int(x[:-4]))
 for file in files:  # 遍历文件夹
     arr_sort = []
     if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
