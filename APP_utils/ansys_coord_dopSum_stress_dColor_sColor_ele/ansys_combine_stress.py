@@ -56,4 +56,4 @@ for file in files:  # 遍历文件夹
     arr_each_file.pop()  # 去掉最后一个换行符
     file_content += ','.join(arr_each_file) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
 # print(file_content)
-text_create('stress', file_content)
+text_create('stress', file_content.rstrip('\n'))

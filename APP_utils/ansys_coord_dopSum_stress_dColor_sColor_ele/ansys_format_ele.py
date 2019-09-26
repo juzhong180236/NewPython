@@ -20,36 +20,30 @@ def arrRemoveSameEle(array):
         arr.sort(key=lambda x: x)
         arr_sort.append(str(arr[0]) + ',' + str(arr[1]) + ',' + str(arr[2]))
     set_sort = set(arr_sort)
-    print(len(set_sort))
+    # print(len(set_sort))
     dict_sort = {}
-    for i in range(len(arr_sort)):
-        iCount = 1  # 列表arr_sort中的某元素所重复的次数,初始次数为1
-        if arr_sort[i] in set_sort:
-            iCount += 1  # 如果检测到元素一次，iCount就加1
-            dict_sort[arr_sort[i]] = iCount
+    for arr_ele in arr_sort:
+        dict_sort[arr_ele] = 0
+        # 列表arr_sort中的某元素所重复的次数,初始次数为1
+    for arr_ele in arr_sort:
+        if arr_ele in set_sort:
+            dict_sort[arr_ele] += 1  # 如果检测到元素一次，iCount就加1
     # print(dict_sort)
     list_sort = []
     for key, value in dict_sort.items():
-        if value == 4:
+        if value == 1:
             list_sort.append(key)
-    print(len(list_sort))
-    # return ','.join(set(arr_sort))
-
-
-# print(arr_r)
-# for item in arr_sort:
-#     if item not in arr_sort:
-#         arr_result.append(item)
-#     i += 1
-#     print("\r" + str(round(i / len(arr_sort)*100)/10) + '%', end="") #进度
+    # print(list_sort)
+    return ','.join(list_sort)
 
 
 # 打开读取的文档
-tf = open("C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/pre/ele/ele.txt", "r")
+tf = open("C:/Users/asus/Desktoansys_format_ele.pyp/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/pre/ele/ELIST.lis", "r")
 txt = tf.readline()
 array_txt = txt.split(',')
 # print(len(array_txt))
 result = arrRemoveSameEle(array_txt)
 tf.close()
 # print(len(result.split(',')))
-# text_create('ele', result)
+# print(result)
+text_create('ele_surface', result)
