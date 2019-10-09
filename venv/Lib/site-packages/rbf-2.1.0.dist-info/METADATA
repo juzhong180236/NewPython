@@ -1,0 +1,55 @@
+Metadata-Version: 2.1
+Name: rbf
+Version: 2.1.0
+Summary: Robot Framework test library for automation of Web, REST APIs, SOAP Services, zOS, FTP, DB, Desktop Applications
+Home-page: https://AB62031@develop.dnb.no/git/scm/ab/4748-dnb_rbf-library.git
+Author: Rakesh Ummadisetty
+Author-email: rakesh.ummadisetty@dnb.no
+License: Apache License 2.0
+Keywords: robotframework testing testautomation
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Testing
+Classifier: Framework :: Robot Framework :: Library
+Requires-Dist: robotframework (==3.1.1)
+Requires-Dist: flex (==6.13.2)
+Requires-Dist: GenSON (==1.0.1)
+Requires-Dist: jsonpath-ng (==1.4.3)
+Requires-Dist: pygments (==2.2.0)
+Requires-Dist: requests (==2.20.0)
+Requires-Dist: jsonschema (==3.0.0a3)
+Requires-Dist: rfc3987 (==1.3.8)
+Requires-Dist: strict-rfc3339 (==0.7)
+Requires-Dist: pytz (==2018.5)
+Requires-Dist: tzlocal (==1.5.1)
+Requires-Dist: jsonpath-rw (==1.4.0)
+Requires-Dist: jsonpath-rw-ext (==1.2.0)
+Requires-Dist: selenium (>=3.8.1)
+Requires-Dist: numpy (==1.17.1)
+Requires-Dist: pandas (==0.25.0)
+Requires-Dist: beautifulsoup4 (==4.7.1)
+Requires-Dist: gevent (==1.4.0)
+Requires-Dist: xlutils (==2.0.0)
+Requires-Dist: natsort (==6.0.0)
+Requires-Dist: openpyxl (==2.6.2)
+Requires-Dist: xlrd (==1.2.0)
+Requires-Dist: xlwt (==1.3.0)
+Requires-Dist: decorator (>=3.3.2)
+Requires-Dist: docutils (>=0.8.1)
+Requires-Dist: Appium-Python-Client (>=0.28)
+Requires-Dist: kitchen (>=1.2.4)
+Requires-Dist: six (>=1.10.0)
+Requires-Dist: mss (>=3.2.1)
+Requires-Dist: pillow (>=5.2.0)
+Requires-Dist: opencv-python (>=4.0.0.21)
+Requires-Dist: paramiko (>=1.15.3)
+Requires-Dist: scp (>=0.13.0)
+Requires-Dist: cryptography (==2.7)
+Requires-Dist: pythonnet ; sys_platform == "win32"
+
+UNKNOWN
+
+

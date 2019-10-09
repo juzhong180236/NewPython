@@ -1,0 +1,81 @@
+import os
+import argparse
+from .robotmetrics import generate_report
+from .robotmetrics import IGNORE_TYPES
+from .robotmetrics import IGNORE_LIBRARIES
+from .version import __version__
+
+
+def parse_options():
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    general = parser.add_argument_group("General")
+    parser.add_argument(
+        '-v', '--version',
+        action='store_true',
+        dest='version',
+        help='Display application version information'
+    )
+    general.add_argument(
+        '--logo',
+        dest='logo',
+        default='https://www.dnb.no/portalfront/bilder/logoer/1-1-5-dnb-rgb-solid-220x113.jpg',
+        help="DNB logo"
+    )
+
+    general.add_argument(
+        '--ignorelib',
+        dest='ignore',
+        default=IGNORE_LIBRARIES,
+        nargs="+",
+        help="Ignore keywords of specified library in report"
+    )
+
+    general.add_argument(
+        '--ignoretype',
+        dest='ignoretype',
+        default=IGNORE_TYPES,
+        nargs="+",
+        help="Ignore keywords with specified type in report"
+    )
+
+    general.add_argument(
+        '-I', '--inputpath',
+        dest='path',
+        default=os.path.curdir,
+        help="Path of result files"
+    )
+
+    general.add_argument(
+        '-R', '--report',
+        dest='report_name',
+        default='report.html',
+        help="Name of report.html"
+    )
+
+    general.add_argument(
+        '-L', '--log',
+        dest='log_name',
+        default='log.html',
+        help="Name of log.html"
+    )
+
+    general.add_argument(
+        '-O', '--output',
+        dest='output',
+        default="output.xml",
+        help="Name of output.xml"
+    )
+
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    args = parse_options()
+
+    if args.version:
+        print(__version__)
+        exit(0)
+
+    generate_report(args)
