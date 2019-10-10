@@ -74,7 +74,7 @@ def k_means(X, k):
             # 将大于0或1个点的聚类所含的元素放入list，pointsToAverage
             if i not in clustersWithNoPoints:
                 pointsToAverage.append(X[closestCluster == i])
-        # 将pointsToAverage中的多个数组数据拼接为1个，reval将多维数组降为一维（flatten）
+        # 将pointsToAverage中的多个数组数据拼接为1个，reval将多维数组降为一维（flatten,copy）
         pointsToAverage = np.concatenate(pointsToAverage).ravel()
         # 取聚类中点数量超过1个的数据组成的array的标准差的均值（数据已经是一维，其实不需要取均值了吧）std[[3,5]]
         stds[clustersWithNoPoints] = np.mean(np.std(pointsToAverage))
