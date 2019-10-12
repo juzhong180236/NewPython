@@ -41,7 +41,7 @@ class RBFNet(object):
                 # 梯度下降更新，其实要传到javascript端的是wb
                 self.w = self.w - self.lr * Gaussian_result * error
                 self.b = self.b - self.lr * error
-        return np.concatenate((self.w, self.b, [self.stds]))
+        return np.concatenate((self.w, self.b))
 
     def predict(self, X):
         y_pred = []

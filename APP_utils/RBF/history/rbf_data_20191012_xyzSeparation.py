@@ -70,7 +70,7 @@ def Get_Data(str, fileType):
             list_y.append(list_y_temp)
             list_z.append(list_z_temp)
         return list_x, list_y, list_z
-    elif fileType == 'stressOrdSum':
+    elif fileType == 'stress':
         list_stress = []
         for j in range(0, len(list_EachPart_Str2List)):
             list_stress_temp = []
@@ -81,31 +81,21 @@ def Get_Data(str, fileType):
 
 
 path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/RBF_test/post/"
-
 path_coords = path_hex + "displacement_coords_surface_new.txt"
 path_allCoords = path_hex + "all.txt"
 path_stress = path_hex + "e_stress_surface_new.txt"
-path_allStress = path_hex + "all_stress.txt"
-path_dSum = path_hex + "dSum_surface_new.txt"
-
 coordsFile = open(path_coords, "rt")
 allCoords = open(path_allCoords, "rt")
-stress = open(path_stress, "rt")
-allStress = open(path_allStress, "rt")
-dSum = open(path_dSum, "rt")
-
+allStress = open(path_stress, "rt")
 str_coords = coordsFile.read()
 str_allCoords = allCoords.read()
-str_Stress = stress.read()
 str_allStress = allStress.read()
-str_dSum = dSum.read()
-
 # 获取坐标点
 list_x, list_y, list_z = Get_Data(str_coords, 'coords')
 list_xAll, list_yAll, list_zAll = Get_Data(str_allCoords, 'coords')
-list_stress = Get_Data(str_Stress, 'stressOrdSum')
-list_stressAll = Get_Data(str_allStress, 'stressOrdSum')
-list_dSum = Get_Data(str_dSum, 'stressOrdSum')
+list_stressAll = Get_Data(str_allStress, 'stress')
+print(list_x[0])
+print(list_stressAll[0])
 
 
 # 获取应力值
@@ -120,19 +110,14 @@ def realXYZ():
     d_pred = np.arange(-17, 18)
     list_wb_y = []
     list_wb_z = []
-    list_wb_stress = []
-    list_wb_dSum = []
     stds = ''
 
-    def Duplicated_list(list_input, dataType, i_count):
-        if dataType == 'coords':
-            xAll_real1 = list_input[i_count][1:]
-            mean = list_input[i_count][0]
-        elif dataType == 'stressOrdSum':
-            xAll_real1 = list_input[0]
-            mean = 0
+    def Duplicated_list(list_input, type):
+        if type == 'coords':
+            xAll_real1 = list_input[0][1:]
+            mean= list_input[0][0]
         else:
-            xAll_real1 = None
+            xAll_real1 = list_input[0]
             mean = 0
         xAll_real2 = xAll_real1.copy()
         xAll_real1.reverse()
@@ -140,56 +125,58 @@ def realXYZ():
         xAll_real.insert(len(xAll_real2), mean)
         return xAll_real
 
-    length = len(list_x)
-    print(length)
-    for i in range(length):
-    # for i in range(3):
+    for i in range(len(list_x)):
+        # for i in range(3):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
-        y_real = Duplicated_list(list_y, 'coords', i)
-        z_real = Duplicated_list(list_z, 'coords', i)
-        stress_real = Duplicated_list(list_stress, 'stressOrdSum', i)
-        dSum_real = Duplicated_list(list_dSum, 'stressOrdSum', i)
+        # x_real1 = list_x[i][1:x_len]
+        # y_real1 = list_y[i][1:y_len]
+        # z_real1 = list_z[i][1:z_len]
+        y_real = Duplicated_list(list_y, 'coords')
+        z_real = Duplicated_list(list_z, 'coords')
+        # 做为备份
+        # x_real2 = x_real1.copy()
+        # y_real2 = y_real1.copy()
+        # z_real2 = z_real1.copy()
+        # 对称
+        # x_real1.reverse()
+        # y_real1.reverse()
+        # z_real1.reverse()
+        # 组成没有中心的训练点
+        # x_real = x_real1 + x_real2
+        # y_real = y_real1 + y_real2
+        # z_real = z_real1 + z_real2
+        # 为训练点加上中心
+        # x_real.insert(len(y_real2), list_x[i][0])
+        # y_real.insert(len(y_real2), list_y[i][0])
+        # z_real.insert(len(y_real2), list_z[i][0])
+
         # rbfnet_x = RBFNet()
         rbfnet_y = RBFNet()
         rbfnet_z = RBFNet()
-        rbfnet_stress = RBFNet()
-        rbfnet_dSum = RBFNet()
         # w_x, b_x = rbfnet_x.fit(d, x_real)
         wb_y = rbfnet_y.fit(d, y_real)
         wb_z = rbfnet_z.fit(d, z_real)
-        wb_stress = rbfnet_stress.fit(d, stress_real)
-        wb_dSum = rbfnet_dSum.fit(d, dSum_real)
         stds = str(rbfnet_y.stds)
         # x_pred = rbfnet_x.predict(d_pred)
         y_pred = rbfnet_y.predict(d_pred)
         z_pred = rbfnet_z.predict(d_pred)
-        stress_pred = rbfnet_stress.predict(d_pred)
-        dSum_pred = rbfnet_dSum.predict(d_pred)
         # plt.plot(d_pred, x_pred, color='#ff0000', marker='+', linestyle='-', label='x')
         plt.plot(d_pred, y_pred, color='#00ff00', marker='+', linestyle=':',
                  label=('' if i == 0 else '_') + 'y')
         plt.plot(d_pred, z_pred, color='#0000ff', marker='+', linestyle='-.',
                  label=('' if i == 0 else '_') + 'z')
-        plt.plot(d_pred, stress_pred, color='#0000ff', marker='+', linestyle='-.',
-                 label=('' if i == 0 else '_') + 'stress')
-        plt.plot(d_pred, dSum_pred, color='#ff0000', marker='+', linestyle='-.',
-                 label=('' if i == 0 else '_') + 'dSum')
         list_wb_y = np.concatenate((list_wb_y, wb_y))
         list_wb_z = np.concatenate((list_wb_z, wb_z))
-        list_wb_stress = np.concatenate((list_wb_stress, wb_stress))
-        list_wb_dSum = np.concatenate((list_wb_dSum, wb_dSum))
 
         print("\r程序当前已完成：" + str(round(i / len(list_y) * 10000) / 100) + '%', end="")
-    #
+
     Text_Create('y_pre', ','.join(map(str, list_wb_y)) + ',' + stds, 'hex')
     Text_Create('z_pre', ','.join(map(str, list_wb_z)), 'hex')
-    Text_Create('stress_pre', ','.join(map(str, list_wb_stress)), 'hex')
-    Text_Create('dSum_pre', ','.join(map(str, list_wb_dSum)), 'hex')
 
     # plt.plot(d_pred, Duplicated_list(list_zAll, 'coords'), color='#000000', marker='+', linestyle='-.')
-    # plt.plot(d_pred, Duplicated_list(list_stressAll, 'stress'), color='#000000', marker='+', linestyle='-.')
-    # plt.legend()
-    # plt.tight_layout()
+    # plt.plot(d, Duplicated_list(list_stressAll, 'd'), color='#ff0000', marker='+', linestyle='-.')
+    plt.legend()
+    plt.tight_layout()
     plt.show()
     elapsed = (time.perf_counter() - start)
     print("Time used:", elapsed)

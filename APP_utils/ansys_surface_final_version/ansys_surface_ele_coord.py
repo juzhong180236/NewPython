@@ -4,48 +4,48 @@ import os
 import itertools
 
 
-def defineColor(list_ele_inpout, pressureStep):
-    if list_ele_inpout < pressureStep:
+def defineColor(list_ele_input, pressureStep):
+    if list_ele_input < pressureStep:
         colors = '0,0,1'
-    elif pressureStep <= list_ele_inpout < pressureStep * 2:
+    elif pressureStep <= list_ele_input < pressureStep * 2:
         colors = '0,' + str(42 / 255) + ',1'
-    elif pressureStep * 2 <= list_ele_inpout < pressureStep * 3:
+    elif pressureStep * 2 <= list_ele_input < pressureStep * 3:
         colors = '0,' + str(85 / 255) + ',1'
-    elif pressureStep * 3 <= list_ele_inpout < pressureStep * 4:
+    elif pressureStep * 3 <= list_ele_input < pressureStep * 4:
         colors = '0,' + str(127 / 255) + ',1'
-    elif pressureStep * 4 <= list_ele_inpout < pressureStep * 5:
+    elif pressureStep * 4 <= list_ele_input < pressureStep * 5:
         colors = '0,' + str(170 / 255) + ',1'
-    elif pressureStep * 5 <= list_ele_inpout < pressureStep * 6:
+    elif pressureStep * 5 <= list_ele_input < pressureStep * 6:
         colors = '0,1,1'
-    elif pressureStep * 6 <= list_ele_inpout < pressureStep * 7:
+    elif pressureStep * 6 <= list_ele_input < pressureStep * 7:
         colors = '0,1,' + str(170 / 255)
-    elif pressureStep * 7 <= list_ele_inpout < pressureStep * 8:
+    elif pressureStep * 7 <= list_ele_input < pressureStep * 8:
         colors = '0,1,' + str(127 / 255)
-    elif pressureStep * 8 <= list_ele_inpout <= pressureStep * 9:
+    elif pressureStep * 8 <= list_ele_input <= pressureStep * 9:
         colors = '0,1,' + str(85 / 255)
-    elif pressureStep * 9 <= list_ele_inpout < pressureStep * 10:
+    elif pressureStep * 9 <= list_ele_input < pressureStep * 10:
         colors = '0,1,' + str(42 / 255)
-    elif pressureStep * 10 <= list_ele_inpout < pressureStep * 11:
+    elif pressureStep * 10 <= list_ele_input < pressureStep * 11:
         colors = '0,1,0'
-    elif pressureStep * 11 <= list_ele_inpout < pressureStep * 12:
+    elif pressureStep * 11 <= list_ele_input < pressureStep * 12:
         colors = str(42 / 255) + ',1,0'
-    elif pressureStep * 12 <= list_ele_inpout < pressureStep * 13:
+    elif pressureStep * 12 <= list_ele_input < pressureStep * 13:
         colors = str(85 / 255) + ',1,0'
-    elif pressureStep * 13 <= list_ele_inpout < pressureStep * 14:
+    elif pressureStep * 13 <= list_ele_input < pressureStep * 14:
         colors = str(127 / 255) + ',1,0'
-    elif pressureStep * 14 <= list_ele_inpout < pressureStep * 15:
+    elif pressureStep * 14 <= list_ele_input < pressureStep * 15:
         colors = str(170 / 255) + ',1,0'
-    elif pressureStep * 15 <= list_ele_inpout < pressureStep * 16:
+    elif pressureStep * 15 <= list_ele_input < pressureStep * 16:
         colors = '1,1,0'
-    elif pressureStep * 16 <= list_ele_inpout < pressureStep * 17:
+    elif pressureStep * 16 <= list_ele_input < pressureStep * 17:
         colors = '1,' + str(170 / 255) + ',0'
-    elif pressureStep * 17 <= list_ele_inpout <= pressureStep * 18:
+    elif pressureStep * 17 <= list_ele_input <= pressureStep * 18:
         colors = '1,' + str(127 / 255) + ',0'
-    elif pressureStep * 18 <= list_ele_inpout < pressureStep * 19:
+    elif pressureStep * 18 <= list_ele_input < pressureStep * 19:
         colors = '1,' + str(85 / 255) + ',0'
-    elif pressureStep * 19 <= list_ele_inpout < pressureStep * 20:
+    elif pressureStep * 19 <= list_ele_input < pressureStep * 20:
         colors = '1,' + str(42 / 255) + ',0'
-    elif pressureStep * 20 <= list_ele_inpout <= pressureStep * 21:
+    elif pressureStep * 20 <= list_ele_input <= pressureStep * 21:
         colors = '1,0,0'
     else:
         colors = '1,0,0'
@@ -192,6 +192,7 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
     files = os.listdir(path_input)  # 获取当前文档下的文件
     files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
     list_coords = []  # 获取该文件夹下面的节点初始的坐标数据
+    list_coords_x = []  # RBF的Coords中的x坐标
     coordfile = open(path_input + "NLIST.lis", 'rt')
     for everyline in coordfile:
         if len(everyline) == 76:
@@ -200,7 +201,9 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
                 list_coords.append(everyline[9:31].strip())  # 按照字符的数量截取字符串
                 list_coords.append(everyline[31:53].strip())
                 list_coords.append(everyline[53:75].strip())
+                list_coords_x.append(everyline[9:31].strip())
     str_coords_allFile = ','.join(list_coords) + '\n'  # 带初始坐标信息
+    Text_Create('original_coords_x', ','.join(list_coords_x), 'hex')
     # list_coords_allFile = []
 
     str_Dcolor_min = Str_Color_Step(path_input + os.path.basename(files_cut[0]), 'min', 'd')
@@ -213,6 +216,7 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
     list_ele = list(map(addOne, str_surface_ele.split(',')))
 
     str_Dcolor_allFile = ''
+    str_displacementSum_allFile = ''
     for file in files_cut:  # 遍历文件夹
         list_sort = []  # 存放加上位移后的所有坐标值的list
         list_Dcolor = []
@@ -251,13 +255,14 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
 
         list_Dcolor_result = map(defineColor, map(float, list_Dcolor), itertools.repeat(float_Dcolor_step))
         str_Dcolor_allFile += ','.join(map(str, list_Dcolor_result)) + '\n'
+        str_displacementSum_allFile += ','.join(list_Dcolor) + '\n'
         # print(','.join(list_sort))
         i_processing += 1
         print("\r程序当前已完成：" + str(round(i_processing / len(files) * 100)) + '%', end="")
         str_coords_allFile += ','.join(list_sort) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
     str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
     # 将所有加了位移信息的坐标值和将真实索引值（real_index_12...）更新为[0,1...]的list_ele返回
-    return str_coords_allFile, list_ele, str_Dcolor_allFile
+    return str_coords_allFile.rstrip('\n'), list_ele, str_Dcolor_allFile, str_displacementSum_allFile.rstrip('\n')
 
 
 def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
@@ -274,8 +279,8 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
     float_Scolor_step = (float(str_Scolor_max) - float(str_Scolor_min)) / 21
 
     i_processing = 0
-    list_Scolor_allFile = ''
-    list_stress_allFile = ''
+    str_Scolor_allFile = ''
+    str_stress_allFile = ''
     for file in files_stress:  # 遍历文件夹
         list_Scolor = []
         if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
@@ -297,13 +302,11 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
 
         i_processing += 1
         print("\r程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
-        list_Scolor_allFile += ','.join(map(str, list_Scolor_result)) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
-        list_stress_allFile += ','.join(list_Scolor_eachfile) + '\n'
+        str_Scolor_allFile += ','.join(map(str, list_Scolor_result)) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
+        str_stress_allFile += ','.join(list_Scolor_eachfile) + '\n'
 
-    list_Scolor_allFile += str(float_Scolor_step * 21 / 9)
-    return list_Scolor_allFile, list_stress_allFile
-
-
+    str_Scolor_allFile += str(float_Scolor_step * 21 / 9)
+    return str_Scolor_allFile, str_stress_allFile.rstrip('\n')
 
 
 # 四面体NLIST.lis路径和displacement路径
@@ -314,7 +317,7 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
 # path_stress_four = path_four + "stress/"
 # tuple_surface_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_stress_four, set_surface_ele_four)
 #
-# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0].rstrip('\n'), 'four')
+# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
 # Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
 # Text_Create('dColor_surface_new', tuple_surface_coords_ele_Dcolor_four[2], 'four')
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_four[0], 'four')
@@ -325,15 +328,16 @@ path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models
 path_coords_hex = path_hex + "dopAndCoord/"
 tuple_surface_coords_ele_Dcolor_hex = Tuple_Surface_Coords_Ele_Dcolor(path_coords_hex, str_surface_ele_hex,
                                                                       set_surface_ele_hex)
-
 # path_stress_hex = path_hex + "stress/"
 # path_equivalent_stress_hex = path_hex + "equivalent_stress/"
 # tuple_surface_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_stress_hex, set_surface_ele_hex)
-# tuple_surface_equivalent_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_equivalent_stress_hex, set_surface_ele_hex)
+# tuple_surface_equivalent_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_equivalent_stress_hex,
+#                                                                          set_surface_ele_hex)
 #
-# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_hex[0].rstrip('\n'), 'hex')
+# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_hex[0], 'hex')
 # Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_hex[1]), 'hex')
 # Text_Create('dColor_surface_new', tuple_surface_coords_ele_Dcolor_hex[2], 'hex')
+# Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_hex[3], 'hex')
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_hex[0], 'hex')
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_hex[1], 'hex')
 #

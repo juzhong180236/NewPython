@@ -1,24 +1,31 @@
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+from RBF import RBFNet
 
 # def RBF_result(x, c, s):
 #     return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 #
-#
+# d=[1,2,3,4,5,6,7,8,8]
 # start = time.perf_counter()
-# X = np.arange(0, 22000)
-# list_F = []
-# for i in range(22000):
-#     Gaussian_result = np.array(RBF_result(i, 0, 2))
-#     F = Gaussian_result.dot(0.3) + 0.2
-#     list_F.append(F)
+# rbfnet_y = RBFNet()
+# wb_y = rbfnet_y.fit(d, y_real)
+#
 # plt.plot(X, list_F, color='#0000ff', marker='+', linestyle='-', label='predict')
 # plt.tight_layout()
 # plt.show()
 # elapsed = (time.perf_counter() - start)
 # print("Time used:", elapsed)
-list_wb_z = np.array([3, 1])
-# np.concatenate((list_wb_z, [2, 5]))
-# print(np.concatenate((list_wb_z, np.array([[2, 5], [1, 2]]))))
-print(np.concatenate((list_wb_z, (2, 5))))
+
+a = ['c,d,as,f,ds', 'f,d,b,vf,d']
+b = [ele.split(',') for ele in a]
+c = a[:]
+c.reverse()
+for i in range(len(a)):
+    a[i].split(",")
+print(c)
+print(a)
+print(b)
+d = ','.join(a).split(',')
+print(d)
+print(float(1.3908832e-002))
