@@ -59,7 +59,8 @@ def Text_Create(name, msg, hexOrfour):
     if hexOrfour == 'four':
         save_path += 'post/'
     elif hexOrfour == 'hex':
-        save_path += 'new_utils/post/'
+        # save_path += 'new_utils/post/'
+        save_path += 'RBF_net/post/'
     full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
     # 创建写入的文档
     file = open(full_path, 'w')
@@ -324,15 +325,16 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_four[1], 'four')
 
 # 六面体NLIST.lis路径和displacement路径
-path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/new_utils/pre/"
+# path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/new_utils/pre/"
+path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/RBF_net/pre/"
 path_coords_hex = path_hex + "dopAndCoord/"
 tuple_surface_coords_ele_Dcolor_hex = Tuple_Surface_Coords_Ele_Dcolor(path_coords_hex, str_surface_ele_hex,
                                                                       set_surface_ele_hex)
 # path_stress_hex = path_hex + "stress/"
-# path_equivalent_stress_hex = path_hex + "equivalent_stress/"
+path_equivalent_stress_hex = path_hex + "equivalent_stress/"
 # tuple_surface_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_stress_hex, set_surface_ele_hex)
-# tuple_surface_equivalent_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_equivalent_stress_hex,
-#                                                                          set_surface_ele_hex)
+tuple_surface_equivalent_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_equivalent_stress_hex,
+                                                                         set_surface_ele_hex)
 #
 # Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_hex[0], 'hex')
 # Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_hex[1]), 'hex')
@@ -342,4 +344,4 @@ tuple_surface_coords_ele_Dcolor_hex = Tuple_Surface_Coords_Ele_Dcolor(path_coord
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_hex[1], 'hex')
 #
 # Text_Create('e_sColor_surface_new', tuple_surface_equivalent_stress_Scolor_hex[0], 'hex')
-# Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_hex[1], 'hex')
+Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_hex[1], 'hex')
