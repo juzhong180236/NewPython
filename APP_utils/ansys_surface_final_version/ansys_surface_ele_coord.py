@@ -263,7 +263,8 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
         str_coords_allFile += ','.join(list_sort) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
     str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
     # 将所有加了位移信息的坐标值和将真实索引值（real_index_12...）更新为[0,1...]的list_ele返回
-    return str_coords_allFile.rstrip('\n'), list_ele, str_Dcolor_allFile, str_displacementSum_allFile.rstrip('\n')
+    return str_coords_allFile.rstrip('\n'), list_ele, str_Dcolor_allFile, str_displacementSum_allFile.rstrip(
+        '\n'), float_Dcolor_step
 
 
 def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
@@ -307,7 +308,7 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
         str_stress_allFile += ','.join(list_Scolor_eachfile) + '\n'
 
     str_Scolor_allFile += str(float_Scolor_step * 21 / 9)
-    return str_Scolor_allFile, str_stress_allFile.rstrip('\n')
+    return str_Scolor_allFile, str_stress_allFile.rstrip('\n'), float_Scolor_step
 
 
 # 四面体NLIST.lis路径和displacement路径
@@ -344,4 +345,6 @@ tuple_surface_equivalent_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_eq
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_hex[1], 'hex')
 #
 # Text_Create('e_sColor_surface_new', tuple_surface_equivalent_stress_Scolor_hex[0], 'hex')
-Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_hex[1], 'hex')
+# Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_hex[1], 'hex')
+
+Text_Create('stress_dSum_step', str(tuple_surface_coords_ele_Dcolor_hex[-1]) + "," + str(tuple_surface_equivalent_stress_Scolor_hex[-1]), 'hex')

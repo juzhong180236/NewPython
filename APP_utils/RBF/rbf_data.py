@@ -9,7 +9,7 @@ def Text_Create(name, msg, hexOrfour):
     if hexOrfour == 'four':
         save_path += 'post/'
     elif hexOrfour == 'hex':
-        save_path += 'RBF_test/'
+        save_path += 'RBF_net/post/'
     full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
     # 创建写入的文档
     file = open(full_path, 'w')
@@ -80,13 +80,15 @@ def Get_Data(str, fileType):
         return list_stress
 
 
-def Get_Degree(list_input):
-    ss = list(map(Get_Dimension, list_input, range(len(list_input))))
-    print(ss)
-
-
-def Get_Dimension(ele, i):
-    return ele[i]
+#
+# def Get_Degree(list_input, i):
+#     ss = list(map(lambda ele: ele[i], list_input))
+#     print(min(ss))
+#
+#
+# def Get_(list_input):
+#     for i in range(len(list_input[0])):
+#         Get_Degree(list_input, i)
 
 
 path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/RBF_test/post/"
@@ -115,6 +117,11 @@ list_x, list_y, list_z = Get_Data(str_coords, 'coords')
 list_stress = Get_Data(str_Stress, 'stressOrdSum')
 # list_stressAll = Get_Data(str_allStress, 'stressOrdSum')
 list_dSum = Get_Data(str_dSum, 'stressOrdSum')
+
+
+# Get_(list_x)
+# Get_(list_y)
+# Get_(list_z)
 
 
 # 获取应力值
@@ -150,38 +157,41 @@ def realXYZ():
         return xAll_real
 
     length = len(list_x)
-    for i in range(length):
-        # for i in range(3):
+    # for i in range(length):
+    for i in range(3):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
-        # y_real = Duplicated_list(list_y, 'coords', i)
-        # z_real = Duplicated_list(list_z, 'coords', i)
+        y_real = Duplicated_list(list_y, 'coords', i)
+        z_real = Duplicated_list(list_z, 'coords', i)
         stress_real = Duplicated_list(list_stress, 'stressOrdSum', i)
         dSum_real = Duplicated_list(list_dSum, 'stressOrdSum', i)
         # rbfnet_x = RBFNet()
-        # rbfnet_y = RBFNet()
-        # rbfnet_z = RBFNet()
+        rbfnet_y = RBFNet()
+        rbfnet_z = RBFNet()
         rbfnet_stress = RBFNet()
         rbfnet_dSum = RBFNet()
-        # w_x, b_x = rbfnet_x.fit(d, x_real)
-        # wb_y = rbfnet_y.fit(d, y_real)
-        # wb_z = rbfnet_z.fit(d, z_real)
+        # wb_v = rbfnet_x.fit(d, x_real)
+        wb_y = rbfnet_y.fit(d, y_real)
+        wb_z = rbfnet_z.fit(d, z_real)
         wb_stress = rbfnet_stress.fit(d, stress_real)
         wb_dSum = rbfnet_dSum.fit(d, dSum_real)
         # stds = str(rbfnet_y.stds)
         # x_pred = rbfnet_x.predict(d_pred)
-        # y_pred = rbfnet_y.predict(d_pred)
-        # z_pred = rbfnet_z.predict(d_pred)
+        y_pred = rbfnet_y.predict(d_pred)
+        z_pred = rbfnet_z.predict(d_pred)
         stress_pred = rbfnet_stress.predict(d_pred)
         dSum_pred = rbfnet_dSum.predict(d_pred)
         # plt.plot(d_pred, x_pred, color='#ff0000', marker='+', linestyle='-', label='x')
         # plt.plot(d_pred, y_pred, color='#00ff00', marker='+', linestyle=':',
         #          label=('' if i == 0 else '_') + 'y')
-        # plt.plot(d_pred, z_pred, color='#0000ff', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'z')
-        plt.plot(d_pred, stress_pred, color='#0000ff', marker='+', linestyle='-.',
-                 label=('' if i == 0 else '_') + 'stress')
-        plt.plot(d_pred, dSum_pred, color='#ff0000', marker='+', linestyle='-.',
-                 label=('' if i == 0 else '_') + 'dSum')
+        zz = Duplicated_list(list_z, 'coords', i)
+        plt.plot(d_pred, z_pred, color='#0000ff', marker='+', linestyle='-.',
+                 label=('' if i == 0 else '_') + 'z')
+        plt.plot(d, zz, color='#ff00ff', marker='+', linestyle='-',
+                 label=('' if i == 0 else '_') + 'z')
+        # plt.plot(d_pred, stress_pred, color='#0000ff', marker='+', linestyle='-.',
+        #          label=('' if i == 0 else '_') + 'stress')
+        # plt.plot(d_pred, dSum_pred, color='#ff0000', marker='+', linestyle='-.',
+        #          label=('' if i == 0 else '_') + 'dSum')
         # list_wb_y = np.concatenate((list_wb_y, wb_y))
         # list_wb_z = np.concatenate((list_wb_z, wb_z))
         list_wb_stress = np.concatenate((list_wb_stress, wb_stress))
@@ -191,8 +201,8 @@ def realXYZ():
     #
     # Text_Create('y_pre', ','.join(map(str, list_wb_y)) + ',' + stds, 'hex')
     # Text_Create('z_pre', ','.join(map(str, list_wb_z)), 'hex')
-    Text_Create('stress_pre', ','.join(map(str, list_wb_stress)), 'hex')
-    Text_Create('dSum_pre', ','.join(map(str, list_wb_dSum)), 'hex')
+    # Text_Create('stress_pre', ','.join(map(str, list_wb_stress)), 'hex')
+    # Text_Create('dSum_pre', ','.join(map(str, list_wb_dSum)), 'hex')
 
     # plt.plot(d_pred, Duplicated_list(list_zAll, 'coords'), color='#000000', marker='+', linestyle='-.')
     # plt.plot(d_pred, Duplicated_list(list_stressAll, 'stress'), color='#000000', marker='+', linestyle='-.')
@@ -206,6 +216,7 @@ def realXYZ():
 # def preCoord(list_x, list_y, list_z):
 
 realXYZ()
+
 # # 五点真实值
 # print(list_x[0][1:len(list_x[0])])
 # print(list_y[0][1:len(list_y[0])])
