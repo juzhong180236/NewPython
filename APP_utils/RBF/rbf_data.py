@@ -157,8 +157,9 @@ def realXYZ():
         return xAll_real
 
     length = len(list_x)
+    print(list_z[0])
     # for i in range(length):
-    for i in range(3):
+    for i in range(1):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = Duplicated_list(list_y, 'coords', i)
         z_real = Duplicated_list(list_z, 'coords', i)
@@ -185,9 +186,9 @@ def realXYZ():
         #          label=('' if i == 0 else '_') + 'y')
         zz = Duplicated_list(list_z, 'coords', i)
         plt.plot(d_pred, z_pred, color='#0000ff', marker='+', linestyle='-.',
-                 label=('' if i == 0 else '_') + 'z')
+                 label=('' if i == 0 else '_') + 'z-predict')
         plt.plot(d, zz, color='#ff00ff', marker='+', linestyle='-',
-                 label=('' if i == 0 else '_') + 'z')
+                 label=('' if i == 0 else '_') + 'z-real')
         # plt.plot(d_pred, stress_pred, color='#0000ff', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'stress')
         # plt.plot(d_pred, dSum_pred, color='#ff0000', marker='+', linestyle='-.',
@@ -206,7 +207,7 @@ def realXYZ():
 
     # plt.plot(d_pred, Duplicated_list(list_zAll, 'coords'), color='#000000', marker='+', linestyle='-.')
     # plt.plot(d_pred, Duplicated_list(list_stressAll, 'stress'), color='#000000', marker='+', linestyle='-.')
-    # plt.legend()
+    plt.legend()
     # plt.tight_layout()
     plt.show()
     elapsed = (time.perf_counter() - start)

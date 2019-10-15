@@ -4,7 +4,10 @@ import numpy as np
 # x 数据点 c 中心点 s标准差
 def RBF_result(x, c, s):
     return np.exp(-(x - c) ** 2 / (2 * s ** 2))
-
+#
+# def RBF_result(x, c, s):
+#     # return np.exp(-(x - c) ** 2 / (2 * s ** 2))
+#     return np.sqrt((x - c) ** 2 + s ** 2)
 
 # 径向基函数RBF网络
 class RBFNet(object):
