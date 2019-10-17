@@ -1,8 +1,3 @@
-import numpy as np
-import time
-import matplotlib.pyplot as plt
-from RBF import RBFNet
-
 # def RBF_result(x, c, s):
 #     return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 #
@@ -29,3 +24,5 @@ print(b)
 d = ','.join(a).split(',')
 print(d)
 print(float(1.3908832e-002))
+
+

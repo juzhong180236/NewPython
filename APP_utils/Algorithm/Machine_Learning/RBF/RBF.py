@@ -1,9 +1,13 @@
 import numpy as np
 
+'''适合自己模型的基于NN的RBF包——基函数为Gauss'''
+
 
 # x 数据点 c 中心点 s标准差
 def RBF_result(x, c, s):
     return np.exp(-(x - c) ** 2 / (2 * s ** 2))
+
+
 #
 # def RBF_result(x, c, s):
 #     # return np.exp(-(x - c) ** 2 / (2 * s ** 2))
@@ -23,6 +27,7 @@ class RBFNet(object):
         self.w = np.random.randn(k)  # 权重
         self.b = np.random.randn(1)  # 偏差
 
+        self.std = 0
     # 拟合函数
     def fit(self, X, y):
         self.stds = np.std(X)

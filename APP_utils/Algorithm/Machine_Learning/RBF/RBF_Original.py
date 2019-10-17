@@ -1,5 +1,6 @@
 import numpy as np
 
+'''原始下载的基于NN的RBF包——基函数为Gauss'''
 
 # x 数据点 c 中心点 s标准差
 def RBF_result(x, c, s):

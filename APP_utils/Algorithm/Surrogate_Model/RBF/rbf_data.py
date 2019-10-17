@@ -1,7 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from RBF import RBFNet
 import time
+from RBF_Surrogate import RBF
+from RBF_Surrogate import Gaussian
+from RBF_Surrogate import Multiquadric
+
+'''调用RBF'''
 
 
 def Text_Create(name, msg, hexOrfour):
@@ -9,7 +13,7 @@ def Text_Create(name, msg, hexOrfour):
     if hexOrfour == 'four':
         save_path += 'post/'
     elif hexOrfour == 'hex':
-        save_path += 'RBF_net/post/'
+        save_path += 'RBF_net/post/RBF_Surrogate/'
     full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
     # 创建写入的文档
     file = open(full_path, 'w')
@@ -80,17 +84,6 @@ def Get_Data(str, fileType):
         return list_stress
 
 
-#
-# def Get_Degree(list_input, i):
-#     ss = list(map(lambda ele: ele[i], list_input))
-#     print(min(ss))
-#
-#
-# def Get_(list_input):
-#     for i in range(len(list_input[0])):
-#         Get_Degree(list_input, i)
-
-
 path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/RBF_test/post/"
 
 path_coords = path_hex + "displacement_coords_surface_new.txt"
@@ -151,30 +144,31 @@ def realXYZ():
             xAll_real1 = None
             mean = 0
         xAll_real2 = xAll_real1.copy()
-        xAll_real1.reverse()
-        xAll_real = xAll_real1 + xAll_real2
-        xAll_real.insert(len(xAll_real2), mean)
+        xAll_real3 = xAll_real1.copy()
+        xAll_real2.reverse()
+        xAll_real = xAll_real2 + xAll_real3
+        xAll_real.insert(len(xAll_real1), mean)
         return xAll_real
 
     length = len(list_x)
     print(list_z[0])
-    # for i in range(length):
-    for i in range(1):
+    for i in range(length):
+        # for i in range(5):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = Duplicated_list(list_y, 'coords', i)
         z_real = Duplicated_list(list_z, 'coords', i)
         stress_real = Duplicated_list(list_stress, 'stressOrdSum', i)
         dSum_real = Duplicated_list(list_dSum, 'stressOrdSum', i)
         # rbfnet_x = RBFNet()
-        rbfnet_y = RBFNet()
-        rbfnet_z = RBFNet()
-        rbfnet_stress = RBFNet()
-        rbfnet_dSum = RBFNet()
+        rbfnet_y = RBF()
+        rbfnet_z = RBF()
+        rbfnet_stress = RBF()
+        rbfnet_dSum = RBF()
         # wb_v = rbfnet_x.fit(d, x_real)
-        wb_y = rbfnet_y.fit(d, y_real)
-        wb_z = rbfnet_z.fit(d, z_real)
-        wb_stress = rbfnet_stress.fit(d, stress_real)
-        wb_dSum = rbfnet_dSum.fit(d, dSum_real)
+        w_y = rbfnet_y.fit(d, y_real)
+        w_z = rbfnet_z.fit(d, z_real)
+        w_stress = rbfnet_stress.fit(d, stress_real)
+        w_dSum = rbfnet_dSum.fit(d, dSum_real)
         # stds = str(rbfnet_y.stds)
         # x_pred = rbfnet_x.predict(d_pred)
         y_pred = rbfnet_y.predict(d_pred)
@@ -182,28 +176,31 @@ def realXYZ():
         stress_pred = rbfnet_stress.predict(d_pred)
         dSum_pred = rbfnet_dSum.predict(d_pred)
         # plt.plot(d_pred, x_pred, color='#ff0000', marker='+', linestyle='-', label='x')
-        # plt.plot(d_pred, y_pred, color='#00ff00', marker='+', linestyle=':',
-        #          label=('' if i == 0 else '_') + 'y')
-        zz = Duplicated_list(list_z, 'coords', i)
-        plt.plot(d_pred, z_pred, color='#0000ff', marker='+', linestyle='-.',
+        plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle=':',
+                 label=('' if i == 0 else '_') + 'y_predict')
+        plt.plot(d_pred, z_pred, color='#ff0000', marker='+', linestyle='-.',
                  label=('' if i == 0 else '_') + 'z-predict')
-        plt.plot(d, zz, color='#ff00ff', marker='+', linestyle='-',
-                 label=('' if i == 0 else '_') + 'z-real')
-        # plt.plot(d_pred, stress_pred, color='#0000ff', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'stress')
-        # plt.plot(d_pred, dSum_pred, color='#ff0000', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'dSum')
-        # list_wb_y = np.concatenate((list_wb_y, wb_y))
-        # list_wb_z = np.concatenate((list_wb_z, wb_z))
-        list_wb_stress = np.concatenate((list_wb_stress, wb_stress))
-        list_wb_dSum = np.concatenate((list_wb_dSum, wb_dSum))
+        # plt.plot(d, z_real, color='#ff00ff', marker='+', linestyle='-',
+        #          label=('' if i == 0 else '_') + 'z-real')
+        plt.plot(d_pred, stress_pred, color='#ff00ff', marker='+', linestyle='-.',
+                 label=('' if i == 0 else '_') + 'stress_predict')
+        plt.plot(d_pred, dSum_pred, color='#ffff00', marker='+', linestyle='-.',
+                 label=('' if i == 0 else '_') + 'dSum_predict')
+        list_wb_y = np.concatenate((list_wb_y, w_y))
+        list_wb_z = np.concatenate((list_wb_z, w_z))
+        list_wb_stress = np.concatenate((list_wb_stress, w_stress))
+        list_wb_dSum = np.concatenate((list_wb_dSum, w_dSum))
+        # list_wb_y.append(w_y)
+        # list_wb_z.append(w_z)
+        # list_wb_stress.append(w_stress)
+        # list_wb_dSum.append(w_dSum)
 
         print("\r程序当前已完成：" + str(round(i / len(list_y) * 10000) / 100) + '%', end="")
     #
-    # Text_Create('y_pre', ','.join(map(str, list_wb_y)) + ',' + stds, 'hex')
-    # Text_Create('z_pre', ','.join(map(str, list_wb_z)), 'hex')
-    # Text_Create('stress_pre', ','.join(map(str, list_wb_stress)), 'hex')
-    # Text_Create('dSum_pre', ','.join(map(str, list_wb_dSum)), 'hex')
+    Text_Create('y_pre', ','.join(map(str, list_wb_y)) + ',' + stds, 'hex')
+    Text_Create('z_pre', ','.join(map(str, list_wb_z)), 'hex')
+    Text_Create('stress_pre', ','.join(map(str, list_wb_stress)), 'hex')
+    Text_Create('dSum_pre', ','.join(map(str, list_wb_dSum)), 'hex')
 
     # plt.plot(d_pred, Duplicated_list(list_zAll, 'coords'), color='#000000', marker='+', linestyle='-.')
     # plt.plot(d_pred, Duplicated_list(list_stressAll, 'stress'), color='#000000', marker='+', linestyle='-.')
