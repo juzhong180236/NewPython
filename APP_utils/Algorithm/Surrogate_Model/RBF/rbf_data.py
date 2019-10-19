@@ -127,10 +127,14 @@ def realXYZ():
     d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
     # d = np.array([0, 1, 5, 9, 13, 17])
     d_pred = np.arange(-17, 18)
-    list_wb_y = []
-    list_wb_z = []
-    list_wb_stress = []
-    list_wb_dSum = []
+    list_w_y = []
+    list_w_z = []
+    list_w_stress = []
+    list_w_dSum = []
+    # list_w_y = ''
+    # list_w_z = ''
+    # list_w_stress = ''
+    # list_w_dSum = ''
     stds = ''
 
     def Duplicated_list(list_input, dataType, i_count):
@@ -153,7 +157,7 @@ def realXYZ():
     length = len(list_x)
     print(list_z[0])
     for i in range(length):
-        # for i in range(5):
+    # for i in range(5):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = Duplicated_list(list_y, 'coords', i)
         z_real = Duplicated_list(list_z, 'coords', i)
@@ -169,7 +173,7 @@ def realXYZ():
         w_z = rbfnet_z.fit(d, z_real)
         w_stress = rbfnet_stress.fit(d, stress_real)
         w_dSum = rbfnet_dSum.fit(d, dSum_real)
-        # stds = str(rbfnet_y.stds)
+        stds = str(rbfnet_y.std)
         # x_pred = rbfnet_x.predict(d_pred)
         y_pred = rbfnet_y.predict(d_pred)
         z_pred = rbfnet_z.predict(d_pred)
@@ -186,22 +190,35 @@ def realXYZ():
                  label=('' if i == 0 else '_') + 'stress_predict')
         plt.plot(d_pred, dSum_pred, color='#ffff00', marker='+', linestyle='-.',
                  label=('' if i == 0 else '_') + 'dSum_predict')
-        list_wb_y = np.concatenate((list_wb_y, w_y))
-        list_wb_z = np.concatenate((list_wb_z, w_z))
-        list_wb_stress = np.concatenate((list_wb_stress, w_stress))
-        list_wb_dSum = np.concatenate((list_wb_dSum, w_dSum))
-        # list_wb_y.append(w_y)
-        # list_wb_z.append(w_z)
-        # list_wb_stress.append(w_stress)
-        # list_wb_dSum.append(w_dSum)
+        # list_w_y = np.concatenate((list_w_y, w_y))
+        # list_w_z = np.concatenate((list_w_z, w_z))
+        # list_w_stress = np.concatenate((list_w_stress, w_stress))
+        # list_w_dSum = np.concatenate((list_w_dSum, w_dSum))
+        # list_w_y += w_y + '\n'
+        # list_w_z += w_z + '\n'
+        # list_w_stress += w_stress + '\n'
+        # list_w_dSum += w_dSum + '\n'
+        list_w_y.append(w_y)
+        list_w_z.append(w_z)
+        list_w_stress.append(w_stress)
+        list_w_dSum.append(w_dSum)
 
         print("\r程序当前已完成：" + str(round(i / len(list_y) * 10000) / 100) + '%', end="")
     #
-    Text_Create('y_pre', ','.join(map(str, list_wb_y)) + ',' + stds, 'hex')
-    Text_Create('z_pre', ','.join(map(str, list_wb_z)), 'hex')
-    Text_Create('stress_pre', ','.join(map(str, list_wb_stress)), 'hex')
-    Text_Create('dSum_pre', ','.join(map(str, list_wb_dSum)), 'hex')
+    # Text_Create('y_pre', ','.join(map(str, list_w_y)) + ',' + stds, 'hex')
+    # Text_Create('z_pre', ','.join(map(str, list_w_z)), 'hex')
+    # Text_Create('stress_pre', ','.join(map(str, list_w_stress)), 'hex')
+    # Text_Create('dSum_pre', ','.join(map(str, list_w_dSum)), 'hex')
 
+    Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds, 'hex')
+    Text_Create('z_pred_list', '\n'.join(list_w_z), 'hex')
+    Text_Create('stress_pred_list', '\n'.join(list_w_stress), 'hex')
+    Text_Create('dSum_pred_list', '\n'.join(list_w_dSum), 'hex')
+
+    # Text_Create('y_pre_str', list_w_y + stds, 'hex')
+    # Text_Create('z_pre_str', list_w_z.rstrip('\n'), 'hex')
+    # Text_Create('stress_pre_str', list_w_stress.rstrip('\n'), 'hex')
+    # Text_Create('dSum_pre_str', list_w_dSum.rstrip('\n'), 'hex')
     # plt.plot(d_pred, Duplicated_list(list_zAll, 'coords'), color='#000000', marker='+', linestyle='-.')
     # plt.plot(d_pred, Duplicated_list(list_stressAll, 'stress'), color='#000000', marker='+', linestyle='-.')
     plt.legend()

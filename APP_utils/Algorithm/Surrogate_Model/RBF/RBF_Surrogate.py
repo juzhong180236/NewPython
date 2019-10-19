@@ -51,8 +51,7 @@ class RBF(object):
             list_Multiquadric_result.append(np.array(list_temp).ravel())
         Gaussian_result = np.array(list_Multiquadric_result)
         self.w = np.linalg.pinv(Gaussian_result).dot(Y)
-        print(self.w)
-        return self.w
+        return ','.join(map(str, self.w))
 
     def predict(self, X_Pre):
         list_pre_x = []
