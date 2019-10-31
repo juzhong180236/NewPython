@@ -5,8 +5,7 @@ from RBF_Surrogate import RBF
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
 path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/mid/"
-'''调用哪种rbf'''
-rbf_type = {'y': 'lin_a', 'z': 'lin_a', 'stress': 'lin_a', 'dSum': 'lin_a'}
+'''调用RBF'''
 
 
 def Text_Create(name, msg, hexOrfour):
@@ -156,18 +155,18 @@ def realXYZ():
         return xAll_real
 
     length = len(list_x)
-    # for i in range(length):
-    for i in range(1):
+    for i in range(length):
+    # for i in range(1):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = Duplicated_list(list_y, 'coords', i)
         z_real = Duplicated_list(list_z, 'coords', i)
         stress_real = Duplicated_list(list_stress, 'stressOrdSum', i)
         dSum_real = Duplicated_list(list_dSum, 'stressOrdSum', i)
         # rbfnet_x = RBFNet()
-        rbfnet_y = RBF(rbf_type['y'])
-        rbfnet_z = RBF(rbf_type['z'])
-        rbfnet_stress = RBF(rbf_type['stress'])
-        rbfnet_dSum = RBF(rbf_type['dSum'])
+        rbfnet_y = RBF('lin_a')
+        rbfnet_z = RBF('lin_a')
+        rbfnet_stress = RBF('lin_a')
+        rbfnet_dSum = RBF('lin_a')
         # wb_v = rbfnet_x.fit(d, x_real)
         w_y = rbfnet_y.fit(d, y_real)
         w_z = rbfnet_z.fit(d, z_real)
@@ -214,15 +213,13 @@ def realXYZ():
     # Text_Create('z_pre', ','.join(map(str, list_w_z)), 'hex')
     # Text_Create('stress_pre', ','.join(map(str, list_w_stress)), 'hex')
     # Text_Create('dSum_pre', ','.join(map(str, list_w_dSum)), 'hex')
-    print('\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(map(str, list(d))) + '\n' + rbf_type['y'])
+
     # 一般用这个
     # Text_Create('y_pred_list', '\n'.join(list_w_y), 'four')
-    # Text_Create('y_pred_list',
-    #             '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(map(str, list(d))) + '\n' + rbf_type['y'],
-    #             'four')
-    # Text_Create('z_pred_list', '\n'.join(list_w_z) + '\n' + rbf_type['z'], 'four')
-    # Text_Create('stress_pred_list', '\n'.join(list_w_stress) + '\n' + rbf_type['stress'], 'four')
-    # Text_Create('dSum_pred_list', '\n'.join(list_w_dSum) + '\n' + rbf_type['dSum'], 'four')
+    Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(map(str, list(d))), 'four')
+    Text_Create('z_pred_list', '\n'.join(list_w_z), 'four')
+    Text_Create('stress_pred_list', '\n'.join(list_w_stress), 'four')
+    Text_Create('dSum_pred_list', '\n'.join(list_w_dSum), 'four')
 
     # Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds, 'hex')
     # Text_Create('z_pred_list', '\n'.join(list_w_z), 'hex')

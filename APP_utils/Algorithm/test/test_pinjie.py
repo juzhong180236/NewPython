@@ -69,7 +69,26 @@ def calc_max_eleNumber(eachNum, expNum):
 # data_PRS_result[i][j] = X[i] ** j
 # list_PRS_result.append(np.array(list_temp).ravel())
 
-arr51 = np.array([[2, 3, 6], [3, 5], [7]])
-print(arr51[1] * np.array([4]))
-arr52 = np.array([2, 3, 6, 3, 5, 7])
-print(arr52[-6:len(arr52)])
+# arr51 = np.array([[2, 3, 6], [3, 5], [7]])
+# print(arr51[1] * np.array([4]))
+# arr52 = np.array([2, 3, 6, 3, 5, 7])
+# print(arr52[-6:len(arr52)])
+
+# color = 'a'
+# if len(color) == 6:
+#     color = color
+# else:
+#     color = color + '0' * (6 - len(color))
+# print(color)
+
+# f = np.array([[1], [2], [3]])
+# print(f.shape)
+
+# f = np.arange(0, 60, 1).reshape(-1, 1)
+# j = np.arange(0, 5)
+# c = f + j
+# print(c)
+a = np.array([2, 4, 65])
+print(np.argwhere(a == 4)[0])
+print(np.where(a == 4))
+print(a)
