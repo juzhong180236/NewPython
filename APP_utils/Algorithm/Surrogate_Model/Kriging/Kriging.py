@@ -4,17 +4,9 @@ from openpyxl import load_workbook
 from ReadExcel import readExcel
 
 
-def Gaussian(x, c, s):
-    return np.exp(-(x - c) ** 2 / (2 * s ** 2))
-
-
-def Multiquadric(x, c, s):
-    return np.sqrt((x - c) ** 2 + s ** 2)
-
-
 class Kriging(object):
-    def __init__(self, rbf=Multiquadric, std=0, w=0):
-        self.rbf = rbf  # rbf名称
+    def __init__(self, kriging='', std=0, w=0):
+        self.rbf = kriging  # rbf名称
         self.std = std
         self.w = w
 

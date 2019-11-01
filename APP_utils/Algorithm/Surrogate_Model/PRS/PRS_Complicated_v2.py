@@ -57,8 +57,8 @@ class PRS(object):
 
 if __name__ == "__main__":
     path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\test7fun.xlsx"
-    data_real = readExcel(path_excel, "Sheet1", 1, 30, 3)
-    data_pre = readExcel(path_excel, "Sheet2", 1, 30, 3)
+    data_real = readExcel(path_excel, "Sheet1", 1, 20, 2)
+    data_pre = readExcel(path_excel, "Sheet2", 1, 20, 2)
     # d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
     # y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
     # d_pred = np.arange(-17, 18)

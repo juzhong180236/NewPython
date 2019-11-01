@@ -5,7 +5,7 @@ from ReadExcel import readExcel
 
 
 class PRS(object):
-    ''' 代理模型PRS
+    ''' 代理模型PRS【没有常数项交叉】
 
         def __init__(self, m=3, w=0):
         初始化PRS类，默认次数取3，权重取0
