@@ -14,7 +14,7 @@ def Text_Create(name, msg, hexOrfour):
     save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
-        save_path += 'mid/'
+        save_path += 'mid/real_model/'
     elif hexOrfour == 'hex':
         # save_path += 'new_utils/post/'
         save_path += 'pillar_post/'

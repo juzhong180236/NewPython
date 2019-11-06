@@ -54,5 +54,9 @@ import numpy as np
 # t3.set_upstream(t1)
 
 # if np.nan > 0:
-print(np.where(np.array([1, 4, 5, 6, 0, 5])))
-print(np.nan > 0)
+# print(np.where(np.array([1, 4, 5, 6, 0, 5])))
+# print(np.nan > 0)
+
+print('abaa'.rstrip('a'))
+a = [1, 2, 3.4, 4]
+print(','.join(map(str, a)))

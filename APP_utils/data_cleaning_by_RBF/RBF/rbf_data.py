@@ -4,8 +4,9 @@ import time
 from RBF_Surrogate import RBF
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/mid/"
+path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/mid/real_model/"
 '''调用RBF'''
+rbf_type = 'lin_a'
 
 
 def Text_Create(name, msg, hexOrfour):
@@ -13,7 +14,7 @@ def Text_Create(name, msg, hexOrfour):
     save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/post/"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
-        save_path += 'lin_a/'
+        save_path += 'lin_a2/'
     elif hexOrfour == 'hex':
         save_path += 'RBF_Surrogate_pillar/'
     full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
@@ -155,37 +156,45 @@ def realXYZ():
         return xAll_real
 
     length = len(list_x)
+    max_w_y = ''
+    max_w_z = ''
+    i_max_x_y = 0
     for i in range(length):
-    # for i in range(1):
+        # for i in range(1):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = Duplicated_list(list_y, 'coords', i)
         z_real = Duplicated_list(list_z, 'coords', i)
         stress_real = Duplicated_list(list_stress, 'stressOrdSum', i)
         dSum_real = Duplicated_list(list_dSum, 'stressOrdSum', i)
         # rbfnet_x = RBFNet()
-        rbfnet_y = RBF('lin_a')
-        rbfnet_z = RBF('lin_a')
-        rbfnet_stress = RBF('lin_a')
-        rbfnet_dSum = RBF('lin_a')
+        rbfnet_y = RBF(rbf_type)
+        rbfnet_z = RBF(rbf_type)
+        rbfnet_stress = RBF(rbf_type)
+        rbfnet_dSum = RBF(rbf_type)
         # wb_v = rbfnet_x.fit(d, x_real)
         w_y = rbfnet_y.fit(d, y_real)
         w_z = rbfnet_z.fit(d, z_real)
         w_stress = rbfnet_stress.fit(d, stress_real)
         w_dSum = rbfnet_dSum.fit(d, dSum_real)
+        # 给出最高点处的点的轨迹
+        if int(max(y_real)) == 228 and i_max_x_y == 0:
+            max_w_y = w_y
+            max_w_z = w_z
+            i_max_x_y = 1
         stds = str(rbfnet_y.std)
         # x_pred = rbfnet_x.predict(d_pred)
         y_pred = rbfnet_y.predict(d_pred)
         z_pred = rbfnet_z.predict(d_pred)
         stress_pred = rbfnet_stress.predict(d_pred)
         dSum_pred = rbfnet_dSum.predict(d_pred)
-        # plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'y_predict')
-        # plt.plot(d, y_real, color='#ff00ff', marker='+', linestyle='-',
-        #          label=('' if i == 0 else '_') + 'y-real')
-        plt.plot(d_pred, z_pred, color='#ff0000', marker='+', linestyle='-.',
-                 label=('' if i == 0 else '_') + 'z-predict')
-        plt.plot(d, z_real, color='#ff00ff', marker='+', linestyle='-.',
-                 label=('' if i == 0 else '_') + 'stress_predict')
+        plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
+                 label=('' if i == 0 else '_') + 'y_predict')
+        plt.plot(d, y_real, color='#ff00ff', marker='+', linestyle='-',
+                 label=('' if i == 0 else '_') + 'y-real')
+        # plt.plot(d_pred, z_pred, color='#ff0000', marker='+', linestyle='-.',
+        #          label=('' if i == 0 else '_') + 'z-predict')
+        # plt.plot(d, z_real, color='#ff00ff', marker='+', linestyle='-.',
+        #          label=('' if i == 0 else '_') + 'stress_predict')
         # plt.plot(d_pred, dSum_pred, color='#ffff00', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'dSum_predict')
         # plt.plot(d, dSum_real, color='#455500', marker='+', linestyle='-.',
@@ -215,11 +224,12 @@ def realXYZ():
     # Text_Create('dSum_pre', ','.join(map(str, list_w_dSum)), 'hex')
 
     # 一般用这个
-    # Text_Create('y_pred_list', '\n'.join(list_w_y), 'four')
-    Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(map(str, list(d))), 'four')
-    Text_Create('z_pred_list', '\n'.join(list_w_z), 'four')
-    Text_Create('stress_pred_list', '\n'.join(list_w_stress), 'four')
-    Text_Create('dSum_pred_list', '\n'.join(list_w_dSum), 'four')
+    Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(
+        map(str, list(d))) + '\n' + max_w_y + '\n' + max_w_z + '\n' + rbf_type,
+                'four')
+    Text_Create('z_pred_list', '\n'.join(list_w_z) + '\n' + rbf_type, 'four')
+    Text_Create('stress_pred_list', '\n'.join(list_w_stress) + '\n' + rbf_type, 'four')
+    Text_Create('dSum_pred_list', '\n'.join(list_w_dSum) + '\n' + rbf_type, 'four')
 
     # Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds, 'hex')
     # Text_Create('z_pred_list', '\n'.join(list_w_z), 'hex')
