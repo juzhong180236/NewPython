@@ -3,6 +3,7 @@
 import os
 import itertools
 
+'''错误的颜色定义方式'''
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
 path_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/pre/"
 
@@ -14,7 +15,7 @@ def Text_Create(name, msg, hexOrfour):
     save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
-        save_path += 'mid/real_model/'
+        save_path += 'mid/test_color2/'
     elif hexOrfour == 'hex':
         # save_path += 'new_utils/post/'
         save_path += 'pillar_post/'

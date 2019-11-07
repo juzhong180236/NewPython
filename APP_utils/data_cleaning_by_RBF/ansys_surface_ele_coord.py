@@ -14,7 +14,7 @@ def Text_Create(name, msg, hexOrfour):
     save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
-        save_path += 'mid/'
+        save_path += 'mid/test_color/'
     elif hexOrfour == 'hex':
         # save_path += 'new_utils/post/'
         save_path += 'pillar_post/'
@@ -25,48 +25,52 @@ def Text_Create(name, msg, hexOrfour):
     file.close()
 
 
-def defineColor(list_ele_input, pressureStep):
-    if list_ele_input < pressureStep:
+def colorStep(input, pressureStep, i):
+    return input + pressureStep * i
+
+
+def defineColor(array_ele, list_min_ele, pressureStep):
+    if array_ele < colorStep(list_min_ele, pressureStep, 1):
         colors = '0,0,1'
-    elif pressureStep <= list_ele_input < pressureStep * 2:
+    elif colorStep(list_min_ele, pressureStep, 1) <= array_ele < colorStep(list_min_ele, pressureStep, 2):
         colors = '0,' + str(42 / 255) + ',1'
-    elif pressureStep * 2 <= list_ele_input < pressureStep * 3:
+    elif colorStep(list_min_ele, pressureStep, 2) <= array_ele < colorStep(list_min_ele, pressureStep, 3):
         colors = '0,' + str(85 / 255) + ',1'
-    elif pressureStep * 3 <= list_ele_input < pressureStep * 4:
+    elif colorStep(list_min_ele, pressureStep, 3) <= array_ele < colorStep(list_min_ele, pressureStep, 4):
         colors = '0,' + str(127 / 255) + ',1'
-    elif pressureStep * 4 <= list_ele_input < pressureStep * 5:
+    elif colorStep(list_min_ele, pressureStep, 4) <= array_ele < colorStep(list_min_ele, pressureStep, 5):
         colors = '0,' + str(170 / 255) + ',1'
-    elif pressureStep * 5 <= list_ele_input < pressureStep * 6:
+    elif colorStep(list_min_ele, pressureStep, 5) <= array_ele < colorStep(list_min_ele, pressureStep, 6):
         colors = '0,1,1'
-    elif pressureStep * 6 <= list_ele_input < pressureStep * 7:
+    elif colorStep(list_min_ele, pressureStep, 6) <= array_ele < colorStep(list_min_ele, pressureStep, 7):
         colors = '0,1,' + str(170 / 255)
-    elif pressureStep * 7 <= list_ele_input < pressureStep * 8:
+    elif colorStep(list_min_ele, pressureStep, 7) <= array_ele < colorStep(list_min_ele, pressureStep, 8):
         colors = '0,1,' + str(127 / 255)
-    elif pressureStep * 8 <= list_ele_input <= pressureStep * 9:
+    elif colorStep(list_min_ele, pressureStep, 8) <= array_ele < colorStep(list_min_ele, pressureStep, 9):
         colors = '0,1,' + str(85 / 255)
-    elif pressureStep * 9 <= list_ele_input < pressureStep * 10:
+    elif colorStep(list_min_ele, pressureStep, 9) <= array_ele < colorStep(list_min_ele, pressureStep, 10):
         colors = '0,1,' + str(42 / 255)
-    elif pressureStep * 10 <= list_ele_input < pressureStep * 11:
+    elif colorStep(list_min_ele, pressureStep, 10) <= array_ele < colorStep(list_min_ele, pressureStep, 11):
         colors = '0,1,0'
-    elif pressureStep * 11 <= list_ele_input < pressureStep * 12:
+    elif colorStep(list_min_ele, pressureStep, 11) <= array_ele < colorStep(list_min_ele, pressureStep, 12):
         colors = str(42 / 255) + ',1,0'
-    elif pressureStep * 12 <= list_ele_input < pressureStep * 13:
+    elif colorStep(list_min_ele, pressureStep, 12) <= array_ele < colorStep(list_min_ele, pressureStep, 13):
         colors = str(85 / 255) + ',1,0'
-    elif pressureStep * 13 <= list_ele_input < pressureStep * 14:
+    elif colorStep(list_min_ele, pressureStep, 13) <= array_ele < colorStep(list_min_ele, pressureStep, 14):
         colors = str(127 / 255) + ',1,0'
-    elif pressureStep * 14 <= list_ele_input < pressureStep * 15:
+    elif colorStep(list_min_ele, pressureStep, 14) <= array_ele < colorStep(list_min_ele, pressureStep, 15):
         colors = str(170 / 255) + ',1,0'
-    elif pressureStep * 15 <= list_ele_input < pressureStep * 16:
+    elif colorStep(list_min_ele, pressureStep, 15) <= array_ele < colorStep(list_min_ele, pressureStep, 16):
         colors = '1,1,0'
-    elif pressureStep * 16 <= list_ele_input < pressureStep * 17:
+    elif colorStep(list_min_ele, pressureStep, 16) <= array_ele < colorStep(list_min_ele, pressureStep, 17):
         colors = '1,' + str(170 / 255) + ',0'
-    elif pressureStep * 17 <= list_ele_input <= pressureStep * 18:
+    elif colorStep(list_min_ele, pressureStep, 17) <= array_ele < colorStep(list_min_ele, pressureStep, 18):
         colors = '1,' + str(127 / 255) + ',0'
-    elif pressureStep * 18 <= list_ele_input < pressureStep * 19:
+    elif colorStep(list_min_ele, pressureStep, 18) <= array_ele < colorStep(list_min_ele, pressureStep, 19):
         colors = '1,' + str(85 / 255) + ',0'
-    elif pressureStep * 19 <= list_ele_input < pressureStep * 20:
+    elif colorStep(list_min_ele, pressureStep, 19) <= array_ele < colorStep(list_min_ele, pressureStep, 20):
         colors = '1,' + str(42 / 255) + ',0'
-    elif pressureStep * 20 <= list_ele_input <= pressureStep * 21:
+    elif colorStep(list_min_ele, pressureStep, 20) <= array_ele <= colorStep(list_min_ele, pressureStep, 21):
         colors = '1,0,0'
     else:
         colors = '1,0,0'
@@ -269,7 +273,8 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
                     list_ele[i_ele] = str(dict_coord[int(list_ele[i_ele])][0])  # 获取字典dict_coord中的第一值替换list_ele
                     # print('替换后:' + list_ele[iEle])
 
-        list_Dcolor_result = map(defineColor, map(float, list_Dcolor), itertools.repeat(float_Dcolor_step))
+        list_Dcolor_result = map(defineColor, map(float, list_Dcolor), itertools.repeat(float(str_Dcolor_min)),
+                                 itertools.repeat(float_Dcolor_step))
         str_Dcolor_allFile += ','.join(map(str, list_Dcolor_result)) + '\n'
         str_displacementSum_allFile += ','.join(list_Dcolor) + '\n'
         # print(','.join(list_sort))
@@ -315,7 +320,8 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
         list_Scolor_eachfile = ''.join(list_Scolor).split('\n')  # 以空字符将list_Scolor连接为字符串，再以换行符转为list
         list_Scolor_eachfile.pop()  # 去掉最后一个换行符
 
-        list_Scolor_result = map(defineColor, map(float, list_Scolor_eachfile), itertools.repeat(float_Scolor_step))
+        list_Scolor_result = map(defineColor, map(float, list_Scolor_eachfile), itertools.repeat(float(str_Scolor_min)),
+                                 itertools.repeat(float_Scolor_step))
 
         i_processing += 1
         print("\r程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
@@ -348,7 +354,7 @@ Text_Create('stress_dSum_step',
 
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_four[0], 'four')
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_four[1], 'four')
-# Text_Create('dColor_surface_new', tuple_surface_coords_ele_Dcolor_four[2], 'four')
+Text_Create('dColor_surface_new', tuple_surface_coords_ele_Dcolor_four[2], 'four')
 
 '''六面体NLIST.lis路径和displacement路径'''
 # path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/new_utils/pre/"
