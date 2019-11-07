@@ -14,7 +14,7 @@ def Text_Create(name, msg, hexOrfour):
     save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
-        save_path += 'mid/test_color/'
+        save_path += 'mid/'
     elif hexOrfour == 'hex':
         # save_path += 'new_utils/post/'
         save_path += 'pillar_post/'
@@ -192,7 +192,8 @@ def Str_Color_Step(path_input, min_or_max, stress_or_displacement):
     if min_or_max == 'min':
         return list_color_ToStep_sorted[0]
     elif min_or_max == 'max':
-        return list_color_ToStep_sorted[len(list_color_ToStep_sorted) - 1]
+        # return list_color_ToStep_sorted[len(list_color_ToStep_sorted) - 1]
+        return list_color_ToStep_sorted[-1]
     else:
         pass
 
@@ -284,7 +285,7 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
     str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
     # 将所有加了位移信息的坐标值和将真实索引值（real_index_12...）更新为[0,1...]的list_ele返回
     return str_coords_allFile.rstrip('\n'), list_ele, str_Dcolor_allFile, str_displacementSum_allFile.rstrip(
-        '\n'), float_Dcolor_step
+        '\n'), str(float_Dcolor_step) + ',' + str(str_Dcolor_min)
 
 
 def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
@@ -329,7 +330,7 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
         str_stress_allFile += ','.join(list_Scolor_eachfile) + '\n'
 
     str_Scolor_allFile += str(float_Scolor_step * 21 / 9)
-    return str_Scolor_allFile, str_stress_allFile.rstrip('\n'), float_Scolor_step
+    return str_Scolor_allFile, str_stress_allFile.rstrip('\n'), str(float_Scolor_step) + ',' + str(str_Scolor_min)
 
 
 '''四面体NLIST.lis路径和displacement路径'''
@@ -344,17 +345,17 @@ path_equivalent_stress_four = path_four + "equivalent_stress/"
 tuple_surface_equivalent_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_equivalent_stress_four,
                                                                           set_surface_ele_four)
 
-Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
-Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
-Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
-Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
+# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
+# Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
+# Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
+# Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
 Text_Create('stress_dSum_step',
-            str(tuple_surface_coords_ele_Dcolor_four[-1]) + "," + str(tuple_surface_equivalent_stress_Scolor_four[-1]),
+            tuple_surface_coords_ele_Dcolor_four[-1] + "," + tuple_surface_equivalent_stress_Scolor_four[-1],
             'four')
 
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_four[0], 'four')
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_four[1], 'four')
-Text_Create('dColor_surface_new', tuple_surface_coords_ele_Dcolor_four[2], 'four')
+# Text_Create('dColor_surface_new', tuple_surface_coords_ele_Dcolor_four[2], 'four')
 
 '''六面体NLIST.lis路径和displacement路径'''
 # path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/new_utils/pre/"

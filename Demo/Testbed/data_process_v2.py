@@ -2,12 +2,12 @@ import os
 import itertools
 
 # 读取路径
-path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\points\\"
+path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\points\v3\\"
 
 
 def Text_Create(name, msg):
     # 存储路径
-    save_path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\post_points\\"
+    save_path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\post_points\v3\\"
     full_path = save_path + name + '.csv'
     # 创建写入的文档
     file = open(full_path, 'w')
@@ -82,12 +82,12 @@ def Tuple(path_input):
             list_eachfile_coords = []
             i_line = 0  # 记录行数
             for everyline in coordfile:
-                # print(i_line % 3)
+                # print(len(everyline))
                 # if len(everyline) in [63, 64, 65, 66] and i_line % 1.5 == 0:
-                if len(everyline) in [63, 64, 65, 66]:
+                if len(everyline) in [61, 62, 63, 64]:
                     list_everyline = everyline.split(',')
-                    list_eachfile_velocity.append(list_everyline.pop()[1:-1])
-                    list_eachfile_coords.extend(map(lambda x: x.lstrip(' '), list_everyline))
+                    list_eachfile_velocity.append(list_everyline.pop())
+                    list_eachfile_coords.extend(map(lambda x: str(float(x)), list_everyline))
                 # i_line += 1
             # str_allfile_velocity += ','.join(list_eachfile_velocity) + '\n'
             list_float_velocity = list(map(float, list_eachfile_velocity))
@@ -108,5 +108,5 @@ def Tuple(path_input):
 
 file_velocity_coords = Tuple(path)
 # print(file_velocity_coords[0])
-Text_Create("velocity1", file_velocity_coords[0])
-Text_Create("coords1", file_velocity_coords[1])
+Text_Create("velocity", file_velocity_coords[0])
+Text_Create("coords", file_velocity_coords[1])
