@@ -2,12 +2,12 @@ import os
 import itertools
 
 # 读取路径
-path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\points\v3\\"
+path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\points\v4\\"
 
 
 def Text_Create(name, msg):
     # 存储路径
-    save_path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\post_points\v3\1\\"
+    save_path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\post_points\v4\\"
     full_path = save_path + name + '.csv'
     # 创建写入的文档
     file = open(full_path, 'w')
@@ -67,53 +67,52 @@ def defineColor(array_ele, list_min_ele, pressureStep):
     return colors
 
 
+def ele(elelist, everyline):
+    elelist.extend([everyline[0], everyline[1],
+                    everyline[2], everyline[2],
+                    everyline[0], everyline[3]])
+
+
+def createcolor(origin):
+    list_float = list(map(float, origin))
+    list_float_copy = list_float.copy()
+    list_float_copy.sort(key=lambda x: x)
+    step = (list_float_copy[-1] - list_float_copy[0]) / 21
+    list_min = list_float_copy[0]
+    list_result = list(map(defineColor, list_float, itertools.repeat(list_min),
+                           itertools.repeat(step)))
+    return list_result
+
+
 def Tuple(path_input):
     files = os.listdir(path_input)  # 获取当前文档下的文件
-    str_allfile_velocity_color = ''
     str_allfile_coords = ''
     str_allfile_ele = ''
     i_processing = 0  # 遍历到第i个文件
     for file in files:  # 遍历文件夹
         if not os.path.isdir(file):
             filename = os.path.basename(file)  # 返回文件名
-            # print(filename)
             fullpath_input = path_input + filename
             coordfile = open(fullpath_input, 'rt')
-            list_eachfile_velocity = []
-            list_eachfile_coords = []
-            list_ele_index = []
+            list_coords = []
+            list_index = []
             for everyline in coordfile:
-                list_everyline = everyline.split(',')
+                everyline = everyline.rstrip('\n')
+                list_everyline = everyline.split(', ')
                 if len(list_everyline) == 5:
-                    list_eachfile_velocity.append(list_everyline.pop())
-                    list_everyline.pop(0)
-                    list_eachfile_coords.extend(list_everyline)
+                    list_coords.extend(list_everyline[1:-1])
                 elif len(list_everyline) == 4:
-                    list_everyline_float = list(map(int, list_everyline))
-                    list_ele_index.extend([list_everyline_float[0], list_everyline_float[1],
-                                           list_everyline_float[2], list_everyline_float[2],
-                                           list_everyline_float[0], list_everyline_float[3]])
+                    ele(list_index, list_everyline)
                 else:
                     continue
-            list_float_velocity = list(map(float, list_eachfile_velocity))
-            list_float_velocity_copy = list_float_velocity.copy()
-            list_float_velocity_copy.sort(key=lambda x: x)
-            velocity_step = (list_float_velocity_copy[-1] - list_float_velocity_copy[0]) / 21
-            list_min_velocity = list_float_velocity_copy[0]
-
-            list_result = map(defineColor, list_float_velocity, itertools.repeat(list_min_velocity),
-                              itertools.repeat(velocity_step))
-            str_allfile_coords += ','.join(list_eachfile_coords) + '\n'
-            str_allfile_velocity_color += ','.join(map(str, list_result)) + '\n'
-            str_allfile_ele += ','.join(map(str, list_ele_index)) + '\n'
+            str_allfile_coords += ','.join(list_coords) + '\n'
+            str_allfile_ele += ','.join(map(str, list_index)) + '\n'
         i_processing += 1
         print("\r程序当前已完成：" + str(round(i_processing / len(files) * 100)) + '%', end="")
 
-    return str_allfile_velocity_color.rstrip('\n'), str_allfile_coords.rstrip('\n'), str_allfile_ele.rstrip('\n')
+    return str_allfile_coords.rstrip('\n'), str_allfile_ele.rstrip('\n')
 
 
 file_velocity_coords = Tuple(path)
-# print(file_velocity_coords[0])
-Text_Create("velocity", file_velocity_coords[0])
-Text_Create("coords", file_velocity_coords[1])
-Text_Create("ele", file_velocity_coords[2])
+Text_Create("coords_dynamic", file_velocity_coords[0])
+Text_Create("ele_dynamic", file_velocity_coords[1])

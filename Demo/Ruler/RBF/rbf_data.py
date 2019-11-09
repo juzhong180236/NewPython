@@ -1,20 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-from RBF_Surrogate import RBF
+from RBF_S import RBF
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/mid/real_model/"
+path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/no_dut/mid/"
 '''调用RBF'''
 rbf_type = 'lin_a'
 
 
 def Text_Create(name, msg, hexOrfour):
     # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
-    save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/post/"
+    save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/no_dut/post/"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
-        save_path += 'lin_a2/'
+        save_path += 'lin_a/'
     elif hexOrfour == 'hex':
         save_path += 'RBF_Surrogate_pillar/'
     full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
@@ -160,7 +160,7 @@ def realXYZ():
     max_w_z = ''
     i_max_x_y = 0
     for i in range(length):
-        # for i in range(1):
+    # for i in range(1):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = Duplicated_list(list_y, 'coords', i)
         z_real = Duplicated_list(list_z, 'coords', i)

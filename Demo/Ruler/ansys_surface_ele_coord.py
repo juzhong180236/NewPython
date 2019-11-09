@@ -4,8 +4,9 @@ import os
 import itertools
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
-path_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/pre/"
-
+path_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/no_dut/pre/"
+'''四面体ELIST.lis路径'''
+path_ele_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/no_dut/pre/ele/ELIST.lis"
 
 # 【输入str，str】：生成的文件名，需要写入txt的文本数据
 # 【功能】：创建一个txt文件
@@ -14,7 +15,7 @@ def Text_Create(name, msg, hexOrfour):
     save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
-        save_path += 'mid/'
+        save_path += 'no_dut/mid/'
     elif hexOrfour == 'hex':
         # save_path += 'new_utils/post/'
         save_path += 'pillar_post/'
@@ -154,8 +155,7 @@ def Str_SurfaceEle(geometry_faceNumber, path_input):
 # 541 516 214 261 845 856 762 324 348 763 738 786 六面体索引顺序
 
 # text_create('ele_surface_new', result)
-'''四面体ELIST.lis路径'''
-path_ele_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/pre/ele/ELIST.lis"
+
 str_surface_ele_four = Str_SurfaceEle(4, path_ele_four)
 '''六面体ELIST.lis路径'''
 
@@ -345,10 +345,10 @@ path_equivalent_stress_four = path_four + "equivalent_stress/"
 tuple_surface_equivalent_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_equivalent_stress_four,
                                                                           set_surface_ele_four)
 
-# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
-# Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
-# Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
-# Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
+Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
+Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
+Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
+Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
 Text_Create('stress_dSum_step',
             tuple_surface_coords_ele_Dcolor_four[-1] + "," + tuple_surface_equivalent_stress_Scolor_four[-1],
             'four')
