@@ -1,69 +1,66 @@
-# """
-# Code that goes along with the Airflow tutorial located at:
-# https://github.com/apache/airflow/blob/master/airflow/example_dags/tutorial.py
-# """
-# from airflow import DAG
-# from airflow.operators.bash_operator import BashOperator
-# from datetime import datetime, timedelta
 import numpy as np
+from scipy import integrate
+import matplotlib.pyplot as plt
 
 
-# default_args = {
-#     'owner': 'Airflow',
-#     'depends_on_past': False,
-#     'start_date': datetime(2015, 6, 1),
-#     'email': ['airflow@example.com'],
-#     'email_on_failure': False,
-#     'email_on_retry': False,
-#     'retries': 1,
-#     'retry_delay': timedelta(minutes=5),
-#     # 'queue': 'bash_queue',
-#     # 'pool': 'backfill',
-#     # 'priority_weight': 10,
-#     # 'end_date': datetime(2016, 1, 1),
-# }
+def half_circle(x):
+    """
+    原心：(1,0),半径为1
+    半圆函数：(x-1)^2+y^2 = 1
+    """
+    return 0.1 + np.exp(-x ** 2 / (2 * 0.25))
+
+
+"""
+梯形法求积分：半圆线和x轴包围的面积
+"""
+N = 10000
+x = np.linspace(-2, 2, num=N)  # ,endpoint=True)
+print(x)
+dh = 4 / N
+y = half_circle(x)
+"""
+梯形法求积分：（上底+ 下底）*高/2
+"""
+S = sum((y[1:] + y[:-1]) * dh / 2)
+
+print("=========%s==========" % "梯形法")
+print("面积：%f" % S)
+
+"""
+直接调用intergrate的积分函数quad
+"""
+S2, err = integrate.quad(half_circle, -2, 2)
+S3, err1 = integrate.quad(half_circle, -1.5, 1.5)
+print(S3/S2)
+print("=========%s==========" % "quad")
+print("面积：%f" % S2)
+
+"""
+多重定积分:注意积分顺序
+"""
+
+# def half_sphere(y, x):
+#     """
+#     球心：（1，0，0）
+#     半径：1
+#     半球：(x-1)^2+y^2+z^2=1
+#     """
+#     return (1 - (x - 1) ** 2 - y ** 2) ** 0.5
 #
-# dag = DAG('tutorial', default_args=default_args, schedule_interval=timedelta(days=1))
 #
-# # t1, t2 and t3 are examples of tasks created by instantiating operators
-# t1 = BashOperator(
-#     task_id='print_date',
-#     bash_command='date',
-#     dag=dag)
-#
-# t2 = BashOperator(
-#     task_id='sleep',
-#     bash_command='sleep 5',
-#     retries=3,
-#     dag=dag)
-#
-# templated_command = """
-#     {% for i in range(5) %}
-#         echo "{{ ds }}"
-#         echo "{{ macros.ds_add(ds, 7)}}"
-#         echo "{{ params.my_param }}"
-#     {% endfor %}
 # """
-#
-# t3 = BashOperator(
-#     task_id='templated',
-#     bash_command=templated_command,
-#     params={'my_param': 'Parameter I passed in'},
-#     dag=dag)
-#
-# t2.set_upstream(t1)
-# t3.set_upstream(t1)
-
-# if np.nan > 0:
-# print(np.where(np.array([1, 4, 5, 6, 0, 5])))
-# print(np.nan > 0)
-def de(a):
-    a.append(1)
-
-
-# print('abaa'.rstrip('a'))
-a = [1, 2, 3.4, 4]
-# print(','.join(map(str, a)))
-de(a)
-print(a)
-
+# 积分顺序：
+# v = V x in [0,2] :V y in [-g(x),h(x)]
+# """
+# V3, err = integrate.dblquad(half_sphere, 0, 2, lambda x: -half_circle(x), lambda x: half_circle(x))
+# print("========%s===========" % "dblquad")
+# print("体积：%f" % V3)
+plt.plot(x, y, color='#ff0000', marker='+', linestyle='-',
+         label='z-real')
+# plt.plot(d_pred, y_Pre1, color='#0000ff', marker='+', linestyle='-.',
+#          label='z-predict')
+# RR = 1 - (np.sum(np.square(y - y_Pre1)) / np.sum(np.square(y - np.mean(y))))
+# print(RR)
+plt.legend()
+plt.show()

@@ -3,11 +3,15 @@
 import os
 import itertools
 
-path_switch = "no_dut_hole_35"
+path_switch = "has_dut_35"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
 path_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/pre/"
 '''四面体ELIST.lis路径'''
 path_ele_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/pre/ele/ELIST.lis"
+
+path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/pre/"
+'''六面体ELIST.lis路径'''
+path_ele_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/pre/ele/ELIST.lis"
 
 
 # 【输入str，str】：生成的文件名，需要写入txt的文本数据
@@ -20,7 +24,7 @@ def Text_Create(name, msg, hexOrfour):
         save_path += path_switch + '/mid/'
     elif hexOrfour == 'hex':
         # save_path += 'new_utils/post/'
-        save_path += 'pillar_post/'
+        save_path += path_switch + '/mid/'
     full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
     # 创建写入的文档
     file = open(full_path, 'w')
@@ -137,18 +141,18 @@ def Str_SurfaceEle(geometry_faceNumber, path_input):
                     if list_temp[1] == 1:
                         # 所有的ele【前8位】排列为【六面体】的画图形式，得到这些值并存在list_result中
                         list_result.extend(
-                            [list_temp[10] - 1, list_temp[9] - 1, list_temp[6] - 1, list_temp[10] - 1, list_temp[6] - 1,
-                             list_temp[11] - 1, list_temp[7] - 1, list_temp[6] - 1, list_temp[9] - 1, list_temp[7] - 1,
-                             list_temp[11] - 1, list_temp[6] - 1, list_temp[13] - 1, list_temp[10] - 1,
-                             list_temp[11] - 1,
-                             list_temp[12] - 1, list_temp[11] - 1, list_temp[7] - 1, list_temp[8] - 1, list_temp[7] - 1,
-                             list_temp[9] - 1, list_temp[8] - 1, list_temp[9] - 1, list_temp[13] - 1, list_temp[12] - 1,
-                             list_temp[11] - 1, list_temp[8] - 1, list_temp[12] - 1, list_temp[8] - 1,
-                             list_temp[13] - 1,
-                             list_temp[13] - 1, list_temp[9] - 1, list_temp[10] - 1, list_temp[12] - 1,
-                             list_temp[13] - 1,
-                             list_temp[11] - 1])
-
+                            [list_temp[6] - 1, list_temp[7] - 1, list_temp[8] - 1,
+                             list_temp[6] - 1, list_temp[8] - 1, list_temp[9] - 1,
+                             list_temp[10] - 1, list_temp[11] - 1, list_temp[12] - 1,
+                             list_temp[10] - 1, list_temp[12] - 1, list_temp[13] - 1,
+                             list_temp[6] - 1, list_temp[9] - 1, list_temp[13] - 1,
+                             list_temp[6] - 1, list_temp[10] - 1, list_temp[13] - 1,
+                             list_temp[7] - 1, list_temp[11] - 1, list_temp[12] - 1,
+                             list_temp[7] - 1, list_temp[8] - 1, list_temp[12] - 1,
+                             list_temp[6] - 1, list_temp[10] - 1, list_temp[11] - 1,
+                             list_temp[6] - 1, list_temp[7] - 1, list_temp[11] - 1,
+                             list_temp[8] - 1, list_temp[9] - 1, list_temp[13] - 1,
+                             list_temp[8] - 1, list_temp[12] - 1, list_temp[13] - 1])
     result = Str_Remove_SameEle(list_result)
     eleFile.close()
     return result
@@ -159,11 +163,8 @@ def Str_SurfaceEle(geometry_faceNumber, path_input):
 # text_create('ele_surface_new', result)
 
 str_surface_ele_four = Str_SurfaceEle(4, path_ele_four)
-'''六面体ELIST.lis路径'''
 
-
-# path_ele_hex = "C:/Users/asus/Desktop/DT_DEMO/APP_models/pillar_pre/ele/ELIST.lis"
-# str_surface_ele_hex = Str_SurfaceEle(6, path_ele_hex)
+str_surface_ele_hex = Str_SurfaceEle(6, path_ele_hex)
 
 
 def addOne(x):
@@ -172,8 +173,7 @@ def addOne(x):
 
 set_surface_ele_four = set(map(addOne, set(str_surface_ele_four.split(','))))
 
-
-# set_surface_ele_hex = set(map(addOne, set(str_surface_ele_hex.split(','))))
+set_surface_ele_hex = set(map(addOne, set(str_surface_ele_hex.split(','))))
 
 
 # 【输入str,str】：displacement或stress所在的文件夹路径；取最小值还是最大值，min，max
@@ -225,8 +225,8 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
                 list_coords.append(everyline[53:75].strip())
                 list_coords_x.append(everyline[9:31].strip())
     str_coords_allFile = ','.join(list_coords) + '\n'  # 带初始坐标信息
-    # Text_Create('original_coords_x', ','.join(list_coords_x), 'hex')
-    Text_Create('original_coords_x', ','.join(list_coords_x), 'four')
+    Text_Create('original_coords_x', ','.join(list_coords_x), 'hex')
+    # Text_Create('original_coords_x', ','.join(list_coords_x), 'four')
     # list_coords_allFile = []
 
     str_Dcolor_min = Str_Color_Step(path_input + os.path.basename(files_cut[0]), 'min', 'd')
@@ -347,13 +347,13 @@ path_equivalent_stress_four = path_four + "equivalent_stress/"
 tuple_surface_equivalent_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_equivalent_stress_four,
                                                                           set_surface_ele_four)
 
-Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
-Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
-Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
-Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
-Text_Create('stress_dSum_step',
-            tuple_surface_coords_ele_Dcolor_four[-1] + "," + tuple_surface_equivalent_stress_Scolor_four[-1],
-            'four')
+# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
+# Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
+# Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
+# Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
+# Text_Create('stress_dSum_step',
+#             tuple_surface_coords_ele_Dcolor_four[-1] + "," + tuple_surface_equivalent_stress_Scolor_four[-1],
+#             'four')
 
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_four[0], 'four')
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_four[1], 'four')
@@ -361,24 +361,24 @@ Text_Create('stress_dSum_step',
 
 '''六面体NLIST.lis路径和displacement路径'''
 # path_hex = "C:/Users/asus/Desktop/DT_RopewayDemo/APP_A_CantileverBeam/APP_models/list_new/new_utils/pre/"
-path_hex = "C:/Users/asus/Desktop/DT_DEMO/APP_models/pillar_pre/"
+
 path_coords_hex = path_hex + "dopAndCoord/"
-# tuple_surface_coords_ele_Dcolor_hex = Tuple_Surface_Coords_Ele_Dcolor(path_coords_hex, str_surface_ele_hex,
-#                                                                       set_surface_ele_hex)
+tuple_surface_coords_ele_Dcolor_hex = Tuple_Surface_Coords_Ele_Dcolor(path_coords_hex, str_surface_ele_hex,
+                                                                      set_surface_ele_hex)
 '''六面体stress路径'''
 # path_stress_hex = path_hex + "stress/"
 path_equivalent_stress_hex = path_hex + "equivalent_stress/"
 # tuple_surface_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_stress_hex, set_surface_ele_hex)
-# tuple_surface_equivalent_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_equivalent_stress_hex,
-#                                                                          set_surface_ele_hex)
+tuple_surface_equivalent_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_equivalent_stress_hex,
+                                                                         set_surface_ele_hex)
 #
-# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_hex[0], 'hex')
-# Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_hex[1]), 'hex')
-# Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_hex[3], 'hex')
-# Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_hex[1], 'hex')
-# Text_Create('stress_dSum_step',
-#             str(tuple_surface_coords_ele_Dcolor_hex[-1]) + "," + str(tuple_surface_equivalent_stress_Scolor_hex[-1]),
-#             'hex')
+Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_hex[0], 'hex')
+Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_hex[1]), 'hex')
+Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_hex[3], 'hex')
+Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_hex[1], 'hex')
+Text_Create('stress_dSum_step',
+            str(tuple_surface_coords_ele_Dcolor_hex[-1]) + "," + str(tuple_surface_equivalent_stress_Scolor_hex[-1]),
+            'hex')
 
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_hex[0], 'hex')
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_hex[1], 'hex')

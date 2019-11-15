@@ -10,6 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/APP_utils/data_cleaning_by_RBF/RBF" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/APP_utils/Algorithm/Surrogate_Model/PRS" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Demo/RBF_DataClean/RBF" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Demo/Ruler/RBF" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7" jdkType="Python SDK" />

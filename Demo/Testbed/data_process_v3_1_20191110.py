@@ -6,12 +6,12 @@ import itertools
 2、四个面的颜色信息
 '''
 # 读取路径
-path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\points\v3_vp\\"
+path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\points\v3\\"
 
 
 def Text_Create(name, msg):
     # 存储路径
-    save_path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\post_points\v5\\"
+    save_path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\post_points\v4\\"
     full_path = save_path + name + '.csv'
     # 创建写入的文档
     file = open(full_path, 'w')
@@ -90,14 +90,10 @@ def createcolor(origin, step, list_min):
 
 def Tuple(path_input):
     files = os.listdir(path_input)  # 获取当前文档下的文件
-    str_allfile_color_1_v = ''
-    str_allfile_color_2_v = ''
-    str_allfile_color_3_v = ''
-    str_allfile_color_4_v = ''
-    str_allfile_color_1_p = ''
-    str_allfile_color_2_p = ''
-    str_allfile_color_3_p = ''
-    str_allfile_color_4_p = ''
+    str_allfile_color_1 = ''
+    str_allfile_color_2 = ''
+    str_allfile_color_3 = ''
+    str_allfile_color_4 = ''
     str_allfile_coords = ''
     str_allfile_ele = ''
     i_processing = 0  # 遍历到第i个文件
@@ -157,77 +153,47 @@ def Tuple(path_input):
                 list_f2_v = []
                 list_f3_v = []
                 list_f4_v = []
-                list_f_p = []
-                list_f1_p = []
-                list_f2_p = []
-                list_f3_p = []
-                list_f4_p = []
                 for everyline in coordfile:
                     if everyline.strip() == '[Data]':
                         i_face += 1
-                    everyline = everyline.rstrip('\n')
-                    list_everyline = everyline.split(', ')
-                    if len(list_everyline) == 2 and list_everyline[0] != 'Pressure [ MPa ]':
+                    if len(everyline) == 15:
                         if i_face == 1:
-                            list_f1_p.append(list_everyline[0])
-                            list_f1_v.append(list_everyline[1])
+                            list_f1_v.append(everyline)
                         elif i_face == 2:
-                            list_f2_p.append(list_everyline[0])
-                            list_f2_v.append(list_everyline[1])
+                            list_f2_v.append(everyline)
                         elif i_face == 3:
-                            list_f3_p.append(list_everyline[0])
-                            list_f3_v.append(list_everyline[1])
+                            list_f3_v.append(everyline)
                         elif i_face == 4:
-                            list_f4_p.append(list_everyline[0])
-                            list_f4_v.append(list_everyline[1])
-                        list_f_p.append(list_everyline[0])
-                        list_f_v.append(list_everyline[1])
+                            list_f4_v.append(everyline)
+                        list_f_v.append(everyline)
                     else:
                         continue
                 list_f_v = list(map(float, list_f_v))
-                list_f_p = list(map(float, list_f_p))
                 list_f_v.sort(key=lambda x: x)
-                list_f_p.sort(key=lambda x: x)
-                step_v = (list_f_v[-1] - list_f_v[0]) / 21
-                step_p = (list_f_p[-1] - list_f_p[0]) / 21
-                list_min_v = list_f_v[0]
-                list_min_p = list_f_p[0]
-                list_result1_v = createcolor(list_f1_v, step_v, list_min_v)
-                list_result2_v = createcolor(list_f2_v, step_v, list_min_v)
-                list_result3_v = createcolor(list_f3_v, step_v, list_min_v)
-                list_result4_v = createcolor(list_f4_v, step_v, list_min_v)
-                list_result1_p = createcolor(list_f1_p, step_p, list_min_p)
-                list_result2_p = createcolor(list_f2_p, step_p, list_min_p)
-                list_result3_p = createcolor(list_f3_p, step_p, list_min_p)
-                list_result4_p = createcolor(list_f4_p, step_p, list_min_p)
+                step = (list_f_v[-1] - list_f_v[0]) / 21
+                list_min = list_f_v[0]
+                list_result1 = createcolor(list_f1_v, step, list_min)
+                list_result2 = createcolor(list_f2_v, step, list_min)
+                list_result3 = createcolor(list_f3_v, step, list_min)
+                list_result4 = createcolor(list_f4_v, step, list_min)
 
-                str_allfile_color_1_v += ','.join(map(str, list_result1_v)) + '\n'
-                str_allfile_color_2_v += ','.join(map(str, list_result2_v)) + '\n'
-                str_allfile_color_3_v += ','.join(map(str, list_result3_v)) + '\n'
-                str_allfile_color_4_v += ','.join(map(str, list_result4_v)) + '\n'
-                str_allfile_color_1_p += ','.join(map(str, list_result1_p)) + '\n'
-                str_allfile_color_2_p += ','.join(map(str, list_result2_p)) + '\n'
-                str_allfile_color_3_p += ','.join(map(str, list_result3_p)) + '\n'
-                str_allfile_color_4_p += ','.join(map(str, list_result4_p)) + '\n'
+                str_allfile_color_1 += ','.join(map(str, list_result1)) + '\n'
+                str_allfile_color_2 += ','.join(map(str, list_result2)) + '\n'
+                str_allfile_color_3 += ','.join(map(str, list_result3)) + '\n'
+                str_allfile_color_4 += ','.join(map(str, list_result4)) + '\n'
         i_processing += 1
         print("\r程序当前已完成：" + str(round(i_processing / len(files) * 100)) + '%', end="")
 
-    return str_allfile_color_1_v.rstrip('\n'), str_allfile_color_2_v.rstrip('\n'), \
-           str_allfile_color_3_v.rstrip('\n'), str_allfile_color_4_v.rstrip('\n'), \
-           str_allfile_color_1_p.rstrip('\n'), str_allfile_color_2_p.rstrip('\n'), \
-           str_allfile_color_3_p.rstrip('\n'), str_allfile_color_4_p.rstrip('\n'), \
+    return str_allfile_color_1.rstrip('\n'), str_allfile_color_2.rstrip('\n'), \
+           str_allfile_color_3.rstrip('\n'), str_allfile_color_4.rstrip('\n'), \
            str_allfile_coords, str_allfile_ele
 
 
 file_velocity_coords = Tuple(path)
 # print(file_velocity_coords[0])
-Text_Create("color1_v", file_velocity_coords[0])
-Text_Create("color2_v", file_velocity_coords[1])
-Text_Create("color3_v", file_velocity_coords[2])
-Text_Create("color4_v", file_velocity_coords[3])
-Text_Create("color1_p", file_velocity_coords[4])
-Text_Create("color2_p", file_velocity_coords[5])
-Text_Create("color3_p", file_velocity_coords[6])
-Text_Create("color4_p", file_velocity_coords[7])
-Text_Create("coords", file_velocity_coords[8])
-Text_Create("ele", file_velocity_coords[9])
+Text_Create("color1", file_velocity_coords[0])
+Text_Create("color2", file_velocity_coords[1])
+Text_Create("color3", file_velocity_coords[2])
+Text_Create("color4", file_velocity_coords[3])
+Text_Create("coords", file_velocity_coords[4])
+Text_Create("ele", file_velocity_coords[5])

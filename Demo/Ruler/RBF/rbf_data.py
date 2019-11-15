@@ -3,20 +3,21 @@ import matplotlib.pyplot as plt
 import time
 from RBF_S import RBF
 
+path_switch = "has_dut_35"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/no_dut/mid/"
+path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/mid/"
 '''调用RBF'''
 rbf_type = 'lin_a'
 
 
 def Text_Create(name, msg, hexOrfour):
     # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
-    save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/no_dut/post/"
+    save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/post/"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
         save_path += 'lin_a/'
     elif hexOrfour == 'hex':
-        save_path += 'RBF_Surrogate_pillar/'
+        save_path += 'lin_a/'
     full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
     # 创建写入的文档
     file = open(full_path, 'w')
@@ -126,8 +127,8 @@ def realXYZ():
     # 预测值
     start = time.perf_counter()
     # 更换样本点时，这里要改
-    d = np.array([-55, -45, -35, -25, -15, -5, 0, 5, 15, 25, 35, 45, 55])
-    d_pred = np.arange(-55, 56)
+    d = np.array([-30, -22, -13, -5, 0, 5, 13, 22, 30])
+    d_pred = np.arange(-30, 31)
     list_w_y = []
     list_w_z = []
     list_w_stress = []
@@ -160,7 +161,7 @@ def realXYZ():
     max_w_z = ''
     i_max_x_y = 0
     for i in range(length):
-    # for i in range(1):
+        # for i in range(1):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = Duplicated_list(list_y, 'coords', i)
         z_real = Duplicated_list(list_z, 'coords', i)
@@ -177,7 +178,9 @@ def realXYZ():
         w_stress = rbfnet_stress.fit(d, stress_real)
         w_dSum = rbfnet_dSum.fit(d, dSum_real)
         # 给出最高点处的点的轨迹
-        if int(max(y_real)) == 228 and i_max_x_y == 0:
+        if int(max(y_real)) == 202 and i_max_x_y == 0 and int(min(map(abs, z_real))) == 0:
+            print(w_y)
+            print(w_z)
             max_w_y = w_y
             max_w_z = w_z
             i_max_x_y = 1

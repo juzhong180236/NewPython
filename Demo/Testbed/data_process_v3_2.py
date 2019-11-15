@@ -1,13 +1,16 @@
 import os
 import itertools
 
+'''程序输出：
+运动面的节点索引和节点坐标
+'''
 # 读取路径
 path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\points\v4\\"
 
 
 def Text_Create(name, msg):
     # 存储路径
-    save_path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\post_points\v4\\"
+    save_path = r"C:\Users\asus\Desktop\DT_Testbed\APP_models\post_points\v5\\"
     full_path = save_path + name + '.csv'
     # 创建写入的文档
     file = open(full_path, 'w')
