@@ -154,6 +154,7 @@ if __name__ == "__main__":
     # 普通交叉形式 第三个参数为-np.Inf
     # aa = prs1.fit(data_real[0], data_real[1], -np.Inf)
     # bp
+    print(type(data_real[0]))
     prs1.fit(data_real[0], data_real[1])
     Y_pre = prs1.predict(data_pre[0])
 
@@ -164,10 +165,10 @@ if __name__ == "__main__":
     RR = 1 - (np.sum(np.square(data_pre[1] - Y_pre)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
     print(RR)
 
-    # plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
-    #          label='z-real')
-    # plt.plot(data_pre[0], Y_pre, color='#0000ff', marker='+', linestyle='-.',
-    #          label='z-predict')
+    plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
+             label='z-real')
+    plt.plot(data_pre[0], Y_pre, color='#0000ff', marker='+', linestyle='-.',
+             label='z-predict')
 
     # plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
     #          label='z-real')

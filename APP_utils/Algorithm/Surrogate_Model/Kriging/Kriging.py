@@ -4,20 +4,30 @@ from openpyxl import load_workbook
 from ReadExcel import readExcel
 
 
+def gaussian(para_list, X1, X2):
+    return np.exp(-para_list[0] * np.abs(X1 - X2) ** para_list[1])
+
+
+func = {"gs": gaussian}
+
+
 class Kriging(object):
-    def __init__(self, kriging='', std=0, w=0):
-        self.rbf = kriging  # rbf名称
-        self.std = std
-        self.w = w
+    def __init__(self, kriging='gs'):
+        self.kriging = kriging  # kriging相关函数
 
     def fit(self, X, Y):
         list__result = []
         distance_list = []
         semivariance_list = []
         self.x = X
+        list_result = []
+        for i in range(X.shape[0]):
+            if func.__name__ == 'gaussian':
+                list_result.append(gaussian(X[i], X))
         for i in range(X.shape[0]):
             distance_list.append([np.linalg.norm(ele) for ele in X - X[i]])
-            semivariance_list.append([ele ** 2 for ele in Y - Y[i]])
+            # semivariance_list.append([ele ** 2 for ele in Y - Y[i]])
+            semivariance_list.append(1 / 2 * (Y - Y[i]) ** 2)
         distance_array = np.array(distance_list).flatten()
         semivariace_array = np.array(semivariance_list).flatten()
         return distance_array, semivariace_array
@@ -49,6 +59,7 @@ if __name__ == "__main__":
     path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\test7fun.xlsx"
     data_real = readExcel(path_excel, "Sheet1", 1, 20, 2)
     data_pre = readExcel(path_excel, "Sheet2", 1, 30, 2)
+    print(data_real[0])
     dd = np.array([[2, 3], [-5, -1], [1, 5], [9, 13]])
     dy = np.array([55, 44, 88, 66])
     # d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])

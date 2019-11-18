@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
 from ReadExcel import readExcel
+import time
 
 
 def gaussian(x, c, s):
@@ -60,13 +61,10 @@ class RBF(object):
             max_distance_list.append(max([np.linalg.norm(m) for m in X - X[i]]))
         self.std = max(max_distance_list) / X.shape[0]
         for i in range(X.shape[0]):
-            list_temp = []
-            for j in range(X.shape[0]):
-                if self.rbf.__name__ in str_no_s:
-                    list_temp.append(self.rbf(X[i], X[j]))
-                else:
-                    list_temp.append(self.rbf(X[i], X[j], self.std))
-            list_result.append(np.array(list_temp).ravel())
+            if self.rbf.__name__ in str_no_s:
+                list_result.append(self.rbf(X[i], X).ravel())
+            else:
+                list_result.append(self.rbf(X[i], X, self.std).ravel())
         Gaussian_result = np.array(list_result)
         self.w = np.linalg.pinv(Gaussian_result).dot(Y)
         return ','.join(map(str, self.w))
@@ -74,13 +72,10 @@ class RBF(object):
     def predict(self, X_Pre):
         list_pre_x = []
         for i in range(X_Pre.shape[0]):
-            list_temp = []
-            for j in range(self.x.shape[0]):
-                if self.rbf.__name__ in str_no_s:
-                    list_temp.append(self.rbf(X_Pre[i], self.x[j]))
-                else:
-                    list_temp.append(self.rbf(X_Pre[i], self.x[j], self.std))
-            list_pre_x.append(np.array(list_temp).ravel())
+            if self.rbf.__name__ in str_no_s:
+                list_pre_x.append(self.rbf(X_Pre[i], self.x).ravel())
+            else:
+                list_pre_x.append(self.rbf(X_Pre[i], self.x, self.std).ravel())
         Y_Pre = np.array(list_pre_x).dot(self.w)
         return Y_Pre
 
@@ -89,6 +84,7 @@ if __name__ == "__main__":
     path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\test7fun.xlsx"
     data_real = readExcel(path_excel, "Sheet1", 1, 20, 2)
     data_pre = readExcel(path_excel, "Sheet2", 1, 30, 2)
+    start = time.perf_counter()
     d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
     y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
     d_pred = np.arange(-17, 18)
@@ -113,3 +109,5 @@ if __name__ == "__main__":
     # print(RR)
     plt.legend()
     plt.show()
+    elapsed = (time.perf_counter() - start)
+    print("Time used:", elapsed)

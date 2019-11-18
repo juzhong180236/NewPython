@@ -1,66 +1,87 @@
 import numpy as np
-from scipy import integrate
-import matplotlib.pyplot as plt
 
 
-def half_circle(x):
-    """
-    原心：(1,0),半径为1
-    半圆函数：(x-1)^2+y^2 = 1
-    """
-    return 0.1 + np.exp(-x ** 2 / (2 * 0.25))
-
-
-"""
-梯形法求积分：半圆线和x轴包围的面积
-"""
-N = 10000
-x = np.linspace(-2, 2, num=N)  # ,endpoint=True)
-print(x)
-dh = 4 / N
-y = half_circle(x)
-"""
-梯形法求积分：（上底+ 下底）*高/2
-"""
-S = sum((y[1:] + y[:-1]) * dh / 2)
-
-print("=========%s==========" % "梯形法")
-print("面积：%f" % S)
-
-"""
-直接调用intergrate的积分函数quad
-"""
-S2, err = integrate.quad(half_circle, -2, 2)
-S3, err1 = integrate.quad(half_circle, -1.5, 1.5)
-print(S3/S2)
-print("=========%s==========" % "quad")
-print("面积：%f" % S2)
-
-"""
-多重定积分:注意积分顺序
-"""
-
-# def half_sphere(y, x):
-#     """
-#     球心：（1，0，0）
-#     半径：1
-#     半球：(x-1)^2+y^2+z^2=1
-#     """
-#     return (1 - (x - 1) ** 2 - y ** 2) ** 0.5
+# def b(x, y, x1, y1):
+#     return np.sqrt(np.square(x - x1) + np.square(y - y1))
 #
 #
-# """
-# 积分顺序：
-# v = V x in [0,2] :V y in [-g(x),h(x)]
-# """
-# V3, err = integrate.dblquad(half_sphere, 0, 2, lambda x: -half_circle(x), lambda x: half_circle(x))
-# print("========%s===========" % "dblquad")
-# print("体积：%f" % V3)
-plt.plot(x, y, color='#ff0000', marker='+', linestyle='-',
-         label='z-real')
-# plt.plot(d_pred, y_Pre1, color='#0000ff', marker='+', linestyle='-.',
-#          label='z-predict')
-# RR = 1 - (np.sum(np.square(y - y_Pre1)) / np.sum(np.square(y - np.mean(y))))
-# print(RR)
-plt.legend()
-plt.show()
+# def a(x):
+#     return 100 * np.exp(-0.3 * x)
+#
+#
+# # print(b(61, 139, 63, 140))
+# # print(a(b(61, 139, 63, 140)))
+# # print(a(b(61, 139, 64, 129)))
+# # print(a(b(63, 140, 64, 129)))
+#
+# x = [[2, 4, 6], [3, 5, 6]]
+# # print(np.linalg.norm(x) ** 2)
+# #
+# # m = np.array(50)
+# # print(m.shape)
+# # print(m.ndim)
+# # print(0.001 / 10)
+# # print(0.01 // 10)
+# # print(int(1.1))
+# # mm = [100, 5454]
+# # print(list(map(lambda n: int(np.log10(n)) + 1, mm)))
+# # print(list(map(lambda n: int(np.log2(n)) + 1, mm)))
+# delta = 0.1
+# while ((np.log2((5 - 2) / delta)) + 1) < 6:
+#     delta = delta / 10
+# print(np.random.randint(1, 2, size=3))
+#
+
+def fitnessFunction():
+    # return lambda x: 21.5 + x[0] * np.sin(4 * np.pi * x[0]) + x[1] * np.sin(20 * np.pi * x[1])
+    # return lambda x:  x[0]
+    return lambda x: np.power(x[0], 2)
+
+
+def f(fun, d):
+    print(type(fun(d)))
+
+
+# bb = np.array([100.01599316, 4.65601367])
+bb = np.array([100.01599316, 3])
+# print(np.square(bb) ** 2)
+
+# f(fitnessFunction(), bb)
+# print(np.where(bb > 1)[0][0])
+# print(np.uint8(2.5 * 0.5))
+# print(np.delete(bb, -1))
+# print(list(range(1, 1)))
+# print(np.random.choice(range(1, 15), 1, replace=False)[0])
+print(bb[0:])
+cc = np.zeros(bb.shape)
+cc[0:0] = bb[0:0]
+cc[0:] = bb[0:]
+print(cc)
+ccc = np.array([[3, 8], [2, 7], [5, 6]])
+cccc = np.array([4, 6])
+ccccc = [1, 5]
+
+# print(((cccc - ccc) ** 2))
+# print(((cccc - ccc) ** 2).ravel())
+# print(ccc.shape)
+# print(cccc.shape[0])
+d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
+
+
+def gaussian(X1, X2):
+    return X1 + X2
+
+
+def corelation(func, X, Y):
+    list_result = []
+    for i in range(X.shape[0]):
+        if func.__name__ == 'gaussian':
+            list_result.append(func(X[i], Y).ravel())
+    return np.array(list_result)
+
+
+print(corelation(gaussian, d, d))
+
+print(ccc / np.max(ccc, axis=0))
+print(d.shape[0] == d.ndim)
+print(d.ndim)
