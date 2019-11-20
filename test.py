@@ -52,36 +52,14 @@ bb = np.array([100.01599316, 3])
 # print(np.delete(bb, -1))
 # print(list(range(1, 1)))
 # print(np.random.choice(range(1, 15), 1, replace=False)[0])
-print(bb[0:])
-cc = np.zeros(bb.shape)
-cc[0:0] = bb[0:0]
-cc[0:] = bb[0:]
-print(cc)
 ccc = np.array([[3, 8], [2, 7], [5, 6]])
-cccc = np.array([4, 6])
-ccccc = [1, 5]
 
-# print(((cccc - ccc) ** 2))
-# print(((cccc - ccc) ** 2).ravel())
-# print(ccc.shape)
-# print(cccc.shape[0])
-d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
-
-
-def gaussian(X1, X2):
-    return X1 + X2
-
-
-def corelation(func, X, Y):
-    list_result = []
-    for i in range(X.shape[0]):
-        if func.__name__ == 'gaussian':
-            list_result.append(func(X[i], Y).ravel())
-    return np.array(list_result)
-
-
-print(corelation(gaussian, d, d))
-
-print(ccc / np.max(ccc, axis=0))
-print(d.shape[0] == d.ndim)
-print(d.ndim)
+print(ccc[:, 0].shape)
+print(ccc[:, :1].shape)
+print(ccc[0, :].shape)
+print(ccc[:1, :].shape)
+print(bb[1:])
+bbb = ccc.flat
+# for i in bbb[1:]:
+    # i.remove()
+print(ccc)

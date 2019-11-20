@@ -16,12 +16,15 @@ def gaussian(para_list, X1, X2):
 
 
 class Kriging(object):
-    def __init__(self, X=None, para_array=None, max_iter=50, mp=0.01, cp=0.8, delta=0.0001):
+    def __init__(self, X=None, Y=None, para_array=None, max_iter=50, mp=0.01, cp=0.8, delta=0.0001):
         if X is None:
             X = np.array([])
+        if Y is None:
+            Y = np.array([])
         if para_array is None:
             para_array = np.array([])
         self.X = X
+        self.Y = Y
         self.para_array = para_array
         self.max_iter = max_iter
         self.mp = mp
@@ -245,11 +248,11 @@ class Kriging(object):
                return: 适应度函数的值
         """
         list_result = []
-        print(self.X)
+        # print(self.X)
         for i in range(self.X.shape[0]):
             if func.__name__ == 'gaussian':
                 list_result.append(func(para_array, self.X[i], self.X).ravel())
-        print(np.array(list_result).shape)
+        # print(np.array(list_result).shape)
         return np.linalg.det(list_result)
         # return lambda x: 21.5 + x[0] * np.sin(4 * np.pi * x[0]) + x[1] * np.sin(20 * np.pi * x[1])
         # return lambda x: -x ** 2
@@ -302,7 +305,7 @@ class Kriging(object):
                 list_result.append(func(para_array, X[i], Y).ravel())
         return np.array(list_result)
 
-    def predict(self, X_pre, Y_real):
+    def predict(self, X_pre):
         parameters = self.genetic_algorithm()
         x_normalization = self.X / (np.max(self.X, axis=0) - np.min(self.X, axis=0))
         x_pred_normalization = X_pre / (np.max(self.X, axis=0) - np.min(self.X, axis=0))
@@ -313,56 +316,71 @@ class Kriging(object):
         # 权重
         w = np.linalg.inv(matrix).dot(vector)
         # 预测值
-        return Y_real.dot(w), parameters
+        return self.Y.dot(w), parameters
 
 
 if __name__ == "__main__":
-    path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\test7fun.xlsx"
+    path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\Function1.xlsx"
     data_real = readExcel(path_excel, "Sheet2", 1, 20, 2)
-    data_pre = readExcel(path_excel, "Sheet2", 21, 50, 2)
+    data_pre = readExcel(path_excel, "Sheet2", 50, 100, 2)
     parameter_array = np.array([[0, 1], [1, 2]])
-    d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
+    # d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
+    d = np.arange(-17, 18, 3)
     y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
-
-    d_pred = np.arange(-17, 18)
+    ysin = np.sin(d)
+    d_pred = np.arange(-17, 18, 0.1)
+    ysin_pre = np.sin(d_pred)
     start = time.perf_counter()
-    kriging = Kriging(X=data_real[0], para_array=parameter_array, max_iter=50)
-    # kriging = Kriging(X=d, para_array=parameter_array, max_iter=50)
-    # y_pred, parameter = kriging.predict(d_pred, y)
-    y_pred, parameter = kriging.predict(data_pre[0], data_real[1])
+    kriging = Kriging(X=data_real[0], Y=data_real[1], para_array=parameter_array, max_iter=50)
+    y_pred, parameter = kriging.predict(data_pre[0])
+
+    # kriging = Kriging(X=d, Y=y, para_array=parameter_array, max_iter=50)
+    # kriging = Kriging(X=d, Y=ysin, para_array=parameter_array, max_iter=50)
+    # y_pred, parameter = kriging.predict(d_pred)
     print('theta和p的最优解分别是:', parameter)
     # print('最优目标函数值:', value)
     # plt.figure()
-    # plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
-    #          label='z-real')
+    plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
+             label='z-real')
+    plt.plot(data_pre[0], y_pred, color='#0000ff', marker='+', linestyle='-.',
+             label='z-predict')
+    # plt.plot(d_pred, ysin_pre, color='#ff0000', marker='+', linestyle='-',
+    #          label='y-real')
     # plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
-    #          label='z-predict')
-    # # RR = 1 - (np.sum(np.square(y - y_Pre1)) / np.sum(np.square(y - np.mean(y))))
-    # # print(RR)
-    # plt.legend()
-    # plt.show()
+    #          label='y-predict')
+    RR = 1 - (np.sum(np.square(data_pre[1] - y_pred)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
+    # RR1 = 1 - (np.sum(np.square(y - y_pred)) / np.sum(np.square(y - np.mean(y))))
+    print(RR)
 
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    X = np.array(data_pre[0][:, :1])
-    Y = np.array(data_pre[0][:, 1:])
-    Z = np.array([data_pre[1]])
-    Z_pred = np.array([y_pred])
-    ax.plot_surface(X, Y, Z, rstride=8, cstride=8, alpha=0.3)
-    surf = ax.plot_surface(X, Y, Z_pred, cmap=cm.coolwarm,
-                           linewidth=0, antialiased=False)
+    # fig = plt.figure()
+    # ax = fig.gca(projection='3d')
+    # print(data_pre)
+    X = np.array(data_pre[0][:, 0])
+    Y = np.array(data_pre[0][:, 1])
+    Z = np.array(data_pre[1]).reshape(Y.shape[0])
+    Z_pred = np.array(y_pred)
+
+    # print(X)
+    # print(Y)
+    # print(Z)
+    # ax.scatter(X, Y, Z, c='#ff0000', s=30, label='dot', alpha=0.6, edgecolors='black')
+    # ax.plot_trisurf(X, Y, Z, linewidth=0.2, antialiased=True)
+    # ax.plot_trisurf(X, Y, y_pred, linewidth=0.2, antialiased=True, color='r')
+    # ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
+    # ax.plot_surface(X, Y, Z, rstride=1, cstride=1, color='r')
+    # ax.plot_surface(X, Y, Z, linewidth=0, antialiased=False)
+    # ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
 
     # cset = ax.contour(X, Y, Z, zdir='z', offset=-100, cmap=cm.coolwarm)
     # cset = ax.contour(X, Y, Z, zdir='x', offset=-40, cmap=cm.coolwarm)
     # cset = ax.contour(X, Y, Z, zdir='y', offset=40, cmap=cm.coolwarm)
-
-    ax.set_xlabel('X')
-    ax.set_xlim(-0.5, 0.5)
-    ax.set_ylabel('Y')
-    ax.set_ylim(-0.5, 0.5)
-    ax.set_zlabel('Z')
-    ax.set_zlim(-2, 2)
-
+    # ax.set_xlabel('X')
+    # ax.set_xlim(-1, 1)
+    # ax.set_ylabel('Y')
+    # ax.set_ylim(-1, 1)
+    # ax.set_zlabel('Z')
+    # ax.set_zlim(-10, 10)
+    plt.legend()
     plt.show()
     elapsed = (time.perf_counter() - start)
     print("Time used:", elapsed)

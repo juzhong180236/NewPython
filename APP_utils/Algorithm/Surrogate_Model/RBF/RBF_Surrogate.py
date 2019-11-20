@@ -88,25 +88,31 @@ if __name__ == "__main__":
     data_real = readExcel(path_excel, "Sheet1", 1, 20, 2)
     data_pre = readExcel(path_excel, "Sheet2", 1, 30, 2)
     start = time.perf_counter()
-    d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
+    # d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
+    d = np.arange(-17, 18, 3)
     y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
-    d_pred = np.arange(-17, 18)
-    Y_pre = RBF('lin_a')
-    Y_pre.fit(data_real[0], data_real[1])
-    y_Pre = Y_pre.predict(data_pre[0])
+    ysin = np.sin(d)
+    d_pred = np.arange(-17, 18, 0.1)
+    ysin_pre = np.sin(d_pred)
+    Y_pre = RBF('gs')
+    # Y_pre.fit(data_real[0], data_real[1])
+    # y_Pre = Y_pre.predict(data_pre[0])
+    Y_pre.fit(d, ysin)
+    y_Pre = Y_pre.predict(d_pred)
     # RR = 1 - (np.sum(np.square(data_pre[1] - y_Pre)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
     # print(RR)
-    Y_pre1 = RBF('lin_a')
-    Y_pre1.fit(d, y)
-    y_Pre1 = Y_pre1.predict(d_pred)
+    # Y_pre1 = RBF('lin_a')
+    # Y_pre1.fit(d, y)
+    # y_Pre1 = Y_pre1.predict(d_pred)
     # plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
     #          label='z-real')
     # plt.plot(data_pre[0], y_Pre, color='#0000ff', marker='+', linestyle='-.',
     #          label='z-predict')
 
-    plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
+
+    plt.plot(d_pred, ysin_pre, color='#ff0000', marker='+', linestyle='-',
              label='z-real')
-    plt.plot(d_pred, y_Pre1, color='#0000ff', marker='+', linestyle='-.',
+    plt.plot(d_pred, y_Pre, color='#0000ff', marker='+', linestyle='-.',
              label='z-predict')
     # RR = 1 - (np.sum(np.square(y - y_Pre1)) / np.sum(np.square(y - np.mean(y))))
     # print(RR)
