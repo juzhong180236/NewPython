@@ -1,21 +1,24 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-from RBF_S import RBF
+from RBF_ruler import RBF
 
 path_switch = "has_dut_35"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/mid/"
+# path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/mid/"
+path_hex = r"C:\Users\asus\Desktop\History\History_codes\DT_Origin_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\\"
 '''调用RBF'''
 rbf_type = 'lin_a'
 
 
 def Text_Create(name, msg, hexOrfour):
     # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
-    save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/post/"
+    # save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/post/"
+    save_path = r"C:\Users\asus\Desktop\History\History_codes\DT_Origin_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\\"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
-        save_path += 'lin_a/'
+        # save_path += 'lin_a/'
+        save_path = save_path
     elif hexOrfour == 'hex':
         save_path += 'lin_a/'
     full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
@@ -127,8 +130,20 @@ def realXYZ():
     # 预测值
     start = time.perf_counter()
     # 更换样本点时，这里要改
-    d = np.array([-30, -22, -13, -5, 0, 5, 13, 22, 30])
-    d_pred = np.arange(-30, 31)
+    # d = np.array([-30, -22, -13, -5, 0, 5, 13, 22, 30])
+    # d = np.arange(-50, 51)
+    d = np.array([
+        -30, -29.8, -29, -28.5, -27.8, -27.2, -26.5, -26, -25.4, -25.1,
+        -24.5, -24.1, -23.7, -22.5, -21.5, -20.6, -20, -19.5, -19.2, -18.8,
+        -18, -17.6, -17.1, -16.5, -16.2, -15.8, -15.1, -14.8, -14.2, -13.8,
+        -13.3, -12.9, -12.2, -11.75, -11.2, -10.8, -10.1, -9.6, -9.1, -8.5,
+        -8.1, -7.6, -6.8, -6.2, -5.7, -5, -4, -3, -2, -1
+    ])
+    dabs = np.array(sorted(list(np.abs(d)), key=lambda x: x))
+    d_whole = np.concatenate([d, dabs])
+    d_whole = np.insert(d_whole, len(d_whole) // 2, 0)
+    print(d_whole)
+    d_pred = np.arange(-20, 21)
     list_w_y = []
     list_w_z = []
     list_w_stress = []
@@ -160,8 +175,8 @@ def realXYZ():
     max_w_y = ''
     max_w_z = ''
     i_max_x_y = 0
-    for i in range(length):
-        # for i in range(1):
+    # for i in range(length):
+    for i in range(1):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = Duplicated_list(list_y, 'coords', i)
         z_real = Duplicated_list(list_z, 'coords', i)
@@ -173,10 +188,10 @@ def realXYZ():
         rbfnet_stress = RBF(rbf_type)
         rbfnet_dSum = RBF(rbf_type)
         # wb_v = rbfnet_x.fit(d, x_real)
-        w_y = rbfnet_y.fit(d, y_real)
-        w_z = rbfnet_z.fit(d, z_real)
-        w_stress = rbfnet_stress.fit(d, stress_real)
-        w_dSum = rbfnet_dSum.fit(d, dSum_real)
+        w_y = rbfnet_y.fit(d_whole, y_real)
+        w_z = rbfnet_z.fit(d_whole, z_real)
+        w_stress = rbfnet_stress.fit(d_whole, stress_real)
+        w_dSum = rbfnet_dSum.fit(d_whole, dSum_real)
         # 给出最高点处的点的轨迹
         if int(max(y_real)) == 202 and i_max_x_y == 0 and int(min(map(abs, z_real))) == 0:
             print(w_y)
@@ -192,11 +207,11 @@ def realXYZ():
         dSum_pred = rbfnet_dSum.predict(d_pred)
         plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
                  label=('' if i == 0 else '_') + 'y_predict')
-        plt.plot(d, y_real, color='#ff00ff', marker='+', linestyle='-',
+        plt.plot(d_whole, y_real, color='#ff00ff', marker='+', linestyle='-',
                  label=('' if i == 0 else '_') + 'y-real')
         # plt.plot(d_pred, z_pred, color='#ff0000', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'z-predict')
-        # plt.plot(d, z_real, color='#ff00ff', marker='+', linestyle='-.',
+        # plt.plot(d_whole, z_real, color='#ff00ff', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'stress_predict')
         # plt.plot(d_pred, dSum_pred, color='#ffff00', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'dSum_predict')
@@ -227,12 +242,12 @@ def realXYZ():
     # Text_Create('dSum_pre', ','.join(map(str, list_w_dSum)), 'hex')
 
     # 一般用这个
-    Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(
-        map(str, list(d))) + '\n' + max_w_y + '\n' + max_w_z + '\n' + rbf_type,
-                'four')
-    Text_Create('z_pred_list', '\n'.join(list_w_z) + '\n' + rbf_type, 'four')
-    Text_Create('stress_pred_list', '\n'.join(list_w_stress) + '\n' + rbf_type, 'four')
-    Text_Create('dSum_pred_list', '\n'.join(list_w_dSum) + '\n' + rbf_type, 'four')
+    # Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(
+    #     map(str, list(d))) + '\n' + max_w_y + '\n' + max_w_z + '\n' + rbf_type,
+    #             'four')
+    # Text_Create('z_pred_list', '\n'.join(list_w_z) + '\n' + rbf_type, 'four')
+    # Text_Create('stress_pred_list', '\n'.join(list_w_stress) + '\n' + rbf_type, 'four')
+    # Text_Create('dSum_pred_list', '\n'.join(list_w_dSum) + '\n' + rbf_type, 'four')
 
     # Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds, 'hex')
     # Text_Create('z_pred_list', '\n'.join(list_w_z), 'hex')

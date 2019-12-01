@@ -6,8 +6,13 @@ import itertools
 path_switch = "has_dut_35"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
 path_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/pre/"
-'''四面体ELIST.lis路径'''
+# '''四面体ELIST.lis路径'''
 path_ele_four = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/pre/ele/ELIST.lis"
+
+# 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
+# path_four = r"C:\Users\asus\Desktop\History\History_codes\DT_Origin_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\\"
+# '''四面体ELIST.lis路径'''
+# path_ele_four = r"C:\Users\asus\Desktop\History\History_codes\DT_Origin_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\ele\ELIST.lis"
 
 path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/pre/"
 '''六面体ELIST.lis路径'''
@@ -19,9 +24,11 @@ path_ele_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/pre
 def Text_Create(name, msg, hexOrfour):
     # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
     save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/"
+    # save_path = path_four
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
         save_path += path_switch + '/mid/'
+        # save_path = path_four
     elif hexOrfour == 'hex':
         # save_path += 'new_utils/post/'
         save_path += path_switch + '/mid/'
@@ -225,8 +232,8 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
                 list_coords.append(everyline[53:75].strip())
                 list_coords_x.append(everyline[9:31].strip())
     str_coords_allFile = ','.join(list_coords) + '\n'  # 带初始坐标信息
-    Text_Create('original_coords_x', ','.join(list_coords_x), 'hex')
-    # Text_Create('original_coords_x', ','.join(list_coords_x), 'four')
+    # Text_Create('original_coords_x', ','.join(list_coords_x), 'hex')
+    Text_Create('original_coords_x', ','.join(list_coords_x), 'four')
     # list_coords_allFile = []
 
     str_Dcolor_min = Str_Color_Step(path_input + os.path.basename(files_cut[0]), 'min', 'd')
@@ -347,13 +354,13 @@ path_equivalent_stress_four = path_four + "equivalent_stress/"
 tuple_surface_equivalent_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_equivalent_stress_four,
                                                                           set_surface_ele_four)
 
-# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
-# Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
-# Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
-# Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
-# Text_Create('stress_dSum_step',
-#             tuple_surface_coords_ele_Dcolor_four[-1] + "," + tuple_surface_equivalent_stress_Scolor_four[-1],
-#             'four')
+Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
+Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
+Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
+Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
+Text_Create('stress_dSum_step',
+            tuple_surface_coords_ele_Dcolor_four[-1] + "," + tuple_surface_equivalent_stress_Scolor_four[-1],
+            'four')
 
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_four[0], 'four')
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_four[1], 'four')
@@ -372,13 +379,13 @@ path_equivalent_stress_hex = path_hex + "equivalent_stress/"
 tuple_surface_equivalent_stress_Scolor_hex = Tuple_Surface_Scolor_Stress(path_equivalent_stress_hex,
                                                                          set_surface_ele_hex)
 #
-Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_hex[0], 'hex')
-Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_hex[1]), 'hex')
-Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_hex[3], 'hex')
-Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_hex[1], 'hex')
-Text_Create('stress_dSum_step',
-            str(tuple_surface_coords_ele_Dcolor_hex[-1]) + "," + str(tuple_surface_equivalent_stress_Scolor_hex[-1]),
-            'hex')
+# Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_hex[0], 'hex')
+# Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_hex[1]), 'hex')
+# Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_hex[3], 'hex')
+# Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_hex[1], 'hex')
+# Text_Create('stress_dSum_step',
+#             str(tuple_surface_coords_ele_Dcolor_hex[-1]) + "," + str(tuple_surface_equivalent_stress_Scolor_hex[-1]),
+#             'hex')
 
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_hex[0], 'hex')
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_hex[1], 'hex')
