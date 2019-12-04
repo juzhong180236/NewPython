@@ -1,6 +1,5 @@
 import numpy as np
 
-
 #
 #
 # # def b(x, y, x1, y1):
@@ -67,33 +66,38 @@ import numpy as np
 # print(ccc)
 
 # print(np.arange(0, 300).reshape((3, 4, 5
-def getForce(force, degree):
-    print('当前载荷和角度为：' + str(force) + ',' + str(degree))
-    print('z:' + str(-force * np.cos(degree * np.pi / 180)))
-    print('y:' + str(-force * np.sin(degree * np.pi / 180)))
-
-
-forceArr = [10, 200, 400, 600]
-degreeArr = [0, 20, 40, 60]
-# combine = np.zeros(shape=(forceArr.shape[-1], degreeArr.shape[-1]))
-combine = []
-
-for iForce in range(len(forceArr)):
-    for iDegree in range(len(degreeArr)):
-        combine.append((forceArr[iForce], degreeArr[iDegree]))
-
-
-for x, y in combine:
-    getForce(x, y)
-print(len(combine))
-def linear_abs(x, c):
-    return np.abs(x - c)
-
-
-aaa = []
-forceArr_1 = np.array([[10, 20], [200, 300], [400, 600], [33, 55]])
-w = np.array([1, 2])
-# for f in forceArr_1:
-#     aaa.append(linear_abs(f, [3, 5]))
-
-print(forceArr_1.dot(w))
+# def getForce(force, degree):
+#     print('当前载荷和角度为：' + str(force) + ',' + str(degree))
+#     print('z:' + str(-force * np.cos(degree * np.pi / 180)))
+#     print('y:' + str(-force * np.sin(degree * np.pi / 180)))
+#
+#
+# forceArr = [10, 200, 400, 600]
+# degreeArr = [0, 20, 40, 60]
+# # combine = np.zeros(shape=(forceArr.shape[-1], degreeArr.shape[-1]))
+# combine = []
+#
+# for iForce in range(len(forceArr)):
+#     for iDegree in range(len(degreeArr)):
+#         combine.append((forceArr[iForce], degreeArr[iDegree]))
+#
+#
+# for x, y in combine:
+#     getForce(x, y)
+# print(len(combine))
+# def linear_abs(x, c):
+#     return np.abs(x - c)
+#
+#
+# aaa = []
+# forceArr_1 = np.array([[10, 20], [200, 300], [400, 600], [33, 55]])
+# w = np.array([1, 2])
+# # for f in forceArr_1:
+# #     aaa.append(linear_abs(f, [3, 5]))
+#
+# print(forceArr_1.dot(w))
+ddd = np.array([1, 1, 1, 1])
+print(ddd)
+aaa = np.array([[1, 2, 3, 4], [1, 1, 2, 3], [1, 1, 2, 3], [1, 1, 2, 3]])
+print(aaa)
+print(aaa.dot(ddd))

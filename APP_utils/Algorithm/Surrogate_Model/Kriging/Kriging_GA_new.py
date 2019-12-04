@@ -33,8 +33,12 @@ class Kriging(object):
         self.inverse_matrix = None
         self.x_normalization = None
         self.parameters = None
+        self.beta = None
+        self.inverse_matrix1 = None
+        self.Vkriging = None
 
-    # 根据解的精度确定染色体(chromosome)的长度——确定二进制编码的长度
+        # 根据解的精度确定染色体(chromosome)的长度——确定二进制编码的长度
+
     # 需要根据决策变量的上下边界来确定
     def get_encoded_length(self):
         # 每个变量的编码长度
@@ -315,19 +319,29 @@ class Kriging(object):
         self.x_normalization = self.X / (np.max(self.X, axis=0) - np.min(self.X, axis=0))
         # 相关矩阵
         matrix = self.corelation(gaussian, self.x_normalization, self.x_normalization, self.parameters)
-        # 相关矩阵求逆
+        matrix1 = self.corelation(gaussian, self.X, self.X, self.parameters)
+
         self.inverse_matrix = np.linalg.inv(matrix)
-        return self.inverse_matrix
+        # self.inverse_matrix1 = np.linalg.inv(matrix1)
+
+        F = np.ones(matrix.shape[-1])
+        self.beta = F.T.dot(self.inverse_matrix).dot(self.Y) / (F.T.dot(self.inverse_matrix).dot(F))
+        self.Vkriging = self.inverse_matrix.dot((self.Y - F.dot(self.beta)))
+        # 相关矩阵求逆
+        return self.beta, self.Vkriging, self.inverse_matrix
 
     def predict(self, X_pre):
         # 预测值归一化
         x_pred_normalization = X_pre / (np.max(self.X, axis=0) - np.min(self.X, axis=0))
         # 相关向量
         vector = self.corelation(gaussian, self.x_normalization, x_pred_normalization, self.parameters)
+        vector1 = self.corelation(gaussian, self.X, X_pre, self.parameters)
         # 权重
+        print(self.beta + vector.T.dot(self.Vkriging))
         w = self.inverse_matrix.dot(vector)
+        print(self.Y.dot(w))
         # 预测值
-        return self.Y.dot(w), self.parameters
+        return self.Y.dot(w), self.parameters, self.beta + vector.T.dot(self.Vkriging)
 
 
 if __name__ == "__main__":
@@ -335,35 +349,38 @@ if __name__ == "__main__":
     data_real = readExcel(path_excel, "Sheet2", 1, 20, 2)
     data_pre = readExcel(path_excel, "Sheet2", 50, 100, 2)
     parameter_array = np.array([[0, 1], [1, 2]])
-    # d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
-    d = np.arange(-17, 18, 3)
+    d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
+    # d = np.arange(-17, 18, 3)
     y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
-    ysin = np.sin(d)
-    d_pred = np.arange(-17, 18, 0.1)
-    ysin_pre = np.sin(d_pred)
+    # ysin = np.sin(d)
+    d_pred = np.arange(-17, 18)
+    # ysin_pre = np.sin(d_pred)
     start = time.perf_counter()
-    kriging = Kriging(X=data_real[0], Y=data_real[1], para_array=parameter_array, max_iter=50)
-    kriging.fit()
-    y_pred, parameter = kriging.predict(data_pre[0])
-
-    # kriging = Kriging(X=d, Y=y, para_array=parameter_array, max_iter=50)
-    # kriging = Kriging(X=d, Y=ysin, para_array=parameter_array, max_iter=50)
+    # kriging = Kriging(X=data_real[0], Y=data_real[1], para_array=parameter_array, max_iter=50)
     # kriging.fit()
-    # y_pred, parameter = kriging.predict(d_pred)
+    # y_pred, parameter = kriging.predict(data_pre[0])
+
+    kriging = Kriging(X=d, Y=y, para_array=parameter_array, max_iter=3)
+    # kriging = Kriging(X=d, Y=ysin, para_array=parameter_array, max_iter=50)
+    beta, Vkriging, m = kriging.fit()
+    print(beta, Vkriging, m)
+    y_pred, parameter, y_pred1 = kriging.predict(d_pred)
     print('theta和p的最优解分别是:', parameter)
     # print('最优目标函数值:', value)
     # plt.figure()
-    plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
-             label='z-real')
-    plt.plot(data_pre[0], y_pred, color='#0000ff', marker='+', linestyle='-.',
-             label='z-predict')
-    # plt.plot(d_pred, ysin_pre, color='#ff0000', marker='+', linestyle='-',
-    #          label='y-real')
-    # plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
-    #          label='y-predict')
-    RR = 1 - (np.sum(np.square(data_pre[1] - y_pred)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
+    # plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
+    #          label='z-real')
+    # plt.plot(data_pre[0], y_pred, color='#0000ff', marker='+', linestyle='-.',
+    #          label='z-predict')
+    plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
+             label='y-real')
+    plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
+             label='y-predict')
+    plt.plot(d_pred, y_pred1, color='#0000ff', marker='+', linestyle='-.',
+             label='y-predict')
+    # RR = 1 - (np.sum(np.square(data_pre[1] - y_pred)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
     # RR1 = 1 - (np.sum(np.square(y - y_pred)) / np.sum(np.square(y - np.mean(y))))
-    print(RR)
+    # print(RR)
 
     # fig = plt.figure()
     # ax = fig.gca(projection='3d')
