@@ -1,28 +1,12 @@
 import numpy as np
 import time
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d
-from matplotlib import cm
-from ReadExcel import readExcel
 
 
 # import timeit
 # from scipy.optimize import fsolve
-def gaussian(para_list, X1, X2):
-    if X2.ndim != 1:
-        return np.prod(np.exp(-para_list[0] * (np.abs(X1 - X2) ** para_list[1])), axis=-1)
-    else:
-        return np.exp(-para_list[0] * (np.abs(X1 - X2) ** para_list[1]))
 
-
-class Kriging(object):
-    def __init__(self, X=None, Y=None, para_array=None, max_iter=50, mp=0.01, cp=0.8, delta=0.0001):
-        if X is None:
-            X = np.array([])
-        if Y is None:
-            Y = np.array([])
-        if para_array is None:
-            para_array = np.array([])
+class GA(object):
+    def __init__(self, X=None, Y=None, para_array=None, max_iter=50, mp=0.01, cp=0.8, delta=0.0001, population_size=10):
         self.X = X
         self.Y = Y
         self.para_array = para_array
@@ -30,17 +14,15 @@ class Kriging(object):
         self.mp = mp
         self.cp = cp
         self.delta = delta
-        self.inverse_matrix = None
-        self.x_normalization = None
-        self.parameters = None
-        self.beta = None
-        self.inverse_matrix1 = None
-        self.Vkriging = None
+        self.population_size = population_size
 
-        # 根据解的精度确定染色体(chromosome)的长度——确定二进制编码的长度
-
+    # 根据解的精度确定染色体(chromosome)的长度——确定二进制编码的长度
+    # 需要根据决策变量的上下边界来确定
     # 需要根据决策变量的上下边界来确定
     def get_encoded_length(self):
+        """
+        :return:  每一个超参的二进制表示的长度
+        """
         # 每个变量的编码长度
         lengths = []
         # 根据给定的定义域（自变量的范围）来获取其二进制的长度
@@ -64,6 +46,11 @@ class Kriging(object):
     # 随机生成初始编码种群——二进制编码    (编码长度，种群大小)
     # 第一代
     def get_initial_population(self, encode_length, population_size):
+        """
+        :param encode_length: 二进制编码的长度
+        :param population_size: 种群的大小
+        :return: 初始种群
+        """
         # 种群初始化
         chromosomes = np.zeros((population_size, sum(encode_length)), dtype=np.uint8)
         # 以0，1随机生成初代种群（染色体/个体的集合）
@@ -73,6 +60,12 @@ class Kriging(object):
 
     # 染色体解码得到表现型的解，染色体=个体，每个0，1代表基因
     def decoded_chromosome(self, encode_length, chromosomes, boundary_list):
+        """
+        :param encode_length: 多个种群组成的矩阵
+        :param chromosomes: 编码后的种群
+        :param boundary_list: 含有多个超参数二进制长度的列表
+        :return: 解码后的种群
+        """
         populations = chromosomes.shape[0]  # 染色体的个数 10
         variables = len(encode_length)  # 染色体片段数（种群的个数） 2
         decoded_values = np.zeros((populations, variables))  # 解码出来的个体的存储ndarray
@@ -103,13 +96,11 @@ class Kriging(object):
 
     def get_fitness_value(self, func, chromosomes_decoded):
         """
-        得到适应度值和累计概率
-                参数：
-                    func: 求最优解的函数
-                    chromosomes_decoded: 解码后的种群集合
-                返回：
-                    fitness_values: 染色体片段（个体）的适应度值
-                    cum_probability: 每个个体被选择的累积概率
+        :param func: 求最优解的函数
+        :param chromosomes_decoded: 解码后的种群集合
+        :return:
+                fitness_values: 染色体片段（个体）的适应度值
+                cum_probability: 每个个体被选择的累积概率
         """
         # 得到种群的染色体数（个体数）population，染色体片段数或种群数（决策变量的个数）nums
         population, nums = chromosomes_decoded.shape
@@ -118,7 +109,7 @@ class Kriging(object):
         # 计算适应度值,其实就是所求的函数值，因为根据函数的大小判断其是否保留，所以也叫适应度值
         # print(type(chromosomes_decoded[0, :]))
         for i in range(population):
-            fitness_values[i, 0] = func(gaussian, chromosomes_decoded[i, :])
+            fitness_values[i, 0] = func(chromosomes_decoded[i, :])
         # print(fitness_values)
         # 轮盘赌选择法，
         # 计算每个染色体被选择的概率
@@ -132,12 +123,9 @@ class Kriging(object):
 
     def select_new_population(self, chromosomes, cum_probability):
         """
-        新种群选择
-                参数：
-                    chromosomes: 上一代种群
-                    cum_probability: 累计概率
-                返回：
-                    new_population: 返回新一代种群
+        :param chromosomes: 上一代种群
+        :param cum_probability: 累计概率
+        :return: 新一代种群
         """
         # 上一代种群的个数m.染色体片段数（或个体数）n
         m, n = chromosomes.shape
@@ -161,7 +149,7 @@ class Kriging(object):
     # 定义锦标赛选择方法: 从群体中随机抽取tour_size个，找出tour_size中适应度函数值最大的；
     # 重复chromosomes（种群数量）次，确保下一代种群数量保持一致。
     def select_tournament(self, chromosomes, tour_size):
-        fit_value = self.fitnessFunction  # 适应度函数
+        fit_value = self.fitnessFunction  # 适应度函数适应度函数
         sel_index = []
         for i in range(chromosomes):
             aspirants_index = np.random.choice(range(chromosomes), size=tour_size)
@@ -244,37 +232,29 @@ class Kriging(object):
         # 变异后的种群
         return update_population
 
-    def fitnessFunction(self, func, para_array):
-        # def fitnessFunction(self):
+    def fitnessFunction(self, para_list):
         """
            定义适应度函数
-               参数：
-               func: Kriging相关函数
-
                返回：
                return: 适应度函数的值
         """
-        list_result = []
-        # print(self.X)
-        for i in range(self.X.shape[0]):
-            if func.__name__ == 'gaussian':
-                list_result.append(func(para_array, self.X[i], self.X).ravel())
-        # print(np.array(list_result).shape)
-        return np.linalg.det(list_result)
         # return lambda x: 21.5 + x[0] * np.sin(4 * np.pi * x[0]) + x[1] * np.sin(20 * np.pi * x[1])
-        # return lambda x: -x ** 2
+        # if name == 'gaussian':
+        #     return lambda p, theta: np.exp(-theta * np.abs(x[0] - x[1]) ** p / (2 * x[3] ** 2))
+        # return lambda x: x[0] ** 2
+        return para_list[0] + para_list[1] + self.X
 
     def genetic_algorithm(self):
         # 每次迭代得到的最优解
         optimal_solutions = []
         optimal_values = []
         # 决策变量（自变量）的取值范围，维数多就增加数组元素个数，例如[[4.1, 5.8]，[8, 10]]
-        # decision_variables = [[4.1, 5.8]]
+        #
         # decision_variables = [[100, 100.5], [4.1, 5.8]]
         # 得到染色体编码长度
         length_encode = self.get_encoded_length()
         # 得到初始种群编码
-        chromosomes_encoded = self.get_initial_population(length_encode, 10)
+        chromosomes_encoded = self.get_initial_population(length_encode, self.population_size)
         # 种群解码
         decoded = self.decoded_chromosome(length_encode, chromosomes_encoded, self.para_array)
         # evalvalues, cum_proba = get_fitness_value(fitnessFunction(), decoded)
@@ -303,117 +283,18 @@ class Kriging(object):
         optimal_index = np.where(optimal_values == optimal_value)
         # 得到优化参数的值组成的list
         optimal_solution = optimal_solutions[optimal_index[0][0]]
-        return optimal_solution
-
-    def corelation(self, func, X, Y, para_array):
-        list_result = []
-        for i in range(X.shape[0]):
-            if func.__name__ == 'gaussian':
-                list_result.append(func(para_array, X[i], Y).ravel())
-        return np.array(list_result)
-
-    def fit(self):
-        # 求得超参数值
-        self.parameters = self.genetic_algorithm()
-        # 训练值归一化
-        self.x_normalization = self.X / (np.max(self.X, axis=0) - np.min(self.X, axis=0))
-        # 相关矩阵
-        matrix = self.corelation(gaussian, self.x_normalization, self.x_normalization, self.parameters)
-        matrix1 = self.corelation(gaussian, self.X, self.X, self.parameters)
-
-        self.inverse_matrix = np.linalg.inv(matrix)
-        # self.inverse_matrix1 = np.linalg.inv(matrix1)
-
-        F = np.ones(matrix.shape[-1])
-        self.beta = F.T.dot(self.inverse_matrix).dot(self.Y) / (F.T.dot(self.inverse_matrix).dot(F))
-        self.Vkriging = self.inverse_matrix.dot((self.Y - F.dot(self.beta)))
-        # 相关矩阵求逆
-        return self.beta, self.Vkriging, self.inverse_matrix
-
-    def predict(self, X_pre):
-        # 预测值归一化
-        x_pred_normalization = X_pre / (np.max(X_pre, axis=0) - np.min(X_pre, axis=0))
-        # 相关向量
-        vector = self.corelation(gaussian, self.x_normalization, x_pred_normalization, self.parameters)
-        vector1 = self.corelation(gaussian, self.X, X_pre, self.parameters)
-        # 权重
-        print(self.beta + vector.T.dot(self.Vkriging))
-        w = self.inverse_matrix.dot(vector)
-        print(self.Y.dot(w))
-        # 预测值
-        return self.Y.dot(w), self.parameters, self.beta + vector.T.dot(self.Vkriging)
+        return optimal_solution, optimal_value
 
 
-if __name__ == "__main__":
-    path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\Function1.xlsx"
-    data_real = readExcel(path_excel, "Sheet2", 1, 20, 2)
-    data_pre = readExcel(path_excel, "Sheet2", 50, 100, 2)
-    parameter_array = np.array([[0, 1], [1, 2]])
-    d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
-    # d = np.arange(-17, 18, 3)
-    y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
-    # ysin = np.sin(d)
-    d_pred = np.arange(-17, 18)
-    # ysin_pre = np.sin(d_pred)
-    start = time.perf_counter()
-    # kriging = Kriging(X=data_real[0], Y=data_real[1], para_array=parameter_array, max_iter=50)
-    # kriging.fit()
-    # y_pred, parameter = kriging.predict(data_pre[0])
-
-    kriging = Kriging(X=d, Y=y, para_array=parameter_array, max_iter=3)
-    # kriging = Kriging(X=d, Y=ysin, para_array=parameter_array, max_iter=50)
-    beta, Vkriging, m = kriging.fit()
-    print(beta, Vkriging, m)
-    y_pred, parameter, y_pred1 = kriging.predict(d_pred)
-    print('theta和p的最优解分别是:', parameter)
-    # print('最优目标函数值:', value)
-    # plt.figure()
-    # plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
-    #          label='z-real')
-    # plt.plot(data_pre[0], y_pred, color='#0000ff', marker='+', linestyle='-.',
-    #          label='z-predict')
-    plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
-             label='y-real')
-    plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
-             label='y-predict')
-    plt.plot(d_pred, y_pred1, color='#0000ff', marker='+', linestyle='-.',
-             label='y-predict')
-    # RR = 1 - (np.sum(np.square(data_pre[1] - y_pred)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
-    # RR1 = 1 - (np.sum(np.square(y - y_pred)) / np.sum(np.square(y - np.mean(y))))
-    # print(RR)
-
-    # fig = plt.figure()
-    # ax = fig.gca(projection='3d')
-    # print(data_pre)
-    X = np.array(data_pre[0][:, 0])
-    Y = np.array(data_pre[0][:, 1])
-    Z = np.array(data_pre[1]).reshape(Y.shape[0])
-    Z_pred = np.array(y_pred)
-
-    # print(X)
-    # print(Y)
-    # print(Z)
-    # ax.scatter(X, Y, Z, c='#ff0000', s=30, label='dot', alpha=0.6, edgecolors='black')
-    # ax.plot_trisurf(X, Y, Z, linewidth=0.2, antialiased=True)
-    # ax.plot_trisurf(X, Y, y_pred, linewidth=0.2, antialiased=True, color='r')
-    # ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
-    # ax.plot_surface(X, Y, Z, rstride=1, cstride=1, color='r')
-    # ax.plot_surface(X, Y, Z, linewidth=0, antialiased=False)
-    # ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-
-    # cset = ax.contour(X, Y, Z, zdir='z', offset=-100, cmap=cm.coolwarm)
-    # cset = ax.contour(X, Y, Z, zdir='x', offset=-40, cmap=cm.coolwarm)
-    # cset = ax.contour(X, Y, Z, zdir='y', offset=40, cmap=cm.coolwarm)
-    # ax.set_xlabel('X')
-    # ax.set_xlim(-1, 1)
-    # ax.set_ylabel('Y')
-    # ax.set_ylim(-1, 1)
-    # ax.set_zlabel('Z')
-    # ax.set_zlim(-10, 10)
-    plt.legend()
-    plt.show()
-    elapsed = (time.perf_counter() - start)
-    print("Time used:", elapsed)
-    # 测量运行时间
-    # elapsed_time = timeit.timeit(stmt=main, number=1)
-    # print('Searching Time Elapsed:(S)', elapsed_time)
+start = time.perf_counter()
+decision_variables = [[4.1, 5.8], [-1, 1]]
+x = 5 * 3
+ga = GA(X=x, para_array=decision_variables)
+solution, value = ga.genetic_algorithm()
+print('最优解:', solution)
+print('最优目标函数值:', value)
+elapsed = (time.perf_counter() - start)
+print("Time used:", elapsed)
+# 测量运行时间
+# elapsed_time = timeit.timeit(stmt=main, number=1)
+# print('Searching Time Elapsed:(S)', elapsed_time)

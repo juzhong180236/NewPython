@@ -136,7 +136,7 @@ def select_new_population(chromosomes, cum_probability):
 # 定义锦标赛选择方法: 从群体中随机抽取tour_size个，找出tour_size中适应度函数值最大的；
 # 重复chromosomes（种群数量）次，确保下一代种群数量保持一致。
 def select_tournament(chromosomes, tour_size):
-    fit_value = fitnessFunction()  # 适应度函数
+    fit_value = fitnessFunction  # 适应度函数
     sel_index = []
     for i in range(chromosomes):
         aspirants_index = np.random.choice(range(chromosomes), size=tour_size)
@@ -222,7 +222,7 @@ def mutation(population, pm=0.01):
     return update_population
 
 
-def fitnessFunction():
+def fitnessFunction(para_list):
     """
        定义适应度函数
            返回：
@@ -231,7 +231,8 @@ def fitnessFunction():
     # return lambda x: 21.5 + x[0] * np.sin(4 * np.pi * x[0]) + x[1] * np.sin(20 * np.pi * x[1])
     # if name == 'gaussian':
     #     return lambda p, theta: np.exp(-theta * np.abs(x[0] - x[1]) ** p / (2 * x[3] ** 2))
-    return lambda x: -x ** 2
+    # return lambda x: x[0] ** 2
+    return para_list[0] + para_list[1]
 
 
 def main(max_iter=50):
@@ -239,7 +240,7 @@ def main(max_iter=50):
     optimal_solutions = []
     optimal_values = []
     # 决策变量（自变量）的取值范围，维数多就增加数组元素个数，例如[[4.1, 5.8]，[8, 10]]
-    decision_variables = [[4.1, 5.8]]
+    decision_variables = [[4.1, 5.8], [-1, 1]]
     # decision_variables = [[100, 100.5], [4.1, 5.8]]
     # 得到染色体编码长度
     length_encode = get_encoded_length(boundary_list=decision_variables)
@@ -249,7 +250,7 @@ def main(max_iter=50):
     decoded = decoded_chromosome(length_encode, chromosomes_encoded, decision_variables)
     # evalvalues, cum_proba = get_fitness_value(fitnessFunction(), decoded)
     # 得到个体适应度值和个体的累积概率
-    fitness_values, cum_individual_proba = get_fitness_value(fitnessFunction(), decoded)
+    fitness_values, cum_individual_proba = get_fitness_value(fitnessFunction, decoded)
     for iteration in range(max_iter):
         # 选择新的种群
         new_populations = select_new_population(chromosomes_encoded, cum_individual_proba)
@@ -260,7 +261,7 @@ def main(max_iter=50):
         # 将变异后的种群解码，得到每轮迭代最终的种群
         final_decoded = decoded_chromosome(length_encode, mutation_population, decision_variables)
         # 变异后的适应度值，累计概率
-        fitness_values, cum_individual_proba = get_fitness_value(fitnessFunction(), final_decoded)
+        fitness_values, cum_individual_proba = get_fitness_value(fitnessFunction, final_decoded)
         # 搜索每次迭代的最优解（当前是取最大值，所以是max），以及最优解对应的目标函数（十进制染色体）的取值
         optimal_values.append(np.max(list(fitness_values)))
         index = np.where(fitness_values == max(list(fitness_values)))
