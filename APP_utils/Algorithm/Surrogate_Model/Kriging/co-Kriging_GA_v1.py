@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 import time
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
@@ -16,8 +15,15 @@ def gaussian(para_list, X1, X2):
         return np.exp(-para_list[0] * (np.abs(X1 - X2) ** para_list[1]))
 
 
+def gaussian_rho(para_list, Y1, Y2):
+    if Y1.ndim != 1:
+        return np.prod(np.exp(-para_list[0] * (np.abs(Y1 - para_list[2] * Y2) ** para_list[1])), axis=-1)
+    else:
+        return np.exp(-para_list[0] * (np.abs(Y1 - para_list[2] * Y2) ** para_list[1]))
+
+
 class Kriging(object):
-    def __init__(self, X=None, Y=None, para_array=None, max_iter=50, mp=0.01, cp=0.8, delta=0.0001):
+    def __init__(self, X=None, Y=None, para_array=None, max_iter=50, mp=0.01, cp=0.8, delta=0.0001, population_size=10):
         if X is None:
             X = np.array([])
         if Y is None:
@@ -31,17 +37,24 @@ class Kriging(object):
         self.mp = mp
         self.cp = cp
         self.delta = delta
-        self.x_normalization = None
-        self.parameters = None
-        self.beta = None
-        self.beta_normalize = None
-        self.sigma2 = None
-        self.Vkriging = None
+        self.population_size = population_size
+        self.inverse_matrix = None  # 相关矩阵的逆矩阵
+        self.x_normalization_0 = None  # 输入x的归一化结果
+        self.x_normalization_1 = None  # 输入x的归一化结果
+        self.parameters = None  # 超参数
+        self.beta = None  # 均值
+        self.sigma2 = None  # 方差
+        self.inverse_matrix1 = None
+        self.Vkriging = None  # 模型中可复用的部分
+        self.C = None
 
         # 根据解的精度确定染色体(chromosome)的长度——确定二进制编码的长度
 
     # 需要根据决策变量的上下边界来确定
     def get_encoded_length(self):
+        """
+        :return:  每一个超参的二进制表示的长度
+        """
         # 每个变量的编码长度
         lengths = []
         # 根据给定的定义域（自变量的范围）来获取其二进制的长度
@@ -65,6 +78,11 @@ class Kriging(object):
     # 随机生成初始编码种群——二进制编码    (编码长度，种群大小)
     # 第一代
     def get_initial_population(self, encode_length, population_size):
+        """
+        :param encode_length: 二进制编码的长度
+        :param population_size: 种群的大小
+        :return: 初始种群
+        """
         # 种群初始化
         chromosomes = np.zeros((population_size, sum(encode_length)), dtype=np.uint8)
         # 以0，1随机生成初代种群（染色体/个体的集合）
@@ -74,6 +92,12 @@ class Kriging(object):
 
     # 染色体解码得到表现型的解，染色体=个体，每个0，1代表基因
     def decoded_chromosome(self, encode_length, chromosomes, boundary_list):
+        """
+        :param encode_length: 多个种群组成的矩阵
+        :param chromosomes: 编码后的种群
+        :param boundary_list: 含有多个超参数二进制长度的列表
+        :return: 解码后的种群
+        """
         populations = chromosomes.shape[0]  # 染色体的个数 10
         variables = len(encode_length)  # 染色体片段数（种群的个数） 2
         decoded_values = np.zeros((populations, variables))  # 解码出来的个体的存储ndarray
@@ -104,13 +128,11 @@ class Kriging(object):
 
     def get_fitness_value(self, func, chromosomes_decoded):
         """
-        得到适应度值和累计概率
-                参数：
-                    func: 求最优解的函数
-                    chromosomes_decoded: 解码后的种群集合
-                返回：
-                    fitness_values: 染色体片段（个体）的适应度值
-                    cum_probability: 每个个体被选择的累积概率
+        :param func: 求最优解的函数
+        :param chromosomes_decoded: 解码后的种群集合
+        :return:
+                fitness_values: 染色体片段（个体）的适应度值
+                cum_probability: 每个个体被选择的累积概率
         """
         # 得到种群的染色体数（个体数）population，染色体片段数或种群数（决策变量的个数）nums
         population, nums = chromosomes_decoded.shape
@@ -133,12 +155,9 @@ class Kriging(object):
 
     def select_new_population(self, chromosomes, cum_probability):
         """
-        新种群选择
-                参数：
-                    chromosomes: 上一代种群
-                    cum_probability: 累计概率
-                返回：
-                    new_population: 返回新一代种群
+        :param chromosomes: 上一代种群
+        :param cum_probability: 累计概率
+        :return: 新一代种群
         """
         # 上一代种群的个数m.染色体片段数（或个体数）n
         m, n = chromosomes.shape
@@ -255,22 +274,23 @@ class Kriging(object):
                返回：
                return: 适应度函数的值
         """
-        matrix = self.corelation(func, self.X, self.X, para_array)
-        # 相关矩阵的逆矩阵
-        inverse_matrix = np.linalg.inv(matrix)
-        # 单位向量
-        F = np.ones(matrix.shape[-1])
-        # 均值
-        self.beta = F.T.dot(inverse_matrix).dot(self.Y) / (F.T.dot(inverse_matrix).dot(F))
-        # 方差
-        self.sigma2 = ((self.Y - F.dot(self.beta)).T.dot(inverse_matrix).dot(self.Y - F.dot(self.beta))) / F.shape[
-            -1]
-        R = np.linalg.det(matrix)
-        # 自己的方法，直接用sys.float_info.min替换掉零
-        R = sys.float_info.min if R == 0 else R
-        # if np.linalg.det(matrix) == 0:
-        #     print(np.linalg.det(matrix))
-        return -self.sigma2 * (F.shape[-1] / 2) - np.log(R)
+        list_result = []
+        # print(self.X)
+        for i in range(self.X[0].shape[0]):
+            if func.__name__ == 'gaussian':
+                list_result.append(func(para_array, self.X[0][i], self.X[1]).ravel())
+        # print(np.array(list_result).shape)
+        #         matrix = self.corelation(gaussian, self.X[0][i], self.X[1], self.parameters)
+        # matrix1 = self.corelation(gaussian, self.X, self.X, self.parameters)
+        # arr_result = np.array(list_result)
+        # self.inverse_matrix = np.linalg.inv(arr_result)
+        # F = np.ones(arr_result.shape[-1])
+        # self.beta = F.T.dot(self.inverse_matrix).dot(self.Y) / (F.T.dot(self.inverse_matrix).dot(F))
+        # self.sigma2 = ((self.Y - F.dot(self.beta)).T.dot(self.inverse_matrix).dot(self.Y - F.dot(self.beta))) / F.shape[
+        #     -1]
+        return np.linalg.det(list_result)
+        # return lambda x: 21.5 + x[0] * np.sin(4 * np.pi * x[0]) + x[1] * np.sin(20 * np.pi * x[1])
+        # return lambda x: -x ** 2
 
     def genetic_algorithm(self):
         # 每次迭代得到的最优解
@@ -282,7 +302,7 @@ class Kriging(object):
         # 得到染色体编码长度
         length_encode = self.get_encoded_length()
         # 得到初始种群编码
-        chromosomes_encoded = self.get_initial_population(length_encode, 10)
+        chromosomes_encoded = self.get_initial_population(length_encode, self.population_size)
         # 种群解码
         decoded = self.decoded_chromosome(length_encode, chromosomes_encoded, self.para_array)
         # evalvalues, cum_proba = get_fitness_value(fitnessFunction(), decoded)
@@ -301,82 +321,111 @@ class Kriging(object):
             fitness_values, cum_individual_proba = self.get_fitness_value(self.fitnessFunction, final_decoded)
             # 搜索每次迭代的最优解（当前是取最大值，所以是max），以及最优解对应的目标函数（十进制染色体）的取值
             # optimal_values.append(np.max(list(fitness_values)))
-            optimal_values.append(np.max(list(fitness_values)))
+            optimal_values.append(np.min(list(fitness_values)))
             index = np.where(fitness_values == max(list(fitness_values)))
             optimal_solutions.append(final_decoded[index[0][0], :])
         # 从每次迭代的最优解集合中找到总体的最优解
         # optimal_value = np.max(optimal_values)
-        optimal_value = np.max(optimal_values)
+        optimal_value = np.min(optimal_values)
         # 根据全局最优解得到最优解的索引位置
         optimal_index = np.where(optimal_values == optimal_value)
         # 得到优化参数的值组成的list
         optimal_solution = optimal_solutions[optimal_index[0][0]]
         return optimal_solution
 
-    def corelation(self, func, X, Y, para_array):
+    def corelation(self, func, X1, X2, para_array):
         list_result = []
-        for i in range(X.shape[0]):
+        for i in range(X1.shape[0]):
             if func.__name__ == 'gaussian':
-                list_result.append(func(para_array, X[i], Y).ravel())
+                list_result.append(func(para_array, X1[i], X2).ravel())
         return np.array(list_result)
 
     def fit(self):
         # 求得超参数值
         self.parameters = self.genetic_algorithm()
         # 训练值归一化
-        self.x_normalization = self.X / (np.max(self.X, axis=0) - np.min(self.X, axis=0))
+        self.x_normalization_0 = self.X[0] / (np.max(self.X[0], axis=0) - np.min(self.X[0], axis=0))
+        self.x_normalization_1 = self.X[1] / (np.max(self.X[1], axis=0) - np.min(self.X[1], axis=0))
         # 相关矩阵
-        matrix = self.corelation(gaussian, self.x_normalization, self.x_normalization, self.parameters)
-        inverse_matrix_normalize = np.linalg.inv(matrix)
+        matrix = self.corelation(gaussian, self.x_normalization_0, self.x_normalization_1, self.parameters)
+        # matrix1 = self.corelation(gaussian, self.X, self.X, self.parameters)
+
+        self.inverse_matrix = np.linalg.inv(matrix)
+        # self.inverse_matrix1 = np.linalg.inv(matrix1)
+
         F = np.ones(matrix.shape[-1])
-        self.beta_normalize = F.T.dot(inverse_matrix_normalize).dot(self.Y) / (F.T.dot(inverse_matrix_normalize).dot(F))
-        self.Vkriging = inverse_matrix_normalize.dot((self.Y - F.dot(self.beta_normalize)))
+        self.beta = F.T.dot(self.inverse_matrix).dot(self.Y) / (F.T.dot(self.inverse_matrix).dot(F))
+        self.sigma2 = ((self.Y - F.dot(self.beta)).T.dot(self.inverse_matrix).dot(self.Y - F.dot(self.beta))) / F.shape[
+            -1]
+        self.Vkriging = self.inverse_matrix.dot((self.Y - F.dot(self.beta)))
         # 相关矩阵求逆
-        return self.Vkriging
+        return self.inverse_matrix, self.sigma2
 
     def predict(self, X_pre):
         # 预测值归一化
         x_pred_normalization = X_pre / (np.max(X_pre, axis=0) - np.min(X_pre, axis=0))
         # 相关向量
-        vector = self.corelation(gaussian, self.x_normalization, x_pred_normalization, self.parameters)
-        print(vector)
+        vector_0 = self.corelation(gaussian, self.x_normalization_0, x_pred_normalization, self.parameters)
+        vector_1 = self.corelation(gaussian, self.x_normalization_1, x_pred_normalization, self.parameters)
+        # vector1 = self.corelation(gaussian, self.X, X_pre, self.parameters)
+        # 权重
+        Y_pre = self.beta + vector_0.T.dot(self.Vkriging)
         # 预测值
-        Y_pre = self.beta_normalize + vector.T.dot(self.Vkriging)
-        return Y_pre
+        return Y_pre, vector_0, vector_1, self.parameters
+
+
+class coKringing(object):
+    def __init__(self):
+        self.CXcXc = None
+        self.CXeXc = None
+        self.CXeXe = None
+        self.DXeXe = None
+        self.cXcx = None
+        self.dXex = None
+
+    def fit(self, Xc, Yc, Xe, Ye, X_pre, para_array, max_iter):
+        C_krig_cc = Kriging(X=[Xc, Xc], Y=Yc, para_array=para_array, max_iter=max_iter)
+        matrix_cc, sigma2_cc = C_krig_cc.fit()  # matrix_cc, sigma2_cc
+        C_krig_ee = Kriging(X=[Xe, Xe], Y=Ye, para_array=para_array, max_iter=max_iter)
+        matrix_ee, sigma2_ee = C_krig_ee.fit()  # matrix_ee, sigma2_ee
+        C_krig_ce = Kriging(X=[Xc, Xe], Y=Ye, para_array=para_array, max_iter=max_iter)
+        matrix_ce, sigma2_ce = C_krig_ce.fit()  # matrix_ce
+        vector = C_krig_ce.predict(X_pre)
+        D_kri_ee = Kriging(X=[Ye - Yc.dot(para_array[2]), Ye - Yc.dot(para_array[2])])
 
 
 if __name__ == "__main__":
-    parameter_array_c = np.array([[0, 1], [1, 2]])
-    # 第一组数据
     path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\Function1.xlsx"
     data_real = readExcel(path_excel, "Sheet2", 1, 20, 2)
     data_pre = readExcel(path_excel, "Sheet2", 50, 100, 2)
-    start = time.perf_counter()
-    # kriging = Kriging(X=data_real[0], Y=data_real[1], para_array=parameter_array_c, max_iter=50)
-    # Vkriging = kriging.fit()
-    # print(Vkriging)
-    # data_pred = kriging.predict(data_pre[0])
-
-    # 第二组数据
+    parameter_array = np.array([[0, 1], [1, 2]])
     d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
+    # d = np.arange(-17, 18, 3)
     y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
+    # ysin = np.sin(d)
     d_pred = np.arange(-17, 18)
+    # ysin_pre = np.sin(d_pred)
+    start = time.perf_counter()
+    # kriging = Kriging(X=data_real[0], Y=data_real[1], para_array=parameter_array, max_iter=50)
+    # kriging.fit()
+    # y_pred, parameter = kriging.predict(data_pre[0])
 
-    kriging = Kriging(X=d, Y=y, para_array=parameter_array_c, max_iter=3)
-    Vkriging1 = kriging.fit()
-    y_pred = kriging.predict(d_pred)
-
-    print('theta和p的最优解分别是:', kriging.parameters)
+    kriging = Kriging(X=[d, d], Y=y, para_array=parameter_array, max_iter=3)
+    # kriging = Kriging(X=d, Y=ysin, para_array=parameter_array, max_iter=50)
+    inverse_matrix, sigma2 = kriging.fit()
+    # print(beta, Vkriging, m)
+    y_pred, vector_0, vector_1, parameter = kriging.predict(d_pred)
+    print('theta和p的最优解分别是:', parameter)
     # print('最优目标函数值:', value)
-    plt.figure()
+    # plt.figure()
     # plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
     #          label='z-real')
-    # plt.plot(data_pre[0], data_pred, color='#0000ff', marker='+', linestyle='-.',
+    # plt.plot(data_pre[0], y_pred, color='#0000ff', marker='+', linestyle='-.',
     #          label='z-predict')
-    plt.plot(d, y, color='#ff00ff', linestyle='-',
+    plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
              label='y-real')
-    plt.scatter(d_pred, y_pred, color='#000000', marker='8',
-                label='y-predict')
+    plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
+             label='y-predict')
     # RR = 1 - (np.sum(np.square(data_pre[1] - y_pred)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
     # RR1 = 1 - (np.sum(np.square(y - y_pred)) / np.sum(np.square(y - np.mean(y))))
     # print(RR)
@@ -384,10 +433,10 @@ if __name__ == "__main__":
     # fig = plt.figure()
     # ax = fig.gca(projection='3d')
     # print(data_pre)
-    # X = np.array(data_pre[0][:, 0])
-    # Y = np.array(data_pre[0][:, 1])
-    # Z = np.array(data_pre[1]).reshape(Y.shape[0])
-    # Z_pred = np.array(y_pred)
+    X = np.array(data_pre[0][:, 0])
+    Y = np.array(data_pre[0][:, 1])
+    Z = np.array(data_pre[1]).reshape(Y.shape[0])
+    Z_pred = np.array(y_pred)
 
     # print(X)
     # print(Y)

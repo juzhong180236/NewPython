@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 #
 #
@@ -102,3 +103,14 @@ aaa = np.array([[1, 2, 3, 4], [1, 1, 2, 3], [1, 1, 2, 3], [1, 1, 2, 3]])
 print(aaa)
 print(3 ** 2 * aaa.dot(ddd))
 print(np.hstack((aaa, ddd)))
+print(True == 1)
+print(np.empty((3, 4)))
+print(np.log(3.3616528287632475e-123))
+print(np.eye(4) * 3)
+print(aaa + np.eye(4) * 3)
+print(np.eye(4).ndim)
+print(sys.float_info.min)
+print(2e-64)
+
+mm = np.array([[1, -np.inf, 3, 4], [1, 1, 2, 3], [1, 1, 2, 3], [1, 1, 2, 3]])
+print(np.linalg.inv(mm))
