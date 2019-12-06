@@ -96,8 +96,9 @@ import numpy as np
 # #     aaa.append(linear_abs(f, [3, 5]))
 #
 # print(forceArr_1.dot(w))
-ddd = np.array([1, 1, 1, 1])
+ddd = np.array([1, 1, 1, 1]).reshape(4, 1)
 print(ddd)
 aaa = np.array([[1, 2, 3, 4], [1, 1, 2, 3], [1, 1, 2, 3], [1, 1, 2, 3]])
 print(aaa)
-print(aaa.dot(ddd))
+print(3 ** 2 * aaa.dot(ddd))
+print(np.hstack((aaa, ddd)))
