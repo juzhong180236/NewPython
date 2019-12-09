@@ -19,19 +19,21 @@ class Kriging(object):
         self.Y = Y
         self.para_array = para_array
         self.max_iter = max_iter
-        # 遗传算法的参数
         self.mp = mp
         self.cp = cp
         self.delta = delta
         self.population_size = population_size
-
+        # self.inverse_matrix = None  # 相关矩阵的逆矩阵
         self.x_normalization = None  # 输入x的归一化结果
+        # self.x_normalization_1 = None  # 输入x的归一化结果
         self.parameters = None  # 超参数
         self.beta = None  # 均值
         self.sigma2 = None  # 方差
         self.beta_normalize = None  # 归一化均值
         self.sigma2_normalize = None  # 归一化方差
+        # self.inverse_matrix1 = None
         self.Vkriging = None  # 模型中可复用的部分
+        self.C = None
 
         # 根据解的精度确定染色体(chromosome)的长度——确定二进制编码的长度
 
@@ -289,29 +291,22 @@ class Kriging(object):
                返回：
                return: 适应度函数的值
         """
-        if self.para_array.shape[0] == 3:
-            inner_X = self.Y - self.X
-        else:
-            inner_X = self.X
         # 相关矩阵
-        matrix = self.corelation(func, inner_X, inner_X, para_array)
+
+        # matrix = self.corelation(func, self.X[0], self.X[1], para_array)
+        matrix = self.corelation(func, self.X, self.X, para_array)
         num = matrix.shape[-1]
         # 相关矩阵的逆矩阵
-        # matrixR = matrix
         matrixR = matrix + ((1000 + num) * np.finfo(np.float64).tiny * np.eye(num))
         # inverse_matrix = np.linalg.pinv(matrix)
         inverse_matrix = np.linalg.pinv(matrixR)
         # 单位向量
         F = np.ones(num)
         # 均值
+        beta = F.T.dot(inverse_matrix).dot(self.Y) / (F.T.dot(inverse_matrix).dot(F))
         # 方差
-        # if self.para_array.shape[0] == 3:
-        #     beta = F.T.dot(inverse_matrix).dot(self.Y - self.X) / (F.T.dot(inverse_matrix).dot(F))
-        #     self.sigma2 = ((self.Y - self.X - F.dot(beta)).T.dot(inverse_matrix).dot(self.Y - self.X - F.dot(beta))) / \
-        #                   F.shape[-1]
-        # else:
-        beta = F.T.dot(inverse_matrix).dot(inner_X) / (F.T.dot(inverse_matrix).dot(F))
-        self.sigma2 = ((inner_X - F.dot(beta)).T.dot(inverse_matrix).dot(inner_X - F.dot(beta))) / F.shape[-1]
+        self.sigma2 = ((self.Y - F.dot(beta)).T.dot(inverse_matrix).dot(self.Y - F.dot(beta))) / F.shape[
+            -1]
         # 论文推荐方法（目前不太行）
 
         # matrixR = matrix + ((1000 + num) * 2.22e-16 * np.eye(num))
@@ -320,8 +315,8 @@ class Kriging(object):
         # R = sys.float_info.min if R == 0 else R
         # 自己的方法，直接用 np.finfo(np.float64).tiny替换掉零
         R = np.finfo(np.float64).tiny if R == 0 else R
-        if np.linalg.det(matrix) == 0:
-            print(np.linalg.det(matrix))
+        # if np.linalg.det(matrix) == 0:
+        #     print(np.linalg.det(matrix))
         # return -self.sigma2 * (F.shape[-1] / 2) - np.log(np.linalg.det(matrixR))
         return -self.sigma2 * (F.shape[-1] / 2) - np.log(R)
 
@@ -368,8 +363,9 @@ class Kriging(object):
 
     def corelation(self, func, X1, X2, para_array):
         list_result = []
+        
         for i in range(X1.shape[0]):
-            if func.__name__ in ['gaussian', 'gaussian_rho', 'gaussian_rho_X']:
+            if func.__name__ == 'gaussian' or func.__name__ == 'gaussian_rho':
                 list_result.append(func(para_array, X1[i], X2).ravel())
         return np.array(list_result)
 
@@ -381,6 +377,7 @@ class Kriging(object):
     def fit(self):
         # 训练值归一化
         self.x_normalization = self.X / (np.max(self.X, axis=0) - np.min(self.X, axis=0))
+        print(self.x_normalization)
         # self.x_normalization_0 = self.X[0] / (np.max(self.X[0], axis=0) - np.min(self.X[0], axis=0))
         # self.x_normalization_1 = self.X[1] / (np.max(self.X[1], axis=0) - np.min(self.X[1], axis=0))
         # 相关矩阵
@@ -398,6 +395,9 @@ class Kriging(object):
         x_pred_normalization = X_pre / (np.max(X_pre, axis=0) - np.min(X_pre, axis=0))
         # 相关向量
         vector_0 = self.corelation(self.gaussian, self.x_normalization, x_pred_normalization, self.parameters)
+        # vector_1 = self.corelation(self.gaussian, self.x_normalization_1, x_pred_normalization, self.parameters)
+        # vector1 = self.corelation(gaussian, self.X[0], X_pre, self.parameters)
+
         Y_pre = self.beta_normalize + vector_0.T.dot(self.Vkriging)
         # 预测值
         return Y_pre
@@ -419,52 +419,40 @@ class coKriging(object):
         self.beta = None
         self.Vkriging = None
         self.C_Xe = None
-        self.Xc_normalization = None
-        self.Xe_normalization = None
 
     def corelation(self, func, X1, X2, para_array):
         list_result = []
         for i in range(X1.shape[0]):
-            if func.__name__ in ['gaussian', 'gaussian_rho', 'gaussian_rho_X']:
+            if func.__name__ == 'gaussian' or func.__name__ == 'gaussian_rho':
                 list_result.append(func(para_array, X1[i], X2).ravel())
         return np.array(list_result)
 
     def fit(self, Xc, Yc, Xe, Ye):
         self.Xc = Xc
         self.Xe = Xe
-        self.Xc_normalization = self.Xc / (np.max(self.Xc, axis=0) - np.min(self.Xc, axis=0))
-        self.Xe_normalization = self.Xe / (np.max(self.Xe, axis=0) - np.min(self.Xe, axis=0))
         # C
         self.C_krig = Kriging(X=Xc, Y=Yc, para_array=self.Cpara_arr, max_iter=self.max_iter)
         self.C_krig.get_parameters()
+        # self.C_krig.fit()
 
-        # C_matrix_cc = self.corelation(self.C_krig.gaussian, Xc, Xc, self.C_krig.parameters)  # C的cc矩阵
-        C_matrix_cc = self.corelation(self.C_krig.gaussian, self.Xc_normalization, self.Xc_normalization,
-                                      self.C_krig.parameters)  # C的cc矩阵
-        # C_matrix_ee = self.corelation(self.C_krig.gaussian, Xe, Xe, self.C_krig.parameters)  # C的ee矩阵
-        C_matrix_ee = self.corelation(self.C_krig.gaussian, self.Xe_normalization, self.Xe_normalization,
-                                      self.C_krig.parameters)  # C的ee矩阵
-        # C_matrix_ce = self.corelation(self.C_krig.gaussian, Xc, Xe, self.C_krig.parameters)  # C的ce矩阵
-        C_matrix_ce = self.corelation(self.C_krig.gaussian, self.Xc_normalization, self.Xe_normalization,
-                                      self.C_krig.parameters)  # C的ce矩阵
+        C_matrix_cc = self.corelation(self.C_krig.gaussian, Xc, Xc, self.C_krig.parameters)  # C的cc矩阵
+        C_matrix_ee = self.corelation(self.C_krig.gaussian, Xe, Xe, self.C_krig.parameters)  # C的ee矩阵
+        C_matrix_ce = self.corelation(self.C_krig.gaussian, Xc, Xe, self.C_krig.parameters)  # C的ce矩阵
         self.C_sigma2 = self.C_krig.sigma2  # C的方差sigma2
         # D
-        self.C_krig.fit()
         self.C_Xe = self.C_krig.predict(Xe)
         self.D_krig = Kriging(X=self.C_Xe, Y=Ye, para_array=self.Dpara_arr, max_iter=self.max_iter)
-        self.D_parameters = self.D_krig.get_parameters()[2]
+        self.D_parameters=self.D_krig.get_parameters()[2]
         # self.D_parameters = self.D_krig.fit()[2]
-        # D_matrix_ee = self.corelation(self.D_krig.gaussian, Xe, Xe, self.D_krig.parameters)  # D的ee矩阵
-        D_matrix_ee = self.corelation(self.D_krig.gaussian, self.Xe_normalization, self.Xe_normalization,
-                                      self.D_krig.parameters)  # D的ee矩阵
+        D_matrix_ee = self.corelation(self.D_krig.gaussian, Xe, Xe, self.D_krig.parameters)  # D的ee矩阵
         self.D_sigma2 = self.D_krig.sigma2  # D的方差sigma2
-        C1 = self.C_sigma2 * C_matrix_cc
-        C2 = self.D_parameters * self.C_sigma2 * C_matrix_ce
-        C3 = self.D_parameters * self.C_sigma2 * C_matrix_ce.T
-        C4 = self.D_parameters ** 2 * self.C_sigma2 * C_matrix_ee + self.D_sigma2 * D_matrix_ee
+        C1 = self.C_sigma2 * (C_matrix_cc)
+        C2 = self.D_parameters * self.C_sigma2 * (C_matrix_ce)
+        C3 = self.D_parameters * self.C_sigma2 * (C_matrix_ce.T)
+        C4 = self.D_parameters ** 2 * self.C_sigma2 * (C_matrix_ee) + self.D_sigma2 * (D_matrix_ee)
         C = np.vstack((np.hstack((C1, C2)), np.hstack((C3, C4))))
         F = np.ones(C.shape[-1])
-        C_inverse = np.linalg.pinv(C)
+        C_inverse = np.linalg.inv(C)
         self.Y = np.hstack((Yc, Ye))
         # 均值
         self.beta = F.T.dot(C_inverse).dot(self.Y) / (F.T.dot(C_inverse).dot(F))
@@ -477,16 +465,11 @@ class coKriging(object):
         # print(self.D_krig.parameters)
 
     def predict(self, X_pre):
-        x_pred_normalization = X_pre / (np.max(X_pre, axis=0) - np.min(X_pre, axis=0))
-        # C_matrix_cx = self.corelation(self.C_krig.gaussian, self.Xc, X_pre, self.C_krig.parameters)  # C的cx矩阵
-        C_matrix_cx = self.corelation(self.C_krig.gaussian, self.Xc_normalization, x_pred_normalization,
-                                      self.C_krig.parameters)  # C的cx矩阵
+        C_matrix_cx = self.corelation(self.C_krig.gaussian, self.Xc, X_pre, self.C_krig.parameters)  # C的cx矩阵
         # C_X_pre = self.C_krig.predict(X_pre)
-        # print(self.C_krig.parameters)
-        # print(self.D_krig.parameters)
-        # D_matrix_ex = self.corelation(self.D_krig.gaussian, self.Xe, X_pre, self.D_krig.parameters)  # D的ex矩阵
-        D_matrix_ex = self.corelation(self.D_krig.gaussian, self.Xe_normalization, x_pred_normalization,
-                                      self.D_krig.parameters)  # D的ex矩阵
+        # print(C_X_pre)
+        D_matrix_ex = self.corelation(self.D_krig.gaussian, self.Xe, X_pre, self.D_krig.parameters)  # D的ex矩阵
+        print(self.D_krig.parameters)
         c1 = self.D_parameters * self.C_sigma2 * C_matrix_cx
         c2 = (self.D_parameters ** 2 * self.C_sigma2 + self.D_sigma2) * D_matrix_ex
         c = np.vstack((c1, c2))
@@ -501,7 +484,7 @@ class coKriging(object):
 
 if __name__ == "__main__":
     parameter_array_c = np.array([[0, 1], [1, 2]])
-    parameter_array_d = np.array([[0, 1], [1, 2], [2, 2.5]])
+    parameter_array_d = np.array([[0, 1], [1, 2], [0, 1]])
     # 第一组数据
     path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\Function1.xlsx"
     data_real = readExcel(path_excel, "Sheet2", 1, 20, 2)
@@ -540,7 +523,7 @@ if __name__ == "__main__":
     XE = np.linspace(0, 1)
     YE = high_fidelity_curve(XE)
     # 高保真选取的四个点
-    XE_point = np.array([0, 0.4, 0.6, 1])
+    XE_point = np.array([0, 0.45, 0.65, 1])
     YE_point = high_fidelity_curve(XE_point)
     # 低保真的曲线
     XC = np.linspace(0, 1)
@@ -559,22 +542,17 @@ if __name__ == "__main__":
     plt.scatter(XC_point, YC_point, color='#ff9900', label='low fidelity sample data', marker='s')
     plt.scatter(XE_point, YE_point, color='#ff00ff', label='high fidelity sample data', marker='8')  # coKriging插值
     i_times = 1
-    while i_times <= 5:
-        cokriging = coKriging(Cpara_arr=parameter_array_c, Dpara_arr=parameter_array_d, max_iter=10)
-        cokriging.fit(XC_point, YC_point, XE_point, YE_point)
-        XE_PRED = np.linspace(0, 1)
-        print(cokriging.D_krig.parameters)
-        # YY = cokriging.C_krig.predict(XE_PRED)
-        Y_results_points = cokriging.predict(XC_point)
-        Y_results_curve = cokriging.predict(XE_PRED)
-        plt.scatter(XC_point, Y_results_points, color='#000000', label=('' if i_times == 0 else '_') +'predict results data points', marker='o')
-        plt.plot(XE_PRED, Y_results_curve, color='#000000',
-                 label=('' if i_times == 0 else '_') + 'co-Kriging low-high fidelity data interpolation curve',
-                 linestyle='--')
-        #     plt.plot(XE_PRED, YY, color='#fffff0',
-        #              label=('' if i_times == 0 else '_') + 'co-Kriging low-high fidelity data interpolation curve',
-        #              linestyle='--')
-        i_times += 1
+    # while i_times <= 10:
+    cokriging = coKriging(Cpara_arr=parameter_array_c, Dpara_arr=parameter_array_d, max_iter=10)
+    cokriging.fit(XC_point, YC_point, XE_point, YE_point)
+    XE_PRED = np.linspace(0, 1)
+    Y_results_points = cokriging.predict(XC_point)
+    Y_results_curve = cokriging.predict(XE_PRED)
+    # plt.scatter(XC_point, Y_results_points, color='#000000', label=('' if i_times == 0 else '_') +'predict results data points', marker='o')
+    plt.plot(XE_PRED, Y_results_curve, color='#000000',
+             label=('' if i_times == 0 else '_') + 'co-Kriging low-high fidelity data interpolation curve',
+             linestyle='--')
+    # i_times += 1
     # print('theta和p的最优解分别是:', kriging.parameters)
     # print('最优目标函数值:', value)
     # plt.figure()

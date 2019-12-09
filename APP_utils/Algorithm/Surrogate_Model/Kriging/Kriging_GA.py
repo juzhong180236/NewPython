@@ -256,10 +256,12 @@ class Kriging(object):
                return: 适应度函数的值
         """
         matrix = self.corelation(func, self.X, self.X, para_array)
+        num = matrix.shape[-1]
         # 相关矩阵的逆矩阵
-        inverse_matrix = np.linalg.inv(matrix)
+        matrixR = matrix + ((1000 + num) * np.finfo(np.float64).tiny * np.eye(num))
+        inverse_matrix = np.linalg.inv(matrixR)
         # 单位向量
-        F = np.ones(matrix.shape[-1])
+        F = np.ones(num)
         # 均值
         self.beta = F.T.dot(inverse_matrix).dot(self.Y) / (F.T.dot(inverse_matrix).dot(F))
         # 方差
@@ -267,7 +269,9 @@ class Kriging(object):
             -1]
         R = np.linalg.det(matrix)
         # 自己的方法，直接用sys.float_info.min替换掉零
-        R = sys.float_info.min if R == 0 else R
+        # R = sys.float_info.min if R == 0 else R
+        # 自己的方法，直接用 np.finfo(np.float64).tiny替换掉零
+        R = np.finfo(np.float64).tiny if R == 0 else R
         # if np.linalg.det(matrix) == 0:
         #     print(np.linalg.det(matrix))
         return -self.sigma2 * (F.shape[-1] / 2) - np.log(R)
@@ -339,7 +343,7 @@ class Kriging(object):
         x_pred_normalization = X_pre / (np.max(X_pre, axis=0) - np.min(X_pre, axis=0))
         # 相关向量
         vector = self.corelation(gaussian, self.x_normalization, x_pred_normalization, self.parameters)
-        print(vector)
+        # print(vector)
         # 预测值
         Y_pre = self.beta_normalize + vector.T.dot(self.Vkriging)
         return Y_pre
@@ -358,13 +362,42 @@ if __name__ == "__main__":
     # data_pred = kriging.predict(data_pre[0])
 
     # 第二组数据
-    d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
-    y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
-    d_pred = np.arange(-17, 18)
+    # d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
+    # y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
+    # d_pred = np.arange(-17, 18)
+    #
+    # kriging = Kriging(X=d, Y=y, para_array=parameter_array_c, max_iter=3)
+    # Vkriging1 = kriging.fit()
+    # y_pred = kriging.predict(d_pred)
+    A_value = 0.5
+    B_value = 10
+    C_value = -5
 
-    kriging = Kriging(X=d, Y=y, para_array=parameter_array_c, max_iter=3)
+
+    # 高保真的曲线函数表达式
+    def high_fidelity_curve(x):
+        return (6 * x - 2) ** 2 * np.sin(12 * x - 4)
+
+
+    # 高保真的曲线函数表达式
+    def low_fidelity_curve(x, A=A_value, B=B_value, C=C_value):
+        return A * high_fidelity_curve(x) + B * (x - 0.5) + C
+
+        # 低保真的曲线
+
+
+    XC = np.linspace(0, 1)
+    YC = low_fidelity_curve(XC)
+    XC_point = np.array([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
+    YC_point = low_fidelity_curve(XC_point)
+    print(YC_point)
+
+    kriging = Kriging(X=XC_point, Y=YC_point, para_array=parameter_array_c, max_iter=3)
     Vkriging1 = kriging.fit()
-    y_pred = kriging.predict(d_pred)
+    XE_PRED = np.linspace(0, 1)
+    YE_pred = kriging.predict(XE_PRED)
+    plt.plot(XE_PRED, YE_pred, color='#ff0000', label='Kriging data interpolation curve', linestyle=':')
+    plt.plot(XC, YC, color='#0000ff', label='Kriging curve', linestyle='-')
 
     print('theta和p的最优解分别是:', kriging.parameters)
     # print('最优目标函数值:', value)
@@ -373,10 +406,11 @@ if __name__ == "__main__":
     #          label='z-real')
     # plt.plot(data_pre[0], data_pred, color='#0000ff', marker='+', linestyle='-.',
     #          label='z-predict')
-    plt.plot(d, y, color='#ff00ff', linestyle='-',
-             label='y-real')
-    plt.scatter(d_pred, y_pred, color='#000000', marker='8',
-                label='y-predict')
+    # plt.plot(d, y, color='#ff00ff', linestyle='-',
+    #          label='y-real')
+    # plt.scatter(d_pred, y_pred, color='#000000', marker='8',
+    #             label='y-predict')
+
     # RR = 1 - (np.sum(np.square(data_pre[1] - y_pred)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
     # RR1 = 1 - (np.sum(np.square(y - y_pred)) / np.sum(np.square(y - np.mean(y))))
     # print(RR)
@@ -409,7 +443,7 @@ if __name__ == "__main__":
     # ax.set_ylim(-1, 1)
     # ax.set_zlabel('Z')
     # ax.set_zlim(-10, 10)
-    plt.legend()
+    # plt.legend()
     plt.show()
     elapsed = (time.perf_counter() - start)
     print("Time used:", elapsed)
