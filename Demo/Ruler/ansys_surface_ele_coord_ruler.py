@@ -186,7 +186,26 @@ set_surface_ele_hex = set(map(addOne, set(str_surface_ele_hex.split(','))))
 # 【输入str,str】：displacement或stress所在的文件夹路径；取最小值还是最大值，min，max
 # 【输出float】：返回最小值或最大值
 # 【功能】：将displacement或stress中最小的和最大的输出
-def Str_Color_Step(path_input, min_or_max, stress_or_displacement):
+# def Str_Color_Step(path_input, min_or_max, stress_or_displacement):
+#     list_color_ToStep = []
+#     file = open(path_input, 'rt')
+#     for line in file:
+#         if stress_or_displacement == 's':
+#             list_color_ToStep.append(line.split('\t')[1])
+#         elif stress_or_displacement == 'd':
+#             if len(line) == 62:
+#                 list_color_ToStep.append(line[49:61].strip())
+#     if stress_or_displacement == 's':
+#         list_color_ToStep.pop(0)
+#     list_color_ToStep_sorted = sorted(list_color_ToStep, key=lambda x: float(x))
+#     if min_or_max == 'min':
+#         return list_color_ToStep_sorted[0]
+#     elif min_or_max == 'max':
+#         # return list_color_ToStep_sorted[len(list_color_ToStep_sorted) - 1]
+#         return list_color_ToStep_sorted[-1]
+#     else:
+#         pass
+def Str_Color_Step(path_input, stress_or_displacement):
     list_color_ToStep = []
     file = open(path_input, 'rt')
     for line in file:
@@ -198,13 +217,13 @@ def Str_Color_Step(path_input, min_or_max, stress_or_displacement):
     if stress_or_displacement == 's':
         list_color_ToStep.pop(0)
     list_color_ToStep_sorted = sorted(list_color_ToStep, key=lambda x: float(x))
-    if min_or_max == 'min':
-        return list_color_ToStep_sorted[0]
-    elif min_or_max == 'max':
-        # return list_color_ToStep_sorted[len(list_color_ToStep_sorted) - 1]
-        return list_color_ToStep_sorted[-1]
-    else:
-        pass
+    # if min_or_max == 'min':
+    return list_color_ToStep_sorted[0], list_color_ToStep_sorted[-1]
+    # elif min_or_max == 'max':
+    # return list_color_ToStep_sorted[len(list_color_ToStep_sorted) - 1]
+    # return list_color_ToStep_sorted[-1]
+    # else:
+    #     pass
 
 
 #  ele,coords,dcolor
@@ -235,9 +254,18 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
     # Text_Create('original_coords_x', ','.join(list_coords_x), 'hex')
     Text_Create('original_coords_x', ','.join(list_coords_x), 'four')
     # list_coords_allFile = []
-
-    str_Dcolor_min = Str_Color_Step(path_input + os.path.basename(files_cut[0]), 'min', 'd')
-    str_Dcolor_max = Str_Color_Step(path_input + os.path.basename(files_cut[-1]), 'max', 'd')
+    list_Dcolor_min = []
+    list_Dcolor_max = []
+    for file_cut in files_cut:
+        Dcolor_min, Dcolor_max = Str_Color_Step(path_input + os.path.basename(file_cut), 'd')
+        list_Dcolor_min.append(Dcolor_min)
+        list_Dcolor_max.append(Dcolor_max)
+    list_Dcolor_min.sort(key=lambda x: float(x))
+    list_Dcolor_max.sort(key=lambda x: float(x))
+    str_Dcolor_min = list_Dcolor_min[0]
+    str_Dcolor_max = list_Dcolor_max[-1]
+    # str_Dcolor_min = Str_Color_Step(path_input + os.path.basename(files_cut[0]), 'min', 'd')
+    # str_Dcolor_max = Str_Color_Step(path_input + os.path.basename(files_cut[-1]), 'max', 'd')
 
     float_Dcolor_step = (float(str_Dcolor_max) - float(str_Dcolor_min)) / 21
     # file_content = ''  # 不带初始坐标信息
@@ -306,8 +334,18 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
         print(path_input + ' 目录已存在')
     files_stress = os.listdir(path_input)
     files_stress.sort(key=lambda x: int(x[:-4]))
-    str_Scolor_min = Str_Color_Step(path_input + os.path.basename(files_stress[0]), 'min', 's')
-    str_Scolor_max = Str_Color_Step(path_input + os.path.basename(files_stress[-1]), 'max', 's')
+    list_Scolor_min = []
+    list_Scolor_max = []
+    for file_stress in files_stress:
+        Scolor_min, Scolor_max = Str_Color_Step(path_input + os.path.basename(file_stress), 's')
+        list_Scolor_min.append(Scolor_min)
+        list_Scolor_max.append(Scolor_max)
+    list_Scolor_min.sort(key=lambda x: float(x))
+    list_Scolor_max.sort(key=lambda x: float(x))
+    str_Scolor_min = list_Scolor_min[0]
+    str_Scolor_max = list_Scolor_max[-1]
+    # str_Scolor_min = Str_Color_Step(path_input + os.path.basename(files_stress[0]), 'min', 's')
+    # str_Scolor_max = Str_Color_Step(path_input + os.path.basename(files_stress[-1]), 'max', 's')
     float_Scolor_step = (float(str_Scolor_max) - float(str_Scolor_min)) / 21
 
     i_processing = 0

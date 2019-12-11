@@ -559,7 +559,7 @@ if __name__ == "__main__":
     plt.scatter(XC_point, YC_point, color='#ff9900', label='low fidelity sample data', marker='s')
     plt.scatter(XE_point, YE_point, color='#ff00ff', label='high fidelity sample data', marker='8')  # coKriging插值
     i_times = 1
-    while i_times <= 5:
+    while i_times <= 1:
         cokriging = coKriging(Cpara_arr=parameter_array_c, Dpara_arr=parameter_array_d, max_iter=10)
         cokriging.fit(XC_point, YC_point, XE_point, YE_point)
         XE_PRED = np.linspace(0, 1)
@@ -567,7 +567,8 @@ if __name__ == "__main__":
         # YY = cokriging.C_krig.predict(XE_PRED)
         Y_results_points = cokriging.predict(XC_point)
         Y_results_curve = cokriging.predict(XE_PRED)
-        plt.scatter(XC_point, Y_results_points, color='#000000', label=('' if i_times == 0 else '_') +'predict results data points', marker='o')
+        plt.scatter(XC_point, Y_results_points, color='#000000',
+                    label=('' if i_times == 0 else '_') + 'predict results data points', marker='o')
         plt.plot(XE_PRED, Y_results_curve, color='#000000',
                  label=('' if i_times == 0 else '_') + 'co-Kriging low-high fidelity data interpolation curve',
                  linestyle='--')

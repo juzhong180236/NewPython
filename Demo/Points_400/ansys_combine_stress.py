@@ -26,7 +26,7 @@ def text_create(name, msg):
 
 
 # 打开读取的文档
-path = "C:/Users/asus/Desktop/test/"
+path = "C:/Users/asus/Desktop/test/2/"
 isExists = os.path.exists(path)
 # 判断结果
 if not isExists:
@@ -39,6 +39,8 @@ else:
 # 获取当前文档下的文件
 files = os.listdir(path)
 file_content = ''
+list_min = []
+list_max = []
 files.sort(key=lambda x: int(x[:-4]))
 for file in files:  # 遍历文件夹
     arr_sort = []
@@ -52,8 +54,10 @@ for file in files:  # 遍历文件夹
             arr_sort.append(line.split('\t')[1])  # 将每一行以制表符分开后加入到arr_sort序列中
     arr_sort.pop(0)  # 去掉arr_sort序列的第一个元素，是一串字母，不是数字
     # print(','.join(''.join(arr_sort).split('\n')))
-    arr_each_file = ''.join(arr_sort).split('\n')  # 以换行符为分割将arr_sort连接为字符串，并以空字符又转为list
-    arr_each_file.pop()  # 去掉最后一个换行符
+    arr_each_file = ''.join(arr_sort).split('\n')  # 以空字符将arr_sort连接为字符串，以换行符又转为list
+    arr_each_file.pop()  # 去掉最后一个空字符
+    list_max.append(max(map(float, arr_each_file)))
+    list_min.append(min(map(float, arr_each_file)))
     file_content += ','.join(arr_each_file) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
-# print(file_content)
-text_create('stress', file_content.rstrip('\n'))
+file_content += str(min(list_min)) + ',' + str(max(list_max))
+text_create('stress_test', file_content)

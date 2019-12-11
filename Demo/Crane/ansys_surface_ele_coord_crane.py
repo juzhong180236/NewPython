@@ -3,7 +3,7 @@
 import os
 import itertools
 
-path_switch = "/2/"
+path_switch = "/"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
 path_four = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "pre/"
 # '''四面体ELIST.lis路径'''
@@ -122,8 +122,8 @@ def Text_PerLine_ToList(str_input):
     list_str = str_input.strip().split(" ")
     list_temp = []
     for i in range(len(list_str)):
-        if list_str[i] != "":
-            list_temp.append(int(list_str[i]))
+        if list_str[i] != "" and list:
+            list_temp.append(list_str[i])
     return list_temp
 
 
@@ -138,14 +138,16 @@ def Str_SurfaceEle(geometry_faceNumber, path_input):
             list_temp = Text_PerLine_ToList(everyline)
             if len(list_temp) == 14:
                 if geometry_faceNumber == 4:
-                    if list_temp[1] == 1:
+                    if list_temp[1] == '1':
+                        list_temp = list(map(int, list_temp))
                         # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
                         list_result.extend([list_temp[6] - 1, list_temp[7] - 1, list_temp[8] - 1,
                                             list_temp[7] - 1, list_temp[8] - 1, list_temp[9] - 1,
                                             list_temp[6] - 1, list_temp[8] - 1, list_temp[9] - 1,
                                             list_temp[6] - 1, list_temp[7] - 1, list_temp[9] - 1])
                 elif geometry_faceNumber == 6:
-                    if list_temp[1] == 1:
+                    if list_temp[1] == '1':
+                        list_temp = list(map(int, list_temp))
                         # 所有的ele【前8位】排列为【六面体】的画图形式，得到这些值并存在list_result中
                         list_result.extend(
                             [list_temp[6] - 1, list_temp[7] - 1, list_temp[8] - 1,

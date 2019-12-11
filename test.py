@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
 
 #
 #
@@ -97,27 +98,35 @@ import sys
 # #     aaa.append(linear_abs(f, [3, 5]))
 #
 # print(forceArr_1.dot(w))
-ddd = np.array([1, 1, 1, 1]).reshape(4, 1)
-print(ddd)
-aaa = np.array([[1, 2, 3, 4], [1, 1, 2, 3], [1, 1, 2, 3], [1, 1, 2, 3]])
-print(aaa)
-print(3 ** 2 * aaa.dot(ddd))
-print(np.hstack((aaa, ddd)))
-print(True == 1)
-print(np.empty((3, 4)))
-print(np.log(3.3616528287632475e-123))
-print(np.eye(4) * 3)
-print(aaa + np.eye(4) * 3)
-print(np.eye(4).ndim)
-print(sys.float_info.min)
-print(float('inf'))
-print(2 ** 64)
-print(sys.maxsize)
-print(np.finfo(np.float64).min)
-print(np.finfo(np.float64).tiny)
-print(np.iinfo(np.int64))
-print(np.amax)
+# ddd = np.array([1, 1, 1, 1]).reshape(4, 1)
+# print(ddd)
+# aaa = np.array([[1, 2, 3, 4], [1, 1, 2, 3], [1, 1, 2, 3], [1, 1, 2, 3]])
+# print(aaa)
+# print(3 ** 2 * aaa.dot(ddd))
+# print(np.hstack((aaa, ddd)))
+# print(True == 1)
+# print(np.empty((3, 4)))
+# print(np.log(3.3616528287632475e-123))
+# print(np.eye(4) * 3)
+# print(aaa + np.eye(4) * 3)
+# print(np.eye(4).ndim)
+# print(sys.float_info.min)
+# print(float('inf'))
+# print(2 ** 64)
+# print(sys.maxsize)
+# print(np.finfo(np.float64).min)
+# print(np.finfo(np.float64).tiny)
+# print(np.iinfo(np.int64))
+# print(np.amax)
 
 
 # mm = np.array([[1, -np.inf, 3, 4], [1, 1, 2, 3], [1, 1, 2, 3], [1, 1, 2, 3]])
 # print(np.linalg.inv(mm))
+
+x = np.array([1, 3, 4])
+y = np.array([1, 4, 5])
+z = np.array([[2, 3, 4], [3, 10, 5], [3, 10, 5]])
+plt.xlim(1, 3)
+plt.ylim(1, 4)
+plt.contourf(x, y, z)
+plt.show()

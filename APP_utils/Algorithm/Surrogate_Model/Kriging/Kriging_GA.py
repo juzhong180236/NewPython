@@ -388,16 +388,18 @@ if __name__ == "__main__":
 
     XC = np.linspace(0, 1)
     YC = low_fidelity_curve(XC)
-    XC_point = np.array([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
+
+    XC_point = np.array([0, 0.2, 0.5, 0.6, 0.9, 1])
     YC_point = low_fidelity_curve(XC_point)
-    print(YC_point)
+    # print(YC_point)
 
     kriging = Kriging(X=XC_point, Y=YC_point, para_array=parameter_array_c, max_iter=3)
     Vkriging1 = kriging.fit()
     XE_PRED = np.linspace(0, 1)
     YE_pred = kriging.predict(XE_PRED)
     plt.plot(XE_PRED, YE_pred, color='#ff0000', label='Kriging data interpolation curve', linestyle=':')
-    plt.plot(XC, YC, color='#0000ff', label='Kriging curve', linestyle='-')
+    plt.plot(XC, YC, color='#ffff00', label='Kriging curve', linestyle='-')
+    plt.scatter(XC_point, YC_point, color='#000000', label='low fidelity sample data', marker='s')
 
     print('theta和p的最优解分别是:', kriging.parameters)
     # print('最优目标函数值:', value)

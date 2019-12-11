@@ -77,9 +77,6 @@ class RBF(object):
             else:
                 list_pre_x.append(self.rbf(X_Pre[i], self.x, self.std).ravel())
         Y_Pre = np.array(list_pre_x).dot(self.w)
-        print(self.w.shape)
-        print(self.std)
-        print(np.array(list_pre_x).shape)
         return Y_Pre
 
 
