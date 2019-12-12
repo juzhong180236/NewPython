@@ -2,9 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 from RBF_crane import RBF
+from scipy.interpolate import griddata
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_hex = "C:/Users/asus/Desktop/test/"
+path_hex = r"C:\Users\asus\Desktop\History\History_codes\points_400\test\\"
 '''调用哪种rbf'''
 rbf_type = {'y': 'lin_a', 'z': 'lin_a', 'stress': 'mq', 'dSum': 'lin_a'}
 
@@ -35,9 +36,11 @@ def Get_Coords_Data(str):
     # list_coords_slice = [listEle.split(',') for listEle in list_coords[0:len(list_coords)]]
     list_x = []
     list_y = []
+    list_xy = []
     for i in range(0, len(list_coords), 3):
-        list_x.append(list_coords[i])
-        list_y.append(list_coords[i + 1])
+        list_xy.append([float(list_coords[i]), float(list_coords[i + 1])])
+        list_x.append(float(list_coords[i]))
+        list_y.append(float(list_coords[i + 1]))
 
     # list_z = []
     # list_coords_allFile = []
@@ -54,7 +57,7 @@ def Get_Coords_Data(str):
     #     list_x.append(list_x_temp)
     #     list_y.append(list_y_temp)
     #     list_z.append(list_z_temp)
-    return np.array(list_x), np.array(list_y)
+    return np.array(list_x), np.array(list_y), np.array(list_xy)
 
 
 def Get_Data(str, fileType):
@@ -92,7 +95,7 @@ def Get_Data(str, fileType):
         return list_stress
 
 
-path_coords = path_hex + "coords_reault.txt"
+path_coords = path_hex + "coords_result.txt"
 # path_allCoords = path_hex + "all.txt"
 path_stress = path_hex + "stress.txt"
 # path_allStress = path_hex + "all_stress.txt"
@@ -123,7 +126,7 @@ for i in range(len(list_train_1)):
 # str_dSum = dSum.read()
 
 # 获取坐标点
-arr_x, arr_y = Get_Coords_Data(str_coords)
+arr_x, arr_y, arr_xy = Get_Coords_Data(str_coords)
 # list_xAll, list_yAll, list_zAll = Get_Data(str_allCoords, 'coords')
 list_stress = Get_Data(str_Stress, 'stressOrdSum')
 list_stress_test = Get_Data(str_Stress_test, 'stressOrdSum')
@@ -252,22 +255,36 @@ def realXYZ():
             np.square(arr_pred[i] - np.mean(arr_pred[i]))))
         list_RR.append(RR)
     plt.figure()
-    fig, axs = plt.subplots(nrows=5, ncols=2, figsize=(9, 9))
-    zz = arr_train_1.reshape(20, 20)
-    zz1 = arr_train_2.reshape(20, 20)
-    zz2 = arr_train_3.reshape(20, 20)
-    zz3 = arr_train_4.reshape(20, 20)
-    zz4 = arr_pred_1.reshape(20, 20)
-    zz5 = arr_pred_2.reshape(20, 20)
-    zz6 = arr_pred_3.reshape(20, 20)
-    zz7 = arr_pred_4.reshape(20, 20)
-    nn1 = np.array(list_RR).reshape(20, 20)
-    zz_list = [zz, zz4, zz1, zz5, zz2, zz6, zz3, zz7, nn1]
-    X = np.linspace(0, 20, 20)
-    Y = np.linspace(0, 10, 20)
-    # xx, yy = np.meshgrid(X, Y)
+    fig, axs = plt.subplots(nrows=7, ncols=2, figsize=(10, 30))
+    zz = arr_train_1
+    zz1 = arr_train_2
+    zz2 = arr_train_3
+    zz3 = arr_train_4
+    zz4 = arr_pred_1
+    zz5 = arr_pred_2
+    zz6 = arr_pred_3
+    zz7 = arr_pred_4
+    cha_1 = (arr_train_1 - arr_pred_1) / arr_train_1
+    cha_2 = (arr_train_2 - arr_pred_2) / arr_train_2
+    cha_3 = (arr_train_3 - arr_pred_3) / arr_train_3
+    cha_4 = (arr_train_4 - arr_pred_4) / arr_train_4
+    nn1 = np.array(list_RR)
+    zz_list = [zz, zz4, zz1, zz5, zz2, zz6, zz3, zz7, cha_1, cha_2, cha_3, cha_4, nn1]
+    zz_list_1 = []
+
+    # print(min(arr_x), max(arr_x))
+    # print(min(arr_y), max(arr_y))
+
+    X = np.linspace(min(arr_x), max(arr_x), 100)
+    Y = np.linspace(min(arr_y), max(arr_y), 100)
+    #
+    # print(arr_xy.shape)
+    # 广播为100*100的一个面信息
+    grid_X, grid_Y = np.meshgrid(X, Y)
     for ax, z in zip(axs.flat, zz_list):
-        ax.contourf(X, Y, z, levels=9, cmap='jet')
+        # method=nearest/linear/cubic 将数据变为插值
+        zz = griddata(arr_xy, z, xi=(grid_X, grid_Y), method='cubic')
+        ax.contourf(grid_X, grid_Y, zz, levels=20, cmap='jet')
         # plt.contourf(zz1)
 
     # zz = np.mat(zz)
