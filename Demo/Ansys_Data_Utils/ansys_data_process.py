@@ -2,12 +2,16 @@
 # 缩小点的索引值数据所在文件的大小，前一道程序先用javascript写的，后期改到python中
 import os
 import itertools
+import color_separate as cs
+import text_file_create as tfc
 
 path_switch = "/"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
-path_four = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "pre/"
+path_four_read = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "pre/"
 # '''四面体ELIST.lis路径'''
 path_ele_four = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "pre/ele/ELIST.lis"
+# 存储路径
+path_four_write = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "mid/"
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
 # path_four = r"C:\Users\asus\Desktop\History\History_codes\DT_Origin_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\\"
@@ -19,152 +23,12 @@ path_hex = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "pre
 path_ele_hex = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "pre/ele/ELIST.lis"
 
 
-# 【输入str，str】：生成的文件名，需要写入txt的文本数据
-# 【功能】：创建一个txt文件
-def Text_Create(name, msg, hexOrfour):
-    # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
-    save_path = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models"
-    # save_path = path_four
-    if hexOrfour == 'four':
-        # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存mid)
-        save_path += path_switch + 'mid/'
-        # save_path = path_four
-    elif hexOrfour == 'hex':
-        # save_path += 'new_utils/post/'
-        save_path += path_switch + 'mid/'
-    full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
-    # 创建写入的文档
-    file = open(full_path, 'w')
-    file.write(msg)
-    file.close()
+class AnsysData(object):
+    def __init__(self):
+        pass
 
 
-def colorStep(input, pressureStep, i):
-    return input + pressureStep * i
 
-
-def defineColor(array_ele, list_min_ele, pressureStep):
-    if array_ele < colorStep(list_min_ele, pressureStep, 1):
-        colors = '0,0,1'
-    elif colorStep(list_min_ele, pressureStep, 1) <= array_ele < colorStep(list_min_ele, pressureStep, 2):
-        colors = '0,' + str(42 / 255) + ',1'
-    elif colorStep(list_min_ele, pressureStep, 2) <= array_ele < colorStep(list_min_ele, pressureStep, 3):
-        colors = '0,' + str(85 / 255) + ',1'
-    elif colorStep(list_min_ele, pressureStep, 3) <= array_ele < colorStep(list_min_ele, pressureStep, 4):
-        colors = '0,' + str(127 / 255) + ',1'
-    elif colorStep(list_min_ele, pressureStep, 4) <= array_ele < colorStep(list_min_ele, pressureStep, 5):
-        colors = '0,' + str(170 / 255) + ',1'
-    elif colorStep(list_min_ele, pressureStep, 5) <= array_ele < colorStep(list_min_ele, pressureStep, 6):
-        colors = '0,1,1'
-    elif colorStep(list_min_ele, pressureStep, 6) <= array_ele < colorStep(list_min_ele, pressureStep, 7):
-        colors = '0,1,' + str(170 / 255)
-    elif colorStep(list_min_ele, pressureStep, 7) <= array_ele < colorStep(list_min_ele, pressureStep, 8):
-        colors = '0,1,' + str(127 / 255)
-    elif colorStep(list_min_ele, pressureStep, 8) <= array_ele < colorStep(list_min_ele, pressureStep, 9):
-        colors = '0,1,' + str(85 / 255)
-    elif colorStep(list_min_ele, pressureStep, 9) <= array_ele < colorStep(list_min_ele, pressureStep, 10):
-        colors = '0,1,' + str(42 / 255)
-    elif colorStep(list_min_ele, pressureStep, 10) <= array_ele < colorStep(list_min_ele, pressureStep, 11):
-        colors = '0,1,0'
-    elif colorStep(list_min_ele, pressureStep, 11) <= array_ele < colorStep(list_min_ele, pressureStep, 12):
-        colors = str(42 / 255) + ',1,0'
-    elif colorStep(list_min_ele, pressureStep, 12) <= array_ele < colorStep(list_min_ele, pressureStep, 13):
-        colors = str(85 / 255) + ',1,0'
-    elif colorStep(list_min_ele, pressureStep, 13) <= array_ele < colorStep(list_min_ele, pressureStep, 14):
-        colors = str(127 / 255) + ',1,0'
-    elif colorStep(list_min_ele, pressureStep, 14) <= array_ele < colorStep(list_min_ele, pressureStep, 15):
-        colors = str(170 / 255) + ',1,0'
-    elif colorStep(list_min_ele, pressureStep, 15) <= array_ele < colorStep(list_min_ele, pressureStep, 16):
-        colors = '1,1,0'
-    elif colorStep(list_min_ele, pressureStep, 16) <= array_ele < colorStep(list_min_ele, pressureStep, 17):
-        colors = '1,' + str(170 / 255) + ',0'
-    elif colorStep(list_min_ele, pressureStep, 17) <= array_ele < colorStep(list_min_ele, pressureStep, 18):
-        colors = '1,' + str(127 / 255) + ',0'
-    elif colorStep(list_min_ele, pressureStep, 18) <= array_ele < colorStep(list_min_ele, pressureStep, 19):
-        colors = '1,' + str(85 / 255) + ',0'
-    elif colorStep(list_min_ele, pressureStep, 19) <= array_ele < colorStep(list_min_ele, pressureStep, 20):
-        colors = '1,' + str(42 / 255) + ',0'
-    elif colorStep(list_min_ele, pressureStep, 20) <= array_ele <= colorStep(list_min_ele, pressureStep, 21):
-        colors = '1,0,0'
-    else:
-        colors = '1,0,0'
-    return colors
-
-
-# 【输入list】：排列好的能画出四面体或六面体的索引的列表（list）
-# 【输出str】：返回以逗号隔开的可绘制模型表面的排列好的索引值字符串(string)
-# 【功能】：每三个相连索引为一组，所有只出现一次的索引组所构成的字符串
-def Str_Remove_SameEle(list_input):
-    list_sort = []
-    for i in range(0, len(list_input), 3):
-        list_temp = [int(list_input[i]), int(list_input[i + 1]), int(list_input[i + 2])]
-        list_temp.sort(key=lambda x: x)
-        list_sort.append(str(list_temp[0]) + ',' + str(list_temp[1]) + ',' + str(list_temp[2]))
-    set_sort = set(list_sort)
-    dict_sort = {}
-    for arr_ele in list_sort:
-        dict_sort[arr_ele] = 0
-        # 列表list_sort中的某元素所重复的次数,初始次数为0
-    for arr_ele in list_sort:
-        if arr_ele in set_sort:
-            dict_sort[arr_ele] += 1  # 如果检测到元素一次，就加1
-    list_sort = []
-    for key, value in dict_sort.items():
-        if value == 1:
-            list_sort.append(key)
-    return ','.join(list_sort)
-
-
-# 【输入str】：将ELIST.lis文件中每一行以多个空格隔开的一行字符串作为输入
-# 【输出list】：将ELIST.lis中一行的元素转为list
-# 【功能】：去除每行数据中多余的空格，返回只有元素的list
-def Text_PerLine_ToList(str_input):
-    list_str = str_input.strip().split(" ")
-    list_temp = []
-    for i in range(len(list_str)):
-        if list_str[i] != "":
-            list_temp.append(list_str[i])
-    return list_temp
-
-
-# 【输入int,str】：ELIST.lis文件中是四面体节点输入4，六面体节点输入6，第二个参数为ELIST.lis的路径
-# 【输出str】：返回以逗号隔开的可绘制模型表面的排列好的索引值字符串(string)
-# 【功能】：对四面体或六面体的ELIST.lis进行简化，使其只有表面点的信息，极大减少数据量
-def Str_SurfaceEle(geometry_faceNumber, path_input):
-    eleFile = open(path_input, "rt")
-    list_result = []
-    for everyline in eleFile:
-        if len(everyline) >= 78:
-            list_temp = Text_PerLine_ToList(everyline)
-            if len(list_temp) == 14:
-                if geometry_faceNumber == 4:
-                    if list_temp[1] == '1':
-                        list_temp = list(map(int, list_temp))
-                        # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
-                        list_result.extend([list_temp[6] - 1, list_temp[7] - 1, list_temp[8] - 1,
-                                            list_temp[7] - 1, list_temp[8] - 1, list_temp[9] - 1,
-                                            list_temp[6] - 1, list_temp[8] - 1, list_temp[9] - 1,
-                                            list_temp[6] - 1, list_temp[7] - 1, list_temp[9] - 1])
-                elif geometry_faceNumber == 6:
-                    if list_temp[1] == '1':
-                        list_temp = list(map(int, list_temp))
-                        # 所有的ele【前8位】排列为【六面体】的画图形式，得到这些值并存在list_result中
-                        list_result.extend(
-                            [list_temp[6] - 1, list_temp[7] - 1, list_temp[8] - 1,
-                             list_temp[6] - 1, list_temp[8] - 1, list_temp[9] - 1,
-                             list_temp[10] - 1, list_temp[11] - 1, list_temp[12] - 1,
-                             list_temp[10] - 1, list_temp[12] - 1, list_temp[13] - 1,
-                             list_temp[6] - 1, list_temp[9] - 1, list_temp[13] - 1,
-                             list_temp[6] - 1, list_temp[10] - 1, list_temp[13] - 1,
-                             list_temp[7] - 1, list_temp[11] - 1, list_temp[12] - 1,
-                             list_temp[7] - 1, list_temp[8] - 1, list_temp[12] - 1,
-                             list_temp[6] - 1, list_temp[10] - 1, list_temp[11] - 1,
-                             list_temp[6] - 1, list_temp[7] - 1, list_temp[11] - 1,
-                             list_temp[8] - 1, list_temp[9] - 1, list_temp[13] - 1,
-                             list_temp[8] - 1, list_temp[12] - 1, list_temp[13] - 1])
-    result = Str_Remove_SameEle(list_result)
-    eleFile.close()
-    return result
 
 
 # 541 516 214 261 845 856 762 324 348 763 738 786 六面体索引顺序
@@ -237,8 +101,8 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
                 list_coords_x.append(everyline[9:31].strip())
     # str_coords_allFile = ','.join(list_coords) + '\n'  # 带初始坐标信息
     str_coords_allFile = ''  # 不带初始坐标信息
-    # Text_Create('original_coords_x', ','.join(list_coords_x), 'hex')
-    Text_Create('original_coords_x', ','.join(list_coords_x), 'four')
+    # tfc.text_Create(path_hex, 'original_coords_x', ','.join(list_coords_x))
+    tfc.text_Create(path_four_write, 'original_coords_x', ','.join(list_coords_x))
     # list_coords_allFile = []
     list_Dcolor_min = []
     list_Dcolor_max = []
@@ -297,7 +161,7 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
                     list_ele[i_ele] = str(dict_coord[int(list_ele[i_ele])][0])  # 获取字典dict_coord中的第一值替换list_ele
                     # print('替换后:' + list_ele[iEle])
 
-        list_Dcolor_result = map(defineColor, map(float, list_Dcolor), itertools.repeat(float(str_Dcolor_min)),
+        list_Dcolor_result = map(cs.define_Color, map(float, list_Dcolor), itertools.repeat(float(str_Dcolor_min)),
                                  itertools.repeat(float_Dcolor_step))
         str_Dcolor_allFile += ','.join(map(str, list_Dcolor_result)) + '\n'
         str_displacementSum_allFile += ','.join(list_Dcolor) + '\n'
@@ -355,7 +219,8 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
         list_Scolor_eachfile = ''.join(list_Scolor).split('\n')  # 以空字符将list_Scolor连接为字符串，再以换行符转为list
         list_Scolor_eachfile.pop()  # 去掉最后一个换行符
 
-        list_Scolor_result = map(defineColor, map(float, list_Scolor_eachfile), itertools.repeat(float(str_Scolor_min)),
+        list_Scolor_result = map(cs.define_Color, map(float, list_Scolor_eachfile),
+                                 itertools.repeat(float(str_Scolor_min)),
                                  itertools.repeat(float_Scolor_step))
 
         i_processing += 1
@@ -369,23 +234,22 @@ def Tuple_Surface_Scolor_Stress(path_input, set_surface_ele):
 
 '''四面体NLIST.lis路径和displacement路径'''
 
-path_coords_four = path_four + "dopAndCoord/"
+path_coords_four = path_four_read + "dopAndCoord/"
 tuple_surface_coords_ele_Dcolor_four = Tuple_Surface_Coords_Ele_Dcolor(path_coords_four, str_surface_ele_four,
                                                                        set_surface_ele_four)
 '''四面体stress路径'''
 # path_stress_four = path_four + "stress/"
-path_equivalent_stress_four = path_four + "equivalent_stress/"
+path_equivalent_stress_four = path_four_read + "equivalent_stress/"
 # tuple_surface_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_stress_four, set_surface_ele_four)
 tuple_surface_equivalent_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_equivalent_stress_four,
                                                                           set_surface_ele_four)
 
-Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
-Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
-Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
-Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
-Text_Create('stress_dSum_step',
-            tuple_surface_coords_ele_Dcolor_four[-1] + "," + tuple_surface_equivalent_stress_Scolor_four[-1],
-            'four')
+tfc.text_Create(path_four_write, 'displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0])
+tfc.text_Create(path_four_write, 'element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]))
+tfc.text_Create(path_four_write, 'dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3])
+tfc.text_Create(path_four_write, 'e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1])
+tfc.text_Create(path_four_write, 'stress_dSum_step',
+                tuple_surface_coords_ele_Dcolor_four[-1] + "," + tuple_surface_equivalent_stress_Scolor_four[-1])
 
 # Text_Create('sColor_surface_new', tuple_surface_stress_Scolor_four[0], 'four')
 # Text_Create('stress_surface_new', tuple_surface_stress_Scolor_four[1], 'four')

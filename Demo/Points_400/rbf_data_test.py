@@ -37,8 +37,10 @@ def Get_Coords_Data(str):
     list_x = []
     list_y = []
     list_xy = []
+    list_xy_bianyi = []
     for i in range(0, len(list_coords), 3):
         list_xy.append([float(list_coords[i]), float(list_coords[i + 1])])
+        list_xy_bianyi.append([float(list_coords[i]) + 11, float(list_coords[i + 1])])
         list_x.append(float(list_coords[i]))
         list_y.append(float(list_coords[i + 1]))
 
@@ -57,7 +59,7 @@ def Get_Coords_Data(str):
     #     list_x.append(list_x_temp)
     #     list_y.append(list_y_temp)
     #     list_z.append(list_z_temp)
-    return np.array(list_x), np.array(list_y), np.array(list_xy)
+    return np.array(list_x), np.array(list_y), np.array(list_xy), np.array(list_xy_bianyi)
 
 
 def Get_Data(str, fileType):
@@ -126,7 +128,7 @@ for i in range(len(list_train_1)):
 # str_dSum = dSum.read()
 
 # 获取坐标点
-arr_x, arr_y, arr_xy = Get_Coords_Data(str_coords)
+arr_x, arr_y, arr_xy, arr_xy_bianyi = Get_Coords_Data(str_coords)
 # list_xAll, list_yAll, list_zAll = Get_Data(str_allCoords, 'coords')
 list_stress = Get_Data(str_Stress, 'stressOrdSum')
 list_stress_test = Get_Data(str_Stress_test, 'stressOrdSum')
@@ -255,7 +257,7 @@ def realXYZ():
             np.square(arr_pred[i] - np.mean(arr_pred[i]))))
         list_RR.append(RR)
     plt.figure()
-    fig, axs = plt.subplots(nrows=7, ncols=2, figsize=(10, 30))
+    fig, axs = plt.subplots(nrows=4, ncols=2, figsize=(20, 20))
     zz = arr_train_1
     zz1 = arr_train_2
     zz2 = arr_train_3
@@ -264,28 +266,41 @@ def realXYZ():
     zz5 = arr_pred_2
     zz6 = arr_pred_3
     zz7 = arr_pred_4
-    cha_1 = (arr_train_1 - arr_pred_1) / arr_train_1
-    cha_2 = (arr_train_2 - arr_pred_2) / arr_train_2
-    cha_3 = (arr_train_3 - arr_pred_3) / arr_train_3
-    cha_4 = (arr_train_4 - arr_pred_4) / arr_train_4
+    cha_1 = np.abs((arr_train_1 - arr_pred_1) / arr_train_1)
+    cha_2 = np.abs((arr_train_2 - arr_pred_2) / arr_train_2)
+    cha_3 = np.abs((arr_train_3 - arr_pred_3) / arr_train_3)
+    cha_4 = np.abs((arr_train_4 - arr_pred_4) / arr_train_4)
+
     nn1 = np.array(list_RR)
-    zz_list = [zz, zz4, zz1, zz5, zz2, zz6, zz3, zz7, cha_1, cha_2, cha_3, cha_4, nn1]
-    zz_list_1 = []
+    zz_list = [[zz, zz4], cha_1, [zz1, zz5], cha_2, [zz2, zz6], cha_3, [zz3, zz7], cha_4]
 
     # print(min(arr_x), max(arr_x))
     # print(min(arr_y), max(arr_y))
 
-    X = np.linspace(min(arr_x), max(arr_x), 100)
-    Y = np.linspace(min(arr_y), max(arr_y), 100)
+    X = np.linspace(min(arr_x) - 1, max(arr_x) + 1, 100)
+    X_bianyi = np.array(list(map(lambda x: x + 11, X)))
+    Y = np.linspace(min(arr_y) - 1, max(arr_y) + 1, 100)
+
     #
     # print(arr_xy.shape)
     # 广播为100*100的一个面信息
     grid_X, grid_Y = np.meshgrid(X, Y)
-    for ax, z in zip(axs.flat, zz_list):
-        # method=nearest/linear/cubic 将数据变为插值
-        zz = griddata(arr_xy, z, xi=(grid_X, grid_Y), method='cubic')
-        ax.contourf(grid_X, grid_Y, zz, levels=20, cmap='jet')
-        # plt.contourf(zz1)
+    grid_X_bianyi, grid_Y_bianyi = np.meshgrid(X_bianyi, Y)
+    title = ['15 37.5', '15 37.5', '15 52.5', '15 52.5', '25 37.5', '25 37.5', '25 52.5','25 52.5']
+    for ax, z, i, t in zip(axs.flat, zz_list, range(len(zz_list)), title):
+        if (i + 1) % 2 == 0:
+            zz = griddata(arr_xy, z, xi=(grid_X, grid_Y), method='cubic')
+            ax_subplt = ax.contourf(grid_X, grid_Y, zz, levels=100, cmap='jet')
+            fig.colorbar(ax_subplt, ax=ax)
+            ax.set_title('|(real-predict)/real| ' + t)
+        else:
+            # method=nearest/linear/cubic 将数据变为插值
+            zz1 = griddata(arr_xy, z[0], xi=(grid_X, grid_Y), method='cubic')
+            zz2 = griddata(arr_xy_bianyi, z[1], xi=(grid_X_bianyi, grid_Y_bianyi), method='cubic')
+            ax_subplt1 = ax.contourf(grid_X, grid_Y, zz1, levels=100, cmap='jet')
+            ax_subplt2 = ax.contourf(grid_X_bianyi, grid_Y_bianyi, zz2, levels=100, cmap='jet')
+            ax.set_title('left(real) right(predict) ' + t)
+            fig.colorbar(ax_subplt2, ax=ax)
 
     # zz = np.mat(zz)
     # zz, zz1 = np.meshgrid(arr_train_1, arr_train_1)

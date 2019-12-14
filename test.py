@@ -123,10 +123,28 @@ import matplotlib.pyplot as plt
 # mm = np.array([[1, -np.inf, 3, 4], [1, 1, 2, 3], [1, 1, 2, 3], [1, 1, 2, 3]])
 # print(np.linalg.inv(mm))
 
-x = np.array([1, 3, 4])
-y = np.array([1, 4, 5])
-z = np.array([[2, 3, 4], [3, 10, 5], [3, 10, 5]])
-plt.xlim(1, 3)
-plt.ylim(1, 4)
-plt.contourf(x, y, z)
-plt.show()
+# x = np.array([1, 3, 4])
+# y = np.array([1, 4, 5])
+# z = np.array([[2, 3, 4], [3, 10, 5], [3, 10, 5]])
+# plt.xlim(1, 3)
+# plt.ylim(1, 4)
+# plt.contourf(x, y, z)
+# plt.show()
+s = 'fdasf'
+a = [4, 5, 7, 89, 42, 5]
+a = a[::-1]
+
+
+# s = s[::-1]
+def atoi(s):
+    s = s[::-1]
+    num = 0
+    for i, v in enumerate(s):
+        for j in range(0, 10):
+            if v == str(j):
+                num += j * (10 ** i)
+    return num
+
+
+print(atoi(s))
+print(a)
