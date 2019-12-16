@@ -25,10 +25,10 @@ class DispalcementData(object):
         files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
         # files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
         files_cut = sorted(files[0:-1], key=lambda x: int(x))
+        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut, self.path_displacement, 'd')  # 获取step
 
         list_coords = self.cd.surfaceCoord_To_List()  # 获取xyz坐标信息
         set_surface_ele = self.ed.set_SurfaceEle()
-        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut, self.path_displacement, 'd')  # 获取step
 
         i_processing = 1  # 遍历到第i个文件
         str_coords_allFile = ''  # 不带初始坐标信息
@@ -64,6 +64,6 @@ class DispalcementData(object):
             print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut) * 100)) + '%', end="")
             i_processing += 1
         str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
-        print(str_coords_allFile.split('\n')[1])
+        # print(str_coords_allFile.rstrip('\n'))
         return str_coords_allFile.rstrip('\n'), str_displacementSum_allFile.rstrip('\n'), str_Dcolor_allFile, str(
             float_Dcolor_step) + ',' + str(float_Dcolor_min)

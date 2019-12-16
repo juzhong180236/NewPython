@@ -2,36 +2,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 from RBF_crane import RBF
+import text_file_create as tfc
 
-path_switch = "/"
-# 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_hex = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "mid/"
+path_switch = 'test_new_code'
+# 读取路径(读pre)
+path_four_read = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\mid\\"
+# 写入路径(写在mid)
+path_four_write = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\post\\"
 '''调用RBF'''
 rbf_type = 'lin_a'
 
 
-def Text_Create(name, msg, hexOrfour):
-    # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
-    save_path = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "post/"
-    if hexOrfour == 'four':
-        # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
-        # save_path += 'lin_a/'
-        save_path = save_path
-    elif hexOrfour == 'hex':
-        save_path += 'lin_a/'
-    full_path = save_path + name + '.txt'  # 也可以创建一个.doc的word文档
-    # 创建写入的文档
-    file = open(full_path, 'w')
-    file.write(msg)
-    file.close()
-
+# from RBF_demo1 import RBFNet
 #  coords.x,coords.y,coords.z
 # 【输入str】：表面点的数据索引
 # 【输出tuple】：返回tuple的第一个元素是x的坐标，第二个元素是y的坐标
 # 【功能】：同一个点不同角度的坐标
-def Get_Coords_Data(str):
-    list_coords = str.split('\n')
-    list_coords_slice = [listEle.split(',') for listEle in list_coords[0:len(list_coords)]]
+def Get_Coords_Data(string):
+    list_coords = string.split('\n')
+    list_coords_slice = [listEle.split(',') for listEle in list_coords]
     list_x = []
     list_y = []
     list_z = []
@@ -120,14 +109,31 @@ list_dSum = Get_Data(str_dSum, 'stressOrdSum')
 
 # 获取应力值
 # stress = Get_Stress_Data()
+def arrTostr(x):
+    return ','.join(map(str, x))
 
 
 def realXYZ():
     # 预测值
     start = time.perf_counter()
     # 更换样本点时，这里要改
-    d = np.array([0, 15, 30, 45, 60, 75])
-    d_pred = np.arange(0, 75)
+    forceArr = [125, 250, 375, 500]
+    degreeArr = [0, 21, 42, 63]
+    combine = []
+    for iForce in range(len(forceArr)):
+        for iDegree in range(len(degreeArr)):
+            combine.append((forceArr[iForce], degreeArr[iDegree]))
+        d = np.array(combine)
+    # d = np.array([0, 15, 30, 45, 60, 75])
+    forceArr_pre = range(125, 601)
+    degreeArr_pre = range(0, 64)
+    combine_pre = []
+    for iForce in range(len(forceArr_pre)):
+        for iDegree in range(len(degreeArr_pre)):
+            combine_pre.append((forceArr_pre[iForce], degreeArr_pre[iDegree]))
+    d_pred = np.array(combine_pre)
+    # print(d_pred)
+    # d_pred = np.arange(0, 75)
     list_w_y = []
     list_w_z = []
     list_w_stress = []
@@ -157,8 +163,8 @@ def realXYZ():
 
     length = len(list_x)
     i_max_x_y = 0
-    for i in range(length):
-        # for i in range(1):
+    # for i in range(length):
+    for i in range(1):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = list_y[i]
         z_real = list_z[i]
@@ -187,10 +193,21 @@ def realXYZ():
         z_pred = rbfnet_z.predict(d_pred)
         stress_pred = rbfnet_stress.predict(d_pred)
         dSum_pred = rbfnet_dSum.predict(d_pred)
-        plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
-                 label=('' if i == 0 else '_') + 'y_predict')
-        plt.plot(d, y_real, color='#ff00ff', marker='+', linestyle='-',
-                 label=('' if i == 0 else '_') + 'y-real')
+        count_xxx = np.arange(1, stress_pred.shape[0] + 1)
+        count_xxx_1 = np.arange(1, len(stress_real) + 1)
+        # fig = plt.figure()
+        # ax = fig.gca(projection='3d')
+        # # print(y_pred)
+        # y_real_arr = np.array(y_real)
+        # ax.scatter(d[0], d[1], y_real_arr)
+        # ax.plot_surface(d_pred[0], d_pred[1], y_pred.reshape(y_pred.shape[-1], 1), cmap=cm.coolwarm,
+        #                 linewidth=1, antialiased=False)
+        # ax.plot_surface(d[0], d[1], y_real_arr.reshape(y_real_arr.shape[-1], 1), cmap=cm.coolwarm,
+        #                 linewidth=0, antialiased=False)
+        # plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
+        #          label=('' if i == 0 else '_') + 'y_predict')
+        # plt.plot(d, y_real, color='#ff00ff', marker='+', linestyle='-',
+        #          label=('' if i == 0 else '_') + 'y-real')
         # plt.plot(d_pred, z_pred, color='#ff0000', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'z-predict')
         # plt.plot(d_whole, z_real, color='#ff00ff', marker='+', linestyle='-.',
@@ -199,9 +216,12 @@ def realXYZ():
         #          label=('' if i == 0 else '_') + 'dSum_predict')
         # plt.plot(d, dSum_real, color='#455500', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'dSum_predict')
-        # plt.plot(d_pred, stress_pred, color='#ffff00', marker='+', linestyle='-.',
+
+        plt.scatter(count_xxx[0:100], stress_pred[0:100], color='#ff0000', marker='o',
+                    label=('' if i == 0 else '_') + 'dSum_predict')
+        # plt.plot(count_xxx, stress_pred, color='#ffff00', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'dSum_predict')
-        # plt.plot(d, stress_real, color='#455500', marker='+', linestyle='-.',
+        # plt.plot(count_xxx_1, stress_real, color='#455500', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'dSum_predict')
         # list_w_y = np.concatenate((list_w_y, w_y))
         # list_w_z = np.concatenate((list_w_z, w_z))
@@ -224,12 +244,12 @@ def realXYZ():
     # Text_Create('dSum_pre', ','.join(map(str, list_w_dSum)), 'hex')
 
     # 一般用这个
-    Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(
-        map(str, list(d))) + '\n' + rbf_type,
-                'four')
-    Text_Create('z_pred_list', '\n'.join(list_w_z) + '\n' + rbf_type, 'four')
-    Text_Create('stress_pred_list', '\n'.join(list_w_stress) + '\n' + rbf_type, 'four')
-    Text_Create('dSum_pred_list', '\n'.join(list_w_dSum) + '\n' + rbf_type, 'four')
+    # Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(
+    #     map(arrTostr, d.tolist())) + '\n' + rbf_type,
+    #             'four')
+    # Text_Create('z_pred_list', '\n'.join(list_w_z) + '\n' + rbf_type, 'four')
+    # Text_Create('stress_pred_list', '\n'.join(list_w_stress) + '\n' + rbf_type, 'four')
+    # Text_Create('dSum_pred_list', '\n'.join(list_w_dSum) + '\n' + rbf_type, 'four')
 
     # Text_Create('y_pred_list', '\n'.join(list_w_y) + '\n' + stds, 'hex')
     # Text_Create('z_pred_list', '\n'.join(list_w_z), 'hex')
@@ -242,8 +262,8 @@ def realXYZ():
     # Text_Create('dSum_pre_str', list_w_dSum.rstrip('\n'), 'hex')
     # plt.plot(d_pred, Duplicated_list(list_zAll, 'coords'), color='#000000', marker='+', linestyle='-.')
     # plt.plot(d_pred, Duplicated_list(list_stressAll, 'stress'), color='#000000', marker='+', linestyle='-.')
-    plt.legend()
-    plt.tight_layout()
+    # plt.legend()
+    # plt.tight_layout()
     plt.show()
     elapsed = (time.perf_counter() - start)
     print("Time used:", elapsed)

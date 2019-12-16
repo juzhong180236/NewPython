@@ -3,7 +3,8 @@
 import os
 import itertools
 
-path_switch = "/pulley/"
+# path_switch = "/pulley/"
+path_switch = "/11/"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
 path_four = "C:/Users/asus/Desktop/Demo_DT_Crane/APP_models" + path_switch + "pre/"
 # '''四面体ELIST.lis路径'''
@@ -307,7 +308,8 @@ def Tuple_Surface_Coords_Ele_Dcolor(path_input, str_surface_ele, set_surface_ele
         print("\r程序当前已完成：" + str(round(i_processing / len(files) * 100)) + '%', end="")
         str_coords_allFile += ','.join(list_sort) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
     str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
-    print(str_coords_allFile)
+    # print(len(str_coords_allFile.split('\n')[-1]))
+    # print(str_coords_allFile.rstrip('\n'))
     # 将所有加了位移信息的坐标值和将真实索引值（real_index_12...）更新为[0,1...]的list_ele返回
     return str_coords_allFile.rstrip('\n'), list_ele, str_Dcolor_allFile, str_displacementSum_allFile.rstrip(
         '\n'), str(float_Dcolor_step) + ',' + str(str_Dcolor_min)
@@ -380,8 +382,8 @@ path_equivalent_stress_four = path_four + "equivalent_stress/"
 # tuple_surface_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_stress_four, set_surface_ele_four)
 tuple_surface_equivalent_stress_Scolor_four = Tuple_Surface_Scolor_Stress(path_equivalent_stress_four,
                                                                           set_surface_ele_four)
-
 # Text_Create('displacement_coords_surface_new', tuple_surface_coords_ele_Dcolor_four[0], 'four')
+Text_Create('displacement', tuple_surface_coords_ele_Dcolor_four[0], 'four')
 # Text_Create('element_surface_new', ','.join(tuple_surface_coords_ele_Dcolor_four[1]), 'four')
 # Text_Create('dSum_surface_new', tuple_surface_coords_ele_Dcolor_four[3], 'four')
 # Text_Create('e_stress_surface_new', tuple_surface_equivalent_stress_Scolor_four[1], 'four')
