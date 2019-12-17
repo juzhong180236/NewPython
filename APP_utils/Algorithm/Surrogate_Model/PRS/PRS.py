@@ -17,17 +17,19 @@ class PRS(object):
         self.name = name
         self.prs = None
     """
-    def __init__(self, name='full'):
+
+    def __init__(self, name='full', m=3):
         self.name = name
+        self.m = m
         self.prs = None
         if self.name in ['full', 'bp', 'zi']:
-            self.prs = bp_com.PRS(self.name)
+            self.prs = bp_com.PRS(name=self.name, m=self.m)
         elif self.name == 'simple':
-            self.prs = simple.PRS(self.name)
+            self.prs = simple.PRS(m=self.m)
         elif self.name == 'simple_m':
-            self.prs = simple_m.PRS(self.name)
+            self.prs = simple_m.PRS(m=self.m)
         elif self.name == 'stepwise':
-            self.prs = sw_com.PRS(self.name)
+            self.prs = sw_com.PRS(m=self.m)
             # 有其他的继续往下加
 
     def fit(self, X, Y):

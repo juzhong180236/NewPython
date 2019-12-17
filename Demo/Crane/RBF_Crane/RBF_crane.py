@@ -6,11 +6,17 @@ import time
 
 
 def gaussian(x, c, s):
-    return np.exp(-(x - c) ** 2 / (2 * s ** 2))
+    if c.ndim != 1:
+        return np.sum(np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2)), axis=-1)
+    else:
+        return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 
 
 def multiquadric(x, c, s):
-    return np.sqrt((x - c) ** 2 + s ** 2)
+    if c.ndim != 1:
+        return np.sqrt(np.sqrt(np.sum((x - c) ** 2, axis=-1)) + s ** 2)
+    else:
+        return np.sqrt((x - c) ** 2 + s ** 2)
 
 
 def linear(x, c):
@@ -18,7 +24,10 @@ def linear(x, c):
 
 
 def linear_abs(x, c):
-    return np.abs(x - c)
+    if c.ndim != 1:
+        return np.sum(np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1))), axis=-1)
+    else:
+        return np.abs(x - c)
 
 
 def square(x, c):
@@ -57,9 +66,10 @@ class RBF(object):
         self.x = X
         # self.std = (max(X) - min(X)) / len(X)
         max_distance_list = []
+
         for i in range(X.shape[0]):
             max_distance_list.append(max([np.linalg.norm(m) for m in X - X[i]]))
-        self.std = max(max_distance_list) / X.shape[0]
+        self.std = max(max_distance_list) / (2 * X.shape[0])
         for i in range(X.shape[0]):
             if self.rbf.__name__ in str_no_s:
                 list_result.append(self.rbf(X[i], X).ravel())
@@ -88,12 +98,12 @@ if __name__ == "__main__":
     d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
     y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
     d_pred = np.arange(-17, 18)
-    Y_pre = RBF('lin_a')
-    Y_pre.fit(data_real[0], data_real[1])
-    y_Pre = Y_pre.predict(data_pre[0])
+    # Y_pre = RBF('lin_a')
+    # Y_pre.fit(data_real[0], data_real[1])
+    # y_Pre = Y_pre.predict(data_pre[0])
     # RR = 1 - (np.sum(np.square(data_pre[1] - y_Pre)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
     # print(RR)
-    Y_pre1 = RBF('lin_a')
+    Y_pre1 = RBF('mq')
     Y_pre1.fit(d, y)
     y_Pre1 = Y_pre1.predict(d_pred)
     # plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',

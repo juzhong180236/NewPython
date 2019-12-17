@@ -12,6 +12,10 @@ path_hex = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "mid
 rbf_type = 'lin_a'
 
 
+def R2(x_real, x_predict):
+    return 1 - (np.sum((x_predict - x_real) ** 2) / np.sum((x_real - np.mean(x_real)) ** 2))
+
+
 def Text_Create(name, msg, hexOrfour):
     # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
     save_path = "C:/Users/asus/Desktop/DT_Crane_Demo/APP_models" + path_switch + "post/"
@@ -178,8 +182,8 @@ def realXYZ():
 
     length = len(list_x)
     i_max_x_y = 0
-    # for i in range(length):
-    for i in range(1):
+    for i in range(length):
+        # for i in range(1):
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         y_real = list_y[i]
         z_real = list_z[i]
@@ -233,7 +237,7 @@ def realXYZ():
         #          label=('' if i == 0 else '_') + 'dSum_predict')
 
         plt.scatter(count_xxx[0:100], stress_pred[0:100], color='#ff0000', marker='o',
-                        label=('' if i == 0 else '_') + 'dSum_predict')
+                    label=('' if i == 0 else '_') + 'dSum_predict')
         # plt.plot(count_xxx, stress_pred, color='#ffff00', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'dSum_predict')
         # plt.plot(count_xxx_1, stress_real, color='#455500', marker='+', linestyle='-.',

@@ -5,7 +5,7 @@ from ReadExcel import readExcel
 
 
 class PRS(object):
-    def __init__(self, m=7, w=0):
+    def __init__(self, m=3, w=0):
         self.m = m
         self.w = w
 

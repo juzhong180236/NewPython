@@ -1,7 +1,7 @@
 import numpy as np
 from data_to_file import DataToFile
 
-path_switch = 'test_new_code'
+path_switch = 'rbf_correct_model'
 # 读取路径(读pre)
 path_four_read = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\pre\\"
 # 写入路径(写在mid)

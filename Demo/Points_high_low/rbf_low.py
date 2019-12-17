@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-from RBF_crane import RBF
+
+from smt.surrogate_models import RBF
 from scipy.interpolate import griddata
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
@@ -132,6 +133,8 @@ arr_x, arr_y, arr_xy, arr_xy_bianyi = Get_Coords_Data(str_coords)
 # list_xAll, list_yAll, list_zAll = Get_Data(str_allCoords, 'coords')
 list_stress = Get_Data(str_Stress, 'stressOrdSum')
 list_stress_test = Get_Data(str_Stress_test, 'stressOrdSum')
+
+
 # list_stressAll = Get_Data(str_allStress, 'stressOrdSum')
 # list_dSum = Get_Data(str_dSum, 'stressOrdSum')
 
@@ -156,7 +159,7 @@ def realXYZ():
     for iForce in range(len(forceArr)):
         for iDegree in range(len(degreeArr)):
             combine.append((forceArr[iForce], degreeArr[iDegree]))
-    d = np.array(combine)
+    d = np.array(combine, dtype=np.float)
     d_pred_1 = np.array([[15, 37.5]])
     d_pred_2 = np.array([[15, 52.5]])
     d_pred_3 = np.array([[25, 37.5]])
@@ -181,62 +184,25 @@ def realXYZ():
         # 取得list_x, list_y, list_z中每个元素不包含原始坐标值的数值
         # y_real = list_y
         # z_real = list_z
-        stress_real = list_stress[i]
-        # dSum_real = list_dSum
-        # rbfnet_x = RBFNet()
-        # rbfnet_y = RBF(rbf_type['y'])
-        # rbfnet_z = RBF(rbf_type['z'])
-        rbfnet_stress = RBF(rbf_type['stress'])
-        # rbfnet_dSum = RBF(rbf_type['dSum'])
-        # wb_v = rbfnet_x.fit(d, x_real)
-        # w_y = rbfnet_y.fit(d, y_real)
-        # w_z = rbfnet_z.fit(d, z_real)
-        w_stress = rbfnet_stress.fit(d, stress_real)
+        stress_real = np.array(list_stress[i], dtype=np.float)
+        rbfnet_stress = RBF(print_global=False)
+        w_stress = rbfnet_stress.set_training_values(d, stress_real)
+        rbfnet_stress.train()
         # w_dSum = rbfnet_dSum.fit(d, dSum_real)
         # stds = str(rbfnet_y.std)
         # x_pred = rbfnet_x.predict(d_pred)
         # y_pred = rbfnet_y.predict(d_pred)
         # z_pred = rbfnet_z.predict(d_pred)
-        stress_pred_1 = rbfnet_stress.predict(d_pred_1)
-        stress_pred_2 = rbfnet_stress.predict(d_pred_2)
-        stress_pred_3 = rbfnet_stress.predict(d_pred_3)
-        stress_pred_4 = rbfnet_stress.predict(d_pred_4)
-        list_pred.append([stress_pred_1, stress_pred_2, stress_pred_3, stress_pred_4])
+        stress_pred_1 = rbfnet_stress.predict_values(d_pred_1)
+        stress_pred_2 = rbfnet_stress.predict_values(d_pred_2)
+        stress_pred_3 = rbfnet_stress.predict_values(d_pred_3)
+        stress_pred_4 = rbfnet_stress.predict_values(d_pred_4)
+        list_pred.append([stress_pred_1[0], stress_pred_2[0], stress_pred_3[0], stress_pred_4[0]])
         list_pred_1.append(stress_pred_1)
         list_pred_2.append(stress_pred_2)
         list_pred_3.append(stress_pred_3)
         list_pred_4.append(stress_pred_4)
-        # list_RR.append(RR)
-        # dSum_pred = rbfnet_dSum.predict(d_pred)
-        # plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'y_predict')
-        # plt.plot(d, y_real, color='#ff00ff', marker='+', linestyle='-',
-        #          label=('' if i == 0 else '_') + 'y-real')
-        # plt.plot(d_pred, z_pred, color='#ff0000', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'z-predict')
-        # plt.plot(d, z_real, color='#0000ff', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'stress_predict')
-        # plt.plot(d_pred, dSum_pred, color='#ffff00', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'dSum_predict')
-        # plt.plot(d, dSum_real, color='#455500', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'dSum_predict')
-        # plt.plot(d_pred, stress_pred, color='#ffff00', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'dSum_predict')
-        # plt.plot(d, stress_real, color='#455500', marker='+', linestyle='-.',
-        #          label=('' if i == 0 else '_') + 'dSum_predict')
-        # list_w_y = np.concatenate((list_w_y, w_y))
-        # list_w_z = np.concatenate((list_w_z, w_z))
-        # list_w_stress = np.concatenate((list_w_stress, w_stress))
-        # list_w_dSum = np.concatenate((list_w_dSum, w_dSum))
-        # list_w_y += w_y + '\n'
-        # list_w_z += w_z + '\n'
-        # list_w_stress += w_stress + '\n'
-        # list_w_dSum += w_dSum + '\n'
-        # list_w_y.append(w_y)
-        # list_w_z.append(w_z)
         list_w_stress.append(w_stress)
-        # list_w_dSum.append(w_dSum)
-
         print("\r程序当前已完成：" + str(round(i / len(list_stress) * 10000) / 100) + '%', end="")
     arr_train_1 = np.array(list_train_1)
     arr_train_2 = np.array(list_train_2)
@@ -269,7 +235,6 @@ def realXYZ():
     cha_3 = np.abs((arr_train_3 - arr_pred_3) / arr_train_3)
     cha_4 = np.abs((arr_train_4 - arr_pred_4) / arr_train_4)
 
-    nn1 = np.array(list_RR)
     zz_list = [[zz, zz4], cha_1, [zz1, zz5], cha_2, [zz2, zz6], cha_3, [zz3, zz7], cha_4]
 
     # print(min(arr_x), max(arr_x))
@@ -284,7 +249,7 @@ def realXYZ():
     # 广播为100*100的一个面信息
     grid_X, grid_Y = np.meshgrid(X, Y)
     grid_X_bianyi, grid_Y_bianyi = np.meshgrid(X_bianyi, Y)
-    title = ['15 37.5', '15 37.5', '15 52.5', '15 52.5', '25 37.5', '25 37.5', '25 52.5','25 52.5']
+    title = ['15 37.5', '15 37.5', '15 52.5', '15 52.5', '25 37.5', '25 37.5', '25 52.5', '25 52.5']
     for ax, z, i, t in zip(axs.flat, zz_list, range(len(zz_list)), title):
         if (i + 1) % 2 == 0:
             zz = griddata(arr_xy, z, xi=(grid_X, grid_Y), method='cubic')
@@ -295,12 +260,13 @@ def realXYZ():
             # method=nearest/linear/cubic 将数据变为插值
             zz1 = griddata(arr_xy, z[0], xi=(grid_X, grid_Y), method='cubic')
             zz2 = griddata(arr_xy_bianyi, z[1], xi=(grid_X_bianyi, grid_Y_bianyi), method='cubic')
-            print(zz1.shape)
             ax_subplt1 = ax.contourf(grid_X, grid_Y, zz1, levels=100, cmap='jet')
             ax_subplt2 = ax.contourf(grid_X_bianyi, grid_Y_bianyi, zz2, levels=100, cmap='jet')
             ax.set_title('left(real) right(predict) ' + t)
             fig.colorbar(ax_subplt2, ax=ax)
+    nn1 = np.array(list_RR)
     plt.figure()
+    print(nn1)
     fig, axs2 = plt.subplots(nrows=1, ncols=1, figsize=(20, 20))
     zzr = griddata(arr_xy, nn1, xi=(grid_X, grid_Y), method='cubic')
     ax_subplt = axs2.contourf(grid_X, grid_Y, zzr, levels=100, cmap='jet')

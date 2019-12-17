@@ -6,11 +6,17 @@ import time
 
 
 def gaussian(x, c, s):
-    return np.exp(-(x - c) ** 2 / (2 * s ** 2))
+    if c.ndim != 1:
+        return np.sum(np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2)), axis=-1)
+    else:
+        return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 
 
 def multiquadric(x, c, s):
-    return np.sqrt((x - c) ** 2 + s ** 2)
+    if c.ndim != 1:
+        return np.sqrt(np.sqrt(np.sum((x - c) ** 2, axis=-1)) + s ** 2)
+    else:
+        return np.sqrt((x - c) ** 2 + s ** 2)
 
 
 def linear(x, c):
@@ -18,7 +24,10 @@ def linear(x, c):
 
 
 def linear_abs(x, c):
-    return np.abs(x - c)
+    if c.ndim != 1:
+        return np.sum(np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1))), axis=-1)
+    else:
+        return np.abs(x - c)
 
 
 def square(x, c):
@@ -108,7 +117,6 @@ if __name__ == "__main__":
     #          label='z-real')
     # plt.plot(data_pre[0], y_Pre, color='#0000ff', marker='+', linestyle='-.',
     #          label='z-predict')
-
 
     plt.plot(d_pred, ysin_pre, color='#ff0000', marker='+', linestyle='-',
              label='z-real')

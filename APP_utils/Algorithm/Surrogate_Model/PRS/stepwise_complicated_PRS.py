@@ -90,7 +90,7 @@ class PRS(object):
             Y_Pre: 预测的输出数据
     '''
 
-    def __init__(self, threshold=1, m=3, w=0, remove_index=None):
+    def __init__(self, m=3, w=0, remove_index=None):
         if remove_index is None:
             remove_index = []
         self.m = m
