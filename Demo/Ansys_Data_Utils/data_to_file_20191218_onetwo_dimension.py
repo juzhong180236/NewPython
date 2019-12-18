@@ -73,28 +73,28 @@ class DataToFile(object):
         tfc.text_Create(path_write, dopSum, txt_dopSum)
         tfc.text_Create(path_write, stepAndMin, txt_DstepandMin + ',' + txt_SstepandMin)
 
-    def dataToPostFile(self, v_fd, rbf_type='lin_a'):
-        import numpy as np
+    def dataToPostFile(self, v_fd, v_d, rbf_type='lin_a'):
         surfaced = SurfaceData(self.path_read, self.geometry_type)
         txt_ele = surfaced.get_Ele_Data()
         txt_coord_x = surfaced.get_Coord_Data('x')
         txt_dopCoord, txt_dopSum, txt_DstepandMin = surfaced.get_DopCoord_DopSum_DStepandMin()
         txt_stress, txt_SstepandMin = surfaced.get_Stress_SStepandMin()
-        coordsFile = open(self.path_read + 'save.txt', "rt")
+        coordsFile = open(self.path_read + 'coord.txt', "rt")
         str_coords = coordsFile.read()
         coordsFile.close()
 
         stds = ''
         list_x, list_y, list_z = _getData(str_coords, 'coord')
+        print(len(list_x[0]))
         list_stress = _getData(txt_stress, 'stressOrdSum')
         list_dopSum = _getData(txt_dopSum, 'stressOrdSum')
         list_w_y = []
         list_w_z = []
         list_w_stress = []
         list_w_dSum = []
-        list_y_name = []
         cycle_index = len(list_x)
         for i in range(cycle_index):
+        # for i in range(2):
             y_real = list_y[i]
             z_real = list_z[i]
             stress_real = list_stress[i]
@@ -103,12 +103,10 @@ class DataToFile(object):
             rbfnet_z = RBF(rbf_type)
             rbfnet_stress = RBF(rbf_type)
             rbfnet_dSum = RBF(rbf_type)
-            w_y = rbfnet_y.fit(v_fd, y_real)
-            w_z = rbfnet_z.fit(v_fd, z_real)
+            w_y = rbfnet_y.fit(v_d, y_real)
+            w_z = rbfnet_z.fit(v_d, z_real)
             w_stress = rbfnet_stress.fit(v_fd, stress_real)
             w_dSum = rbfnet_dSum.fit(v_fd, dSum_real)
-            y = str(rbfnet_y.predict(np.array([[0, 200]])).tolist())
-            list_y_name.append(y)
             stds = str(rbfnet_y.std)
             list_w_y.append(w_y)
             list_w_z.append(w_z)
@@ -124,7 +122,6 @@ class DataToFile(object):
         z_w = 'z_w'
         dSum_w = 'dSum_w'
         stress_w = 'stress_w'
-        y_name = 'y'
 
         tfc.text_Create(self.path_write, ele, txt_ele)
         tfc.text_Create(self.path_write, coord_x, txt_coord_x)
@@ -135,4 +132,3 @@ class DataToFile(object):
         tfc.text_Create(self.path_write, z_w, '\n'.join(list_w_z) + '\n' + rbf_type)
         tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
         tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
-        tfc.text_Create(self.path_write, y_name, '\n'.join(list_y_name) + '\n' + rbf_type)

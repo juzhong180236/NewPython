@@ -119,7 +119,7 @@ def get_Stress_Train_Data(string, fileType):
 
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_read = r"C:\Users\asus\Desktop\data_displacement\\"
+path_read = r"D:\Alai\data_Alai\points_400_20191218\data_dis2\\"
 
 # 低保真数据
 path_low_coord = path_read + r"low_train\10-30.txt"  # 坐标点路径

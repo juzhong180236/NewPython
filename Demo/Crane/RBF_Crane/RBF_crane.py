@@ -7,7 +7,7 @@ import time
 
 def gaussian(x, c, s):
     if c.ndim != 1:
-        return np.sum(np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2)), axis=-1)
+        return np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2))
     else:
         return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 
@@ -25,7 +25,7 @@ def linear(x, c):
 
 def linear_abs(x, c):
     if c.ndim != 1:
-        return np.sum(np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1))), axis=-1)
+        return np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1)))
     else:
         return np.abs(x - c)
 
@@ -76,7 +76,7 @@ class RBF(object):
             else:
                 list_result.append(self.rbf(X[i], X, self.std).ravel())
         Gaussian_result = np.array(list_result)
-        self.w = np.linalg.pinv(Gaussian_result).dot(Y)
+        self.w = np.linalg.inv(Gaussian_result).dot(Y)
         return ','.join(map(str, self.w))
 
     def predict(self, X_Pre):
