@@ -43,6 +43,20 @@ class SurfaceData(object):
         str_dopcoord, str_dopSum, str_Dcolor, str_D_StepandMin = dd.surface_DopCoords_DopSum_Dcolor()
         return str_dopcoord, str_dopSum, str_D_StepandMin
 
+    def get_Displacement_DopSum_Dcolor(self):
+        """
+        :return:返回表面各节点位移数据（最后一行是分为n（9）段的Step）、和位移分为n（21）段的Step和最小值
+        """
+        if not self.ed:
+            print('ElementData对象为空，先执行AnsysSurfaceData对象的get_Ele_Data方法！')
+            return
+        if not self.cd:
+            print('CoordinateData对象为空，先执行AnsysSurfaceData对象的get_Coord_Data方法！')
+            return
+        dd = DispalcementData(self.path_pre + '/dopAndCoord/', self.ed, self.cd)
+        str_displacement, str_dopSum, str_Dcolor, str_D_StepandMin = dd.surface_Displacement_DopSum_Dcolor()
+        return str_displacement, str_dopSum, str_D_StepandMin
+
     def get_Dcolor(self):
         """
         :return:返回表面各节点位移数据对应的颜色数据

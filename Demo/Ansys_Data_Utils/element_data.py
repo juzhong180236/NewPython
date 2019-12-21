@@ -8,6 +8,9 @@ class ElementData(object):
         self.geometry_type = geometry_type
         pass
 
+    def aa(self):
+        return self.__allEle_To_List()
+
     # 【输入int,str】：ELIST.lis文件中是四面体节点输入4，六面体节点输入6，第二个参数为ELIST.lis的路径
     # 【输出str】：返回以逗号隔开的可绘制模型表面的排列好的索引值字符串(string)
     # 【功能】：对四面体或六面体的ELIST.lis进行简化，使其只有表面点的信息，极大减少数据量
@@ -28,10 +31,14 @@ class ElementData(object):
         for everyline in eleFile:
             list_everyline = everyline.split()
             if list_everyline and list_everyline[0].isdigit():
-                # 只type为1的元素索引
-                if not list_everyline[1] == '1':
+                # 只type为1的元素索引，在都为四面体的网格中起作用
+                if len(self.geometry_type) == 1 and TETRAHEDRON in self.geometry_type and not list_everyline[1] == '1':
                     continue
+                # 取每一行第6个到最后一个的元素
                 list_cut = list_everyline[6:]
+                # list_cut为空或者首个字符不是纯数字构成的字符串,直接跳过该行
+                # if not list_cut or not list_cut[0].isdigit() or list_cut.count('0') > 1:
+                #     print(list_cut)
                 if not list_cut or not list_cut[0].isdigit():
                     # if not list_cut:
                     continue
@@ -39,6 +46,8 @@ class ElementData(object):
                     if not ele.isdigit() or ele == '0':
                         list_cut.remove(ele)
                 list_temp = list(map(int, list_cut))
+                # if list_everyline[0] == '1':
+                #     print(list_temp)
                 if len(list_temp) == 8:
                     if TETRAHEDRON in self.geometry_type:
                         # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
@@ -164,4 +173,4 @@ if __name__ == "__main__":
     # path_four_read = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\pulley\pre\ele\ELIST.lis"
     path_four_read = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\pulley\mid\element_surface_new.txt"
     ed = ElementData(path_four_read, ['2D4', '3D6'])
-    print(len(ed.allEle_Sequence()))
+    # print(len(ed.allEle_Sequence()))

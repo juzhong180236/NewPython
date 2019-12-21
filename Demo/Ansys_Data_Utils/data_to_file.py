@@ -73,14 +73,22 @@ class DataToFile(object):
         tfc.text_Create(path_write, dopSum, txt_dopSum)
         tfc.text_Create(path_write, stepAndMin, txt_DstepandMin + ',' + txt_SstepandMin)
 
-    def dataToPostFile(self, v_fd, rbf_type='lin_a'):
+    def dataToPostFile_v1(self, v_fd, rbf_type='lin_a', which_axis_fixed='x'):
+        """
+        :param v_fd:
+        :param rbf_type:
+        :param which_axis_fixed:
+        :return:
+        """
         import numpy as np
         surfaced = SurfaceData(self.path_read, self.geometry_type)
         txt_ele = surfaced.get_Ele_Data()
-        txt_coord_x = surfaced.get_Coord_Data('x')
+        txt_fixed_axis = surfaced.get_Coord_Data(which_axis_fixed)
         txt_dopCoord, txt_dopSum, txt_DstepandMin = surfaced.get_DopCoord_DopSum_DStepandMin()
         txt_stress, txt_SstepandMin = surfaced.get_Stress_SStepandMin()
-        coordsFile = open(self.path_read + 'save.txt', "rt")
+        # coordsFile = open(self.path_read + 'pure_coord.txt', "rt")
+        coordsFile = open(self.path_read + 'dop_coord.txt', "rt")
+        # coordsFile = open(self.path_read + 'mesh_shell_coord.txt', "rt")
         str_coords = coordsFile.read()
         coordsFile.close()
 
@@ -88,51 +96,128 @@ class DataToFile(object):
         list_x, list_y, list_z = _getData(str_coords, 'coord')
         list_stress = _getData(txt_stress, 'stressOrdSum')
         list_dopSum = _getData(txt_dopSum, 'stressOrdSum')
-        list_w_y = []
-        list_w_z = []
+        list_w_1 = []
+        list_w_2 = []
         list_w_stress = []
         list_w_dSum = []
-        list_y_name = []
+        # list_y_name = []
         cycle_index = len(list_x)
         for i in range(cycle_index):
-            y_real = list_y[i]
-            z_real = list_z[i]
+            if which_axis_fixed == 'x':
+                real_1 = list_y[i]
+                real_2 = list_z[i]
+            elif which_axis_fixed == 'y':
+                real_1 = list_x[i]
+                real_2 = list_z[i]
+            else:
+                real_1 = list_x[i]
+                real_2 = list_y[i]
             stress_real = list_stress[i]
             dSum_real = list_dopSum[i]
-            rbfnet_y = RBF(rbf_type)
-            rbfnet_z = RBF(rbf_type)
+            rbfnet_1 = RBF(rbf_type)
+            rbfnet_2 = RBF(rbf_type)
             rbfnet_stress = RBF(rbf_type)
             rbfnet_dSum = RBF(rbf_type)
-            w_y = rbfnet_y.fit(v_fd, y_real)
-            w_z = rbfnet_z.fit(v_fd, z_real)
+            w_1 = rbfnet_1.fit(v_fd, real_1)
+            w_2 = rbfnet_2.fit(v_fd, real_2)
             w_stress = rbfnet_stress.fit(v_fd, stress_real)
             w_dSum = rbfnet_dSum.fit(v_fd, dSum_real)
-            y = str(rbfnet_y.predict(np.array([[0, 200]])).tolist())
-            list_y_name.append(y)
-            stds = str(rbfnet_y.std)
-            list_w_y.append(w_y)
-            list_w_z.append(w_z)
+            # y = str(rbfnet_y.predict(np.array([[0, 200]])).tolist())
+            # list_y_name.append(y)
+            stds = str(rbfnet_1.std)
+            list_w_1.append(w_1)
+            list_w_2.append(w_2)
             list_w_stress.append(w_stress)
             list_w_dSum.append(w_dSum)
-            print("\r" + rbfnet_y.__class__.__name__ + "程序当前已完成：" + str(round(i / len(list_y) * 10000) / 100) + '%',
+            print("\r" + rbfnet_1.__class__.__name__ + "程序当前已完成：" + str(round(i / len(list_y) * 10000) / 100) + '%',
                   end="")
 
         ele = 'ele'
-        coord_x = 'coord_x'
+        coord_fixed_axis = 'coord_fixed_axis'
         stepAndMin = 'step_min'
-        y_w = 'y_w'
-        z_w = 'z_w'
+        w_1 = 'w_1'
+        w_2 = 'w_2'
         dSum_w = 'dSum_w'
         stress_w = 'stress_w'
-        y_name = 'y'
+        # y_name = 'y'
 
         tfc.text_Create(self.path_write, ele, txt_ele)
-        tfc.text_Create(self.path_write, coord_x, txt_coord_x)
+        tfc.text_Create(self.path_write, coord_fixed_axis, txt_fixed_axis)
         tfc.text_Create(self.path_write, stepAndMin, txt_DstepandMin + ',' + txt_SstepandMin)
 
-        tfc.text_Create(self.path_write, y_w, '\n'.join(list_w_y) + '\n' + stds + '\n' + ','.join(
-            map(lambda x: ','.join(map(str, x)), v_fd.tolist())) + '\n' + rbf_type)
-        tfc.text_Create(self.path_write, z_w, '\n'.join(list_w_z) + '\n' + rbf_type)
+        tfc.text_Create(self.path_write, w_1,
+                        '\n'.join(list_w_1) + '\n' + which_axis_fixed + '\n' + stds + '\n' + ','.join(
+                            map(lambda x: ','.join(map(str, x)), v_fd.tolist())) + '\n' + rbf_type)
+        tfc.text_Create(self.path_write, w_2, '\n'.join(list_w_2) + '\n' + rbf_type)
         tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
         tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
-        tfc.text_Create(self.path_write, y_name, '\n'.join(list_y_name) + '\n' + rbf_type)
+        # tfc.text_Create(self.path_write, y_name, '\n'.join(list_y_name) + '\n' + rbf_type)
+
+    def dataToPostFile_v2(self, v_fd, rbf_type='lin_a', which_part='truss'):
+        """
+        和上一版本的区别是，位移数据和坐标数据分开导出
+        :param v_fd: 输入的训练自变量
+        :param rbf_type: 使用的rbf类型
+        :param which_part: 存储的数据是哪个零件的
+        :return:
+        """
+        import numpy as np
+        surfaced = SurfaceData(self.path_read, self.geometry_type)
+        """以下为节点数据"""
+        # 索引
+        txt_ele = surfaced.get_Ele_Data()
+        surfaced.get_Coord_Data()
+        # 位移
+        txt_displacement, txt_dopSum, txt_DstepandMin = surfaced.get_Displacement_DopSum_Dcolor()
+        # 应力
+        txt_stress, txt_SstepandMin = surfaced.get_Stress_SStepandMin()
+
+        stds = ''
+        list_stress = _getData(txt_stress, 'stressOrdSum')
+        list_dopSum = _getData(txt_dopSum, 'stressOrdSum')
+        # list_w_1 = []
+        # list_w_2 = []
+        print(len(list_stress))
+        print(len(list_dopSum))
+        list_w_stress = []
+        list_w_dSum = []
+        # list_y_name = []
+        cycle_index = len(list_stress)
+        for i in range(cycle_index):
+            stress_real = list_stress[i]
+            dSum_real = list_dopSum[i]
+            # rbfnet_1 = RBF(rbf_type)
+            # rbfnet_2 = RBF(rbf_type)
+            rbfnet_stress = RBF(rbf_type)
+            rbfnet_dSum = RBF(rbf_type)
+            # w_1 = rbfnet_1.fit(v_fd, real_1)
+            # w_2 = rbfnet_2.fit(v_fd, real_2)
+            w_stress = rbfnet_stress.fit(v_fd, stress_real)
+            w_dSum = rbfnet_dSum.fit(v_fd, dSum_real)
+            stds = str(rbfnet_stress.std)
+            # list_w_1.append(w_1)
+            # list_w_2.append(w_2)
+            list_w_stress.append(w_stress)
+            list_w_dSum.append(w_dSum)
+            print("\r" + rbfnet_stress.__class__.__name__ + "程序当前已完成：" + str(
+                round(i / len(list_stress) * 10000) / 100) + '%',
+                  end="")
+
+        w_1 = 'w_1'
+        w_2 = 'w_2'
+
+        stepAndMin = which_part + '_others'
+        ele = which_part + 'ele'
+        dSum_w = which_part + '_dSum_w'
+        stress_w = which_part + '_stress_w'
+
+        # 步数和最小值，方差，输入值
+        tfc.text_Create(self.path_write, stepAndMin,
+                        txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + ','.join(
+                            map(lambda x: ','.join(map(str, x)), v_fd.tolist())))
+        # 索引文件
+        tfc.text_Create(self.path_write, ele, txt_ele)
+        # 总位移文件
+        tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
+        # 应力文件
+        tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)

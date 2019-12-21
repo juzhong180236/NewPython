@@ -119,17 +119,17 @@ def get_Stress_Train_Data(string, fileType):
 
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_read = r"D:\Alai\data_Alai\points_400_20191218\data_dis2\\"
+path_read = r"D:\Alai\data_Alai\points_400_20191218\data_hole\\"
 
 # 低保真数据
-path_low_coord = path_read + r"low_train\10-30.txt"  # 坐标点路径
+path_low_coord = path_read + r"low_train\30-0.txt"  # 坐标点路径
 path_low_stress = path_read + r"low_train\\"  # 训练应力数据路径
 arr_x_low, arr_y_low, arr_xy_low, arr_xy_predict_low = get_Coords_Data(path_low_coord)  # 坐标值数据
 arr_stress_low_condition, str_stress_low_byfile = get_Stress_Data(path_low_stress)  # 每个状态不同节点的应力数据
 arr_stress_low_node = get_Stress_Train_Data(str_stress_low_byfile, 'stressOrdSum')  # 每个节点不同状态的应力数据
 
 # 高保真数据
-path_high_coord = path_read + r"high_verify\15-45.txt"  # 坐标点路径
+path_high_coord = path_read + r"high_verify\45-30.txt"  # 坐标点路径
 path_high_stress = path_read + r"high_verify\\"  # 验证应力数据路径
 path_high_train = path_read + r"high_train\\"  # 验证应力数据路径
 arr_x_high, arr_y_high, arr_xy_high, arr_xy_predict_high = get_Coords_Data(path_high_coord)  # 坐标值数据
@@ -138,8 +138,8 @@ arr_stress_high_train, str_stress_high_train = get_Stress_Data(path_high_train) 
 
 
 def low_predict_data_by_force():
-    d_train_low = np.array([[10, 30], [10, 60], [20, 45], [30, 30], [30, 60]])
-    d_predict_low = np.array([[15, 45], [20, 37.5], [20, 52.5], [25, 45]])
+    d_train_low = np.array([[30, 0], [30, 60], [60, 30], [90, 0], [90, 60]])
+    d_predict_low = np.array([[45, 30], [60, 15], [60, 45], [75, 30]])
     # stds = ''
     # 每个节点不同状态的预测值
     list_preddict_node = []
@@ -238,10 +238,12 @@ def cokriging(i):
     #                  [1.57894737, 2.10526316],
     #                  [8.42105263, 2.10526316],
     #                  ])
-    Xt_e = np.array([[1.57894737, 16.8421053],
-                     [8.42105263, 16.8421053],
-                     [1.57894737, 3.15789474],
-                     [8.42105263, 3.15789474],
+    Xt_e = np.array([[84.2000434, 1.5655806],
+                     [16.0943345, 7.97111717],
+                     [15.7955774, 41.584603],
+                     [83.9713379, 7.94023456],
+                     [49.6941795, 43.2472467],
+                     [50.3014649, 6.66564347],
                      ])
     Xt_c = arr_xy_low
 
@@ -328,7 +330,7 @@ def draw():
     # 将上述两组数据广播为100*100的一个面信息
     grid_X, grid_Y = np.meshgrid(X, Y)
     grid_X_predict, grid_Y_predict = np.meshgrid(X_predict, Y)
-    title = np.array(['15-45', '20-37.5', '20-52.5', '25-45']).repeat(3)
+    title = np.array(['45-30', '60-15', '60-45', '75-30']).repeat(3)
     for ax, draw_xy, i, t, in zip(axs.flat, draw_xy_list, range(len(draw_xy_list)), title):
         if (i + 1) % 3 == 0:
             data = griddata(arr_xy_high, draw_xy, xi=(grid_X, grid_Y), method='cubic')
