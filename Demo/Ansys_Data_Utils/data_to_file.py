@@ -8,6 +8,7 @@ import printf as pf
 def _getData(string, fileType):
     # 将多个文件（5个）合并过的变形、应力、坐标值数据等字符串以换行符分解为list
     list_separateByNewline = string.split('\n')
+    print('第一个进来的数据' + str(len(list_separateByNewline[0].split(','))))
     # 将上述list的每一个str元素以逗号分解为list,用作计数
     # list_EachPart_Str2List = [listEle.split(',') for listEle in list_separateByNewline]
     list_EachPart_Str2List = list_separateByNewline[0].split(',')
@@ -177,8 +178,73 @@ class DataToFile(object):
         list_dopSum = _getData(txt_dopSum, 'stressOrdSum')
         # list_w_1 = []
         # list_w_2 = []
-        print(len(list_stress))
-        print(len(list_dopSum))
+        list_w_stress = []
+        list_w_dSum = []
+        # list_y_name = []
+        cycle_index = len(list_stress)
+        for i in range(cycle_index):
+            stress_real = list_stress[i]
+            dSum_real = list_dopSum[i]
+            # rbfnet_1 = RBF(rbf_type)
+            # rbfnet_2 = RBF(rbf_type)
+            rbfnet_stress = RBF(rbf_type)
+            rbfnet_dSum = RBF(rbf_type)
+            # w_1 = rbfnet_1.fit(v_fd, real_1)
+            # w_2 = rbfnet_2.fit(v_fd, real_2)
+            w_stress = rbfnet_stress.fit(v_fd, stress_real)
+            w_dSum = rbfnet_dSum.fit(v_fd, dSum_real)
+            stds = str(rbfnet_stress.std)
+            # list_w_1.append(w_1)
+            # list_w_2.append(w_2)
+            list_w_stress.append(w_stress)
+            list_w_dSum.append(w_dSum)
+            print("\r" + rbfnet_stress.__class__.__name__ + "程序当前已完成：" + str(
+                round(i / len(list_stress) * 10000) / 100) + '%',
+                  end="")
+
+        w_1 = 'w_1'
+        w_2 = 'w_2'
+
+        stepAndMin = which_part + '_others'
+        ele = which_part + 'ele'
+        dSum_w = which_part + '_dSum_w'
+        stress_w = which_part + '_stress_w'
+
+        # 步数和最小值，方差，输入值
+        tfc.text_Create(self.path_write, stepAndMin,
+                        txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + ','.join(
+                            map(lambda x: ','.join(map(str, x)), v_fd.tolist())))
+        # 索引文件
+        tfc.text_Create(self.path_write, ele, txt_ele)
+        # 总位移文件
+        tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
+        # 应力文件
+        tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
+
+    def dataToPostFile_v2_Bysorted(self, v_fd, rbf_type='lin_a', which_part='truss'):
+        """
+        和上一版本的区别是，位移数据和坐标数据分开导出
+        :param v_fd: 输入的训练自变量
+        :param rbf_type: 使用的rbf类型
+        :param which_part: 存储的数据是哪个零件的
+        :return:
+        """
+        import numpy as np
+        surfaced = SurfaceData(self.path_read, self.geometry_type)
+        """以下为节点数据"""
+        # 索引
+        txt_ele = surfaced.get_Ele_Data()
+        txt_coord = surfaced.get_Coord_Data()
+        # 位移
+        txt_displacement, txt_dopSum, txt_DstepandMin = surfaced.get_Displacement_DopSum_Dcolor_Bysorted()
+        # 应力
+        txt_stress, txt_SstepandMin = surfaced.get_Stress_SStepandMin_Bysorted()
+
+        stds = ''
+        list_stress = _getData(txt_stress, 'stressOrdSum')
+        list_dopSum = _getData(txt_dopSum, 'stressOrdSum')
+        # list_w_1 = []
+        # list_w_2 = []
         list_w_stress = []
         list_w_dSum = []
         # list_y_name = []

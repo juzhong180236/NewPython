@@ -98,7 +98,7 @@ class DispalcementData(object):
                     if len(line) == 62:
                         line_index = int(line[0:9].strip())  # 获取节点编号
                         if line_index in set_surface_ele:  # 如果该点是表面点和位移运算得到点的最终坐标
-                            list_sort.extend([line[9:22].strip(),line[22:35].strip(),line[35:48].strip()])
+                            list_sort.extend([line[9:22].strip(), line[22:35].strip(), line[35:48].strip()])
                             list_Dcolor.append(line[49:61].strip())  # 将位移之和的值传入数组
                             iCount += 3
                 infile.close()
@@ -113,5 +113,67 @@ class DispalcementData(object):
             i_processing += 1
         str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
         # print(str_coords_allFile.rstrip('\n'))
-        return str_displacementXYZ_allFile.rstrip('\n'), str_displacementSum_allFile.rstrip('\n'), str_Dcolor_allFile, str(
+        return str_displacementXYZ_allFile.rstrip('\n'), str_displacementSum_allFile.rstrip(
+            '\n'), str_Dcolor_allFile, str(
+            float_Dcolor_step) + ',' + str(float_Dcolor_min)
+
+    def surface_Displacement_DopSum_Dcolor_Bysorted(self):
+        isExisted = os.path.exists(self.path_displacement)
+        if not isExisted:
+            pf.printf(self.path_displacement)
+            pf.printf('上面列出的路径不存在，请设置正确路径！')
+            return
+        else:
+            pf.printf('目录[' + self.path_displacement + ']存在,正在读取...')
+        files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
+        # files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
+        files_cut = sorted(files[0:-1], key=lambda x: int(x))
+        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut, self.path_displacement, 'd')  # 获取step
+
+        set_surface_ele = self.ed.set_SurfaceEle()
+
+        i_processing = 1  # 遍历到第i个文件
+        str_displacementXYZ_allFile = ''  # 不带初始坐标信息
+        str_Dcolor_allFile = ''
+        str_displacementSum_allFile = ''
+        for file in files_cut:  # 遍历文件夹
+            list_sort = []  # 存放加上位移后的所有坐标值的list
+            list_Dcolor = []
+            if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
+                filename = os.path.basename(file)  # 返回文件名
+                fullpath_input = self.path_displacement + filename  # 得到文件夹中每个文件的完整路径
+                infile = open(fullpath_input, 'rt')  # 以文本形式读取文件
+                iCount = 0  # 上述初始的坐标值的list_coords中的索引，每3个一组
+                for line in infile:
+                    if len(line) == 62:
+                        line_index = int(line[0:9].strip())  # 获取节点编号
+                        if line_index in set_surface_ele:  # 如果该点是表面点和位移运算得到点的最终坐标
+                            list_sort.append(
+                                [str(line_index), line[9:22].strip(), line[22:35].strip(), line[35:48].strip()])
+                            list_Dcolor.append([str(line_index), line[49:61].strip()])  # 将位移之和的值传入数组
+                            iCount += 3
+                infile.close()
+
+
+            list_sort = sorted(list_sort, key=lambda x: int(x[0]))
+            list_Dcolor = sorted(list_Dcolor, key=lambda x: int(x[0]))
+            length_Bysorted = len(list_sort)
+            list_sort_Bysort = []
+            list_Dcolor_Bysort = []
+            for i in range(0, length_Bysorted):
+                list_sort_Bysort.extend([list_sort[i][1], list_sort[i][2], list_sort[i][3]])
+                list_Dcolor_Bysort.append(list_Dcolor[i][1])
+
+            str_displacementSum_allFile += ','.join(list_Dcolor_Bysort) + '\n'
+            str_displacementXYZ_allFile += ','.join(list_sort_Bysort) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
+            list_Dcolor_result = map(colord.define_Color, map(float, list_Dcolor_Bysort),
+                                     itertools.repeat(float_Dcolor_min),
+                                     itertools.repeat(float_Dcolor_step))
+            str_Dcolor_allFile += ','.join(map(str, list_Dcolor_result)) + '\n'
+            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut) * 100)) + '%', end="")
+            i_processing += 1
+        str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
+        # print(str_coords_allFile.rstrip('\n'))
+        return str_displacementXYZ_allFile.rstrip('\n'), str_displacementSum_allFile.rstrip(
+            '\n'), str_Dcolor_allFile, str(
             float_Dcolor_step) + ',' + str(float_Dcolor_min)
