@@ -38,7 +38,7 @@ def _getData(string, fileType):
             for h in range(j, len(list_allFile), len(list_EachPart_Str2List)):
                 list_stress_temp.append(float(list_allFile[h]))
             list_stress.append(list_stress_temp)
-        return list_stress
+        return list_stress, len(list_separateByNewline[0].split(','))
 
 
 class DataToFile(object):
@@ -241,8 +241,13 @@ class DataToFile(object):
         txt_stress, txt_SstepandMin = surfaced.get_Stress_SStepandMin_Bysorted()
 
         stds = ''
-        list_stress = _getData(txt_stress, 'stressOrdSum')
-        list_dopSum = _getData(txt_dopSum, 'stressOrdSum')
+        list_stress, len_data_stress = _getData(txt_stress, 'stressOrdSum')
+        list_dopSum, len_data_dopSum = _getData(txt_dopSum, 'stressOrdSum')
+        if len_data_stress != len_data_dopSum:
+            print('displacement数据与stress数据数目不同!\n'
+                  'displacemen数据个数：' + str(len_data_dopSum)
+                  + 'stress数据个数:' + str(len_data_stress))
+            return
         # list_w_1 = []
         # list_w_2 = []
         list_w_stress = []
@@ -273,7 +278,7 @@ class DataToFile(object):
         w_2 = 'w_2'
 
         stepAndMin = which_part + '_others'
-        ele = which_part + 'ele'
+        ele = which_part + '_ele'
         dSum_w = which_part + '_dSum_w'
         stress_w = which_part + '_stress_w'
 

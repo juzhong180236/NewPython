@@ -27,13 +27,15 @@ class ElementData(object):
             pf.printf('文件[' + self.path_ele[len(self.path_ele) - self.path_ele[::-1].index('\\'):] + ']存在,正在读取...')
         eleFile = open(self.path_ele, "rt")
         list_result = []
-
+        index_ele = 0
         for everyline in eleFile:
             list_everyline = everyline.split()
             if list_everyline and list_everyline[0].isdigit():
                 # 只type为1的元素索引，在都为四面体的网格中起作用
-                if len(self.geometry_type) == 1 and TETRAHEDRON in self.geometry_type and not list_everyline[1] == '1':
-                    continue
+                # if len(self.geometry_type) == 1 and TETRAHEDRON in self.geometry_type and not list_everyline[1] == '1':
+                #     continue
+                if (int(list_everyline[0]) - index_ele) != 1:
+                    break
                 # 取每一行第6个到最后一个的元素
                 list_cut = list_everyline[6:]
                 # list_cut为空或者首个字符不是纯数字构成的字符串,直接跳过该行
@@ -75,6 +77,7 @@ class ElementData(object):
                         list_result.extend([list_temp[0] - 1, list_temp[1] - 1,
                                             list_temp[2] - 1, list_temp[2] - 1,
                                             list_temp[0] - 1, list_temp[3] - 1])
+                index_ele += 1
         eleFile.close()
         pf.printf('文件[' + self.path_ele[len(self.path_ele) - self.path_ele[::-1].index('\\'):] + ']读取完成！')
         return list_result

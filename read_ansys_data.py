@@ -6,7 +6,9 @@ import text_file_create as tfc
 
 path_switch = 'no_displacement'
 # part_type = 'pulley'
-part_type = 'truss'
+part_type = 'pulley_rear'
+# part_type = 'truss'
+# part_type = 'truss_30w'
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
 path_four_read = r"C:\Users\asus\Desktop\DT_Crane_v1.0\APP_models\\" + path_switch + r"\pre_" + part_type + r"\\"
 
@@ -18,8 +20,9 @@ path_four_write = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_swi
 
 # ele_data
 def read_ed():
-    if part_type == 'truss':
-        ed = ElementData(path_four_read_ele, ['2D4', '3D6'])
+    # if part_type == 'truss':
+    if part_type == 'pulley_rear':
+        ed = ElementData(path_four_read_ele, ['3D6'])
     else:
         ed = ElementData(path_four_read_ele, ['3D4'])
     txt_ed = ed.surfaceEle_Real_Sequence(path_four_read_dopAndCoord)
@@ -35,15 +38,15 @@ def read_ed():
 # coord_data
 def read_cd(ed):
     cd = CoordinateData(path_four_read_dopAndCoord, ed)
-    # # 未更改的coordinate
-    # cd_list_all = []
-    # cd_list = cd.surfaceCoord_To_List()
-    # for i in range(16):
-    #     cd_list_all.append(','.join(cd_list))
-    # cd_str = '\n'.join(cd_list_all)
-    # tfc.text_Create(r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\post\\",
-    #                 part_type + '_coord',
-    #                 cd_str)
+    # 未更改的coordinate
+    cd_list_all = []
+    cd_list = cd.surfaceCoord_To_List()
+    for i in range(1):
+        cd_list_all.append(','.join(cd_list))
+    cd_str = '\n'.join(cd_list_all)
+    tfc.text_Create(r"C:\Users\asus\Desktop\DT_Crane_v1.0\APP_models\\" + path_switch + r"\mid_coord\\",
+                    part_type + '_coord',
+                    cd_str)
     return cd
 
 
@@ -51,7 +54,7 @@ def read_cd(ed):
 def read_dd(ed, cd):
     dd = DispalcementData(path_four_read_dopAndCoord, ed, cd)
     str_dopcoord, str_dopSum, str_Dcolor, str_D_StepandMin = dd.surface_DopCoords_DopSum_Dcolor()
-    tfc.text_Create(r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\mid\\", 'dopCoords',
+    tfc.text_Create(r"C:\Users\asus\Desktop\DT_Crane_v1.0\APP_models\\" + path_switch + r"\mid\\", 'dopCoords',
                     str_dopcoord)
 
 
@@ -65,4 +68,4 @@ def read_sd(ed):
 ed_outer = read_ed()
 cd_outer = read_cd(ed_outer)
 # read_dd(ed_outer, cd_outer)
-read_sd(ed_outer)
+# read_sd(ed_outer)

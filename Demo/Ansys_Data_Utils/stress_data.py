@@ -47,7 +47,7 @@ class StressData(object):
                                      itertools.repeat(float_Scolor_step))
 
             i_processing += 1
-            print("\r程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
+            print("\r应力信息读取程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
             str_Scolor_allFile += ','.join(map(str, list_Scolor_result)) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
             str_stress_allFile += ','.join(list_Scolor) + '\n'
 
@@ -99,7 +99,7 @@ class StressData(object):
             str_Scolor_allFile += ','.join(map(str, list_Scolor_result)) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
             str_stress_allFile += ','.join(list_Scolor_Bysort) + '\n'
             i_processing += 1
-            print("\r程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
+            print("\r应力信息读取程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
 
         str_Scolor_allFile += str(float_Scolor_step * 21 / 9)
         return str_stress_allFile.rstrip('\n'), str_Scolor_allFile, str(float_Scolor_step) + ',' + str(float_Scolor_min)
