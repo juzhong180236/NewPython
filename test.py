@@ -26,16 +26,16 @@ def R2fun(x_real, x_predict):
 
 
 # 随机生成数据
-data = [[5, 32423], [4, 432]]
-data1 = np.array([[5, 32423], [4, 432]])
-print(data)
-
-# 取得第一列排序索引
-data.sort(key=lambda x: x[0])
-print(data)
-a = [0] * len(data)
-for i in range(len(data)):
-    a[i] = data[i][1]
-print(a)
-
-print(np.sort(data1, axis=0))
+# data = [[5, 32423], [4, 432]]
+# data1 = np.array([[5, 32423], [4, 432]])
+# print(data)
+#
+# # 取得第一列排序索引
+# data.sort(key=lambda x: x[0])
+# print(data)
+# a = [0] * len(data)
+# for i in range(len(data)):
+#     a[i] = data[i][1]
+# print(a)
+#
+# print(np.sort(data1, axis=0))

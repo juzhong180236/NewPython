@@ -234,6 +234,7 @@ class DataToFile(object):
         """以下为节点数据"""
         # 索引
         txt_ele = surfaced.get_Ele_Data()
+        # print(len(set(sorted(map(int, txt_ele.split(',')), key=lambda x: x))))
         txt_coord = surfaced.get_Coord_Data()
         # 位移
         txt_displacement, txt_dopSum, txt_DstepandMin = surfaced.get_Displacement_DopSum_Dcolor_Bysorted()
@@ -246,7 +247,7 @@ class DataToFile(object):
         if len_data_stress != len_data_dopSum:
             print('displacement数据与stress数据数目不同!\n'
                   'displacemen数据个数：' + str(len_data_dopSum)
-                  + 'stress数据个数:' + str(len_data_stress))
+                  + '      stress数据个数:' + str(len_data_stress))
             return
         # list_w_1 = []
         # list_w_2 = []

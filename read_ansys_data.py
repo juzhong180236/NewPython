@@ -5,12 +5,15 @@ from stress_data import StressData
 import text_file_create as tfc
 
 path_switch = 'no_displacement'
-# part_type = 'pulley'
-part_type = 'pulley_rear'
+# part_type = 'pulley_front'
+# part_type = 'pulley_rear'
 # part_type = 'truss'
+# part_type = 'pedestal'
+# part_type = 'truss_10w'
+part_type = 'hydraulic_rod'
 # part_type = 'truss_30w'
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
-path_four_read = r"C:\Users\asus\Desktop\DT_Crane_v1.0\APP_models\\" + path_switch + r"\pre_" + part_type + r"\\"
+path_four_read = r"C:\Users\asus\Desktop\DT_Crane_v2.0\APP_models\\" + path_switch + r"\pre_" + part_type + r"\\"
 
 path_four_read_dopAndCoord = path_four_read + r'dopAndCoord\\'  # coord、dispalcement
 path_four_read_ele = path_four_read + r'ele\\'  # ele
@@ -20,11 +23,8 @@ path_four_write = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_swi
 
 # ele_data
 def read_ed():
-    # if part_type == 'truss':
-    if part_type == 'pulley_rear':
-        ed = ElementData(path_four_read_ele, ['3D6'])
-    else:
-        ed = ElementData(path_four_read_ele, ['3D4'])
+    ed = ElementData(path_four_read_ele, ['3D4'])
+    print(len(ed.set_SurfaceEle()))
     txt_ed = ed.surfaceEle_Real_Sequence(path_four_read_dopAndCoord)
     # # txt_all = ','.join(map(str, ed.aa()))
     # tfc.text_Create(r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\post\\", part_type + '_ele',
@@ -44,7 +44,7 @@ def read_cd(ed):
     for i in range(1):
         cd_list_all.append(','.join(cd_list))
     cd_str = '\n'.join(cd_list_all)
-    tfc.text_Create(r"C:\Users\asus\Desktop\DT_Crane_v1.0\APP_models\\" + path_switch + r"\mid_coord\\",
+    tfc.text_Create(r"C:\Users\asus\Desktop\DT_Crane_v2.0\APP_models\\" + path_switch + r"\mid_coord\\",
                     part_type + '_coord',
                     cd_str)
     return cd

@@ -34,16 +34,17 @@ class ElementData(object):
                 # 只type为1的元素索引，在都为四面体的网格中起作用
                 # if len(self.geometry_type) == 1 and TETRAHEDRON in self.geometry_type and not list_everyline[1] == '1':
                 #     continue
-                if (int(list_everyline[0]) - index_ele) != 1:
-                    break
+
                 # 取每一行第6个到最后一个的元素
                 list_cut = list_everyline[6:]
                 # list_cut为空或者首个字符不是纯数字构成的字符串,直接跳过该行
                 # if not list_cut or not list_cut[0].isdigit() or list_cut.count('0') > 1:
                 #     print(list_cut)
+                # 跳过空的list_cut或首个元素不是数字的
                 if not list_cut or not list_cut[0].isdigit():
                     # if not list_cut:
                     continue
+                # 去掉带有字母或0索引
                 for ele in list_cut[::-1]:  # 反序遍历
                     if not ele.isdigit() or ele == '0':
                         list_cut.remove(ele)
@@ -52,11 +53,13 @@ class ElementData(object):
                 #     print(list_temp)
                 if len(list_temp) == 8:
                     if TETRAHEDRON in self.geometry_type:
+                        if (int(list_everyline[0]) - index_ele) != 1:
+                            break
                         # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
                         list_result.extend([list_temp[0] - 1, list_temp[1] - 1, list_temp[2] - 1,
-                                            list_temp[1] - 1, list_temp[2] - 1, list_temp[3] - 1,
-                                            list_temp[0] - 1, list_temp[2] - 1, list_temp[3] - 1,
-                                            list_temp[0] - 1, list_temp[1] - 1, list_temp[3] - 1])
+                                            list_temp[1] - 1, list_temp[2] - 1, list_temp[4] - 1,
+                                            list_temp[0] - 1, list_temp[2] - 1, list_temp[4] - 1,
+                                            list_temp[0] - 1, list_temp[1] - 1, list_temp[4] - 1])
                     elif HEXAHEDRON in self.geometry_type:
                         # 所有的ele【前8位】排列为【六面体】的画图形式，得到这些值并存在list_result中
                         list_result.extend(

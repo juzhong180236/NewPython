@@ -119,17 +119,17 @@ def get_Stress_Train_Data(string, fileType):
 
 
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
-path_read = r"D:\Alai\data_Alai\points_400_20191218\data_hole\\"
+path_read = r"D:\Alai\data_Alai\points_400_20191218\data_single_displacement\\"
 
 # 低保真数据
-path_low_coord = path_read + r"low_train\30-0.txt"  # 坐标点路径
+path_low_coord = path_read + r"low_train\30.txt"  # 坐标点路径
 path_low_stress = path_read + r"low_train\\"  # 训练应力数据路径
 arr_x_low, arr_y_low, arr_xy_low, arr_xy_predict_low = get_Coords_Data(path_low_coord)  # 坐标值数据
 arr_stress_low_condition, str_stress_low_byfile = get_Stress_Data(path_low_stress)  # 每个状态不同节点的应力数据
 arr_stress_low_node = get_Stress_Train_Data(str_stress_low_byfile, 'stressOrdSum')  # 每个节点不同状态的应力数据
 
 # 高保真数据
-path_high_coord = path_read + r"high_verify\45-30.txt"  # 坐标点路径
+path_high_coord = path_read + r"high_verify\45.txt"  # 坐标点路径
 path_high_stress = path_read + r"high_verify\\"  # 验证应力数据路径
 path_high_train = path_read + r"high_train\\"  # 验证应力数据路径
 arr_x_high, arr_y_high, arr_xy_high, arr_xy_predict_high = get_Coords_Data(path_high_coord)  # 坐标值数据
@@ -138,8 +138,8 @@ arr_stress_high_train, str_stress_high_train = get_Stress_Data(path_high_train) 
 
 
 def low_predict_data_by_force():
-    d_train_low = np.array([[30, 0], [30, 60], [60, 30], [90, 0], [90, 60]])
-    d_predict_low = np.array([[45, 30], [60, 15], [60, 45], [75, 30]])
+    d_train_low = np.array([30, 60, 90])
+    d_predict_low = np.array([45, 75])
     # stds = ''
     # 每个节点不同状态的预测值
     list_preddict_node = []
@@ -171,14 +171,14 @@ predict, predict_node = low_predict_data_by_force()
 list_RR_rbf = []
 # print(np.array(list_preddict_condition_prs)[0][0])
 # print(len(arr_stress_high))
-for i in range(4):
+for i in range(2):
     RR = 1 - (np.sum((np.array(predict)[i] - arr_stress_high[i]) ** 2) / np.sum(
         (arr_stress_high[i] - np.mean(arr_stress_high[i])) ** 2))
     list_RR_rbf.append(format(RR, '.4f'))
 print('rbf低保真r2' + str(list_RR_rbf))
 
 list_acc_low = []
-for i in range(4):
+for i in range(2):
     acc = ACC(arr_stress_high[i], np.array(predict)[i])
     list_acc_low.append(format(acc, '.4f'))
 print('rbf低保真acc' + str(list_acc_low))
@@ -238,12 +238,12 @@ def cokriging(i):
     #                  [1.57894737, 2.10526316],
     #                  [8.42105263, 2.10526316],
     #                  ])
-    Xt_e = np.array([[84.2000434, 1.5655806],
+    Xt_e = np.array([[50.0891841, 11.000994],
+                     [49.9108168, 38.999006],
+                     [84.200043, 41.5655806],
                      [16.0943345, 7.97111717],
                      [15.7955774, 41.584603],
                      [83.9713379, 7.94023456],
-                     [49.6941795, 43.2472467],
-                     [50.3014649, 6.66564347],
                      ])
     Xt_c = arr_xy_low
 
@@ -272,94 +272,95 @@ def draw():
     # 高保真图像(仿真真实值)
     arr_verify_1 = arr_stress_high[0]
     arr_verify_2 = arr_stress_high[1]
-    arr_verify_3 = arr_stress_high[2]
-    arr_verify_4 = arr_stress_high[3]
+    # arr_verify_3 = arr_stress_high[2]
+    # arr_verify_4 = arr_stress_high[3]
     # 高保真图像(cokriging坐标预测值)
     arr_predict_1 = cokriging(0)
     arr_predict_2 = cokriging(1)
-    arr_predict_3 = cokriging(2)
-    arr_predict_4 = cokriging(3)
-    arr_predict = [arr_predict_1, arr_predict_2, arr_predict_3, arr_predict_4]
+    # arr_predict_3 = cokriging(2)
+    # arr_predict_4 = cokriging(3)
+    arr_predict = [arr_predict_1, arr_predict_2]
+    # arr_predict = [arr_predict_1, arr_predict_2, arr_predict_3, arr_predict_4]
     # 高保真图像(rbf力与角度预测值)
     arr_predict_rbf_1 = np.array(low_predict_data_by_force()[0][0])
     arr_predict_rbf_2 = np.array(low_predict_data_by_force()[0][1])
-    arr_predict_rbf_3 = np.array(low_predict_data_by_force()[0][2])
-    arr_predict_rbf_4 = np.array(low_predict_data_by_force()[0][3])
+    # arr_predict_rbf_3 = np.array(low_predict_data_by_force()[0][2])
+    # arr_predict_rbf_4 = np.array(low_predict_data_by_force()[0][3])
 
     list_RR = []
-    for i in range(4):
+    for i in range(2):
         RR = 1 - (np.sum((arr_predict[i] - arr_stress_high[i]) ** 2) / np.sum(
             (arr_stress_high[i] - np.mean(arr_stress_high[i])) ** 2))
         list_RR.append(format(RR, '.4f'))
     print('co-kriging变保真r2' + str(list_RR))
     list_acc_high = []
-    for i in range(4):
+    for i in range(2):
         acc_high = ACC(arr_stress_high[i], np.array(arr_predict)[i])
         list_acc_high.append(format(acc_high, '.4f'))
     print('co-kriging变保真acc' + str(list_acc_high))
-    plt.figure()
-
-    fig, axs = plt.subplots(nrows=4, ncols=3, figsize=(20, 40))
-
-    cha_1 = 1 - np.abs((arr_verify_1 - arr_predict_1) / arr_verify_1)
-    cha_2 = 1 - np.abs((arr_verify_2 - arr_predict_2) / arr_verify_2)
-    cha_3 = 1 - np.abs((arr_verify_3 - arr_predict_3) / arr_verify_3)
-    cha_4 = 1 - np.abs((arr_verify_4 - arr_predict_4) / arr_verify_4)
-    # cha_1 = ACC(arr_verify_1, arr_predict_1)
-    # cha_2 = ACC(arr_verify_2, arr_predict_2)
-    # cha_3 = ACC(arr_verify_3, arr_predict_3)
-    # cha_4 = ACC(arr_verify_4, arr_predict_4)
-    r_1 = R2(arr_verify_1, arr_predict_1)
-    r_2 = R2(arr_verify_2, arr_predict_2)
-    r_3 = R2(arr_verify_3, arr_predict_3)
-    r_4 = R2(arr_verify_4, arr_predict_4)
-    # draw_xy_list = [[arr_verify_1, arr_predict_1], cha_1,
-    #                 [arr_verify_2, arr_predict_2], cha_2,
-    #                 [arr_verify_3, arr_predict_3], cha_3,
-    #                 [arr_verify_4, arr_predict_4], cha_4,
-    #                 ]
-    draw_xy_list = [arr_verify_1, arr_predict_1, cha_1,
-                    arr_verify_2, arr_predict_2, cha_2,
-                    arr_verify_3, arr_predict_3, cha_3,
-                    arr_verify_4, arr_predict_4, cha_4]
-    # 高保真仿真真实数据的XY面坐标范围（即放在图中的哪个位置）
-    X = np.linspace(min(arr_x_high) - 1, max(arr_x_high) + 1, 100)
-    Y = np.linspace(min(arr_y_high) - 1, max(arr_y_high) + 1, 100)
-    # 高保真预测数据的XY面坐标范围（即相对上面的位置往又移动11）
-    X_predict = np.array(list(map(lambda x: x + 11, X)))
-    # 将上述两组数据广播为100*100的一个面信息
-    grid_X, grid_Y = np.meshgrid(X, Y)
-    grid_X_predict, grid_Y_predict = np.meshgrid(X_predict, Y)
-    title = np.array(['45-30', '60-15', '60-45', '75-30']).repeat(3)
-    for ax, draw_xy, i, t, in zip(axs.flat, draw_xy_list, range(len(draw_xy_list)), title):
-        if (i + 1) % 3 == 0:
-            data = griddata(arr_xy_high, draw_xy, xi=(grid_X, grid_Y), method='cubic')
-            ax_subplt = ax.contourf(grid_X, grid_Y, data, levels=100, cmap='jet')
-            fig.colorbar(ax_subplt, ax=ax)
-            ax.set_title('1-|(real-predict)/real| ' + t)
-        else:
-            # method=nearest/linear/cubic 将数据变为插值
-            data = griddata(arr_xy_high, draw_xy, xi=(grid_X, grid_Y), method='cubic')
-            # data2 = griddata(arr_xy_predict_high, draw_xy[1], xi=(grid_X_predict, grid_Y_predict), method='cubic')
-            ax_subplt = ax.contourf(grid_X, grid_Y, data, levels=100, cmap='jet')
-            # ax_subplt2 = ax.contourf(grid_X_predict, grid_Y_predict, data2, levels=100, cmap='jet')
-            ax.set_title(t)
-            fig.colorbar(ax_subplt, ax=ax)
-            # fig.colorbar(ax_subplt2, ax=ax)
-
-    # nn1 = np.array(list_RR)
     # plt.figure()
-    # print(max(nn1))
-    # print(min(nn1))
-    # fig, axs2 = plt.subplots(nrows=1, ncols=1, figsize=(20, 20))
-    # zzr = griddata(arr_xy, nn1, xi=(grid_X, grid_Y), method='cubic')
-    # ax_subplt = axs2.contourf(grid_X, grid_Y, zzr, levels=100, cmap='jet')
-    # fig.colorbar(ax_subplt, ax=axs2)
-    # axs2.set_title('r2')
-
-    # plt.legend()
-    plt.tight_layout()
-    plt.show()
+    #
+    # fig, axs = plt.subplots(nrows=4, ncols=3, figsize=(20, 40))
+    #
+    # cha_1 = 1 - np.abs((arr_verify_1 - arr_predict_1) / arr_verify_1)
+    # cha_2 = 1 - np.abs((arr_verify_2 - arr_predict_2) / arr_verify_2)
+    # cha_3 = 1 - np.abs((arr_verify_3 - arr_predict_3) / arr_verify_3)
+    # cha_4 = 1 - np.abs((arr_verify_4 - arr_predict_4) / arr_verify_4)
+    # # cha_1 = ACC(arr_verify_1, arr_predict_1)
+    # # cha_2 = ACC(arr_verify_2, arr_predict_2)
+    # # cha_3 = ACC(arr_verify_3, arr_predict_3)
+    # # cha_4 = ACC(arr_verify_4, arr_predict_4)
+    # r_1 = R2(arr_verify_1, arr_predict_1)
+    # r_2 = R2(arr_verify_2, arr_predict_2)
+    # r_3 = R2(arr_verify_3, arr_predict_3)
+    # r_4 = R2(arr_verify_4, arr_predict_4)
+    # # draw_xy_list = [[arr_verify_1, arr_predict_1], cha_1,
+    # #                 [arr_verify_2, arr_predict_2], cha_2,
+    # #                 [arr_verify_3, arr_predict_3], cha_3,
+    # #                 [arr_verify_4, arr_predict_4], cha_4,
+    # #                 ]
+    # draw_xy_list = [arr_verify_1, arr_predict_1, cha_1,
+    #                 arr_verify_2, arr_predict_2, cha_2,
+    #                 arr_verify_3, arr_predict_3, cha_3,
+    #                 arr_verify_4, arr_predict_4, cha_4]
+    # # 高保真仿真真实数据的XY面坐标范围（即放在图中的哪个位置）
+    # X = np.linspace(min(arr_x_high) - 1, max(arr_x_high) + 1, 100)
+    # Y = np.linspace(min(arr_y_high) - 1, max(arr_y_high) + 1, 100)
+    # # 高保真预测数据的XY面坐标范围（即相对上面的位置往又移动11）
+    # X_predict = np.array(list(map(lambda x: x + 11, X)))
+    # # 将上述两组数据广播为100*100的一个面信息
+    # grid_X, grid_Y = np.meshgrid(X, Y)
+    # grid_X_predict, grid_Y_predict = np.meshgrid(X_predict, Y)
+    # title = np.array(['45-30', '60-15', '60-45', '75-30']).repeat(3)
+    # for ax, draw_xy, i, t, in zip(axs.flat, draw_xy_list, range(len(draw_xy_list)), title):
+    #     if (i + 1) % 3 == 0:
+    #         data = griddata(arr_xy_high, draw_xy, xi=(grid_X, grid_Y), method='cubic')
+    #         ax_subplt = ax.contourf(grid_X, grid_Y, data, levels=100, cmap='jet')
+    #         fig.colorbar(ax_subplt, ax=ax)
+    #         ax.set_title('1-|(real-predict)/real| ' + t)
+    #     else:
+    #         # method=nearest/linear/cubic 将数据变为插值
+    #         data = griddata(arr_xy_high, draw_xy, xi=(grid_X, grid_Y), method='cubic')
+    #         # data2 = griddata(arr_xy_predict_high, draw_xy[1], xi=(grid_X_predict, grid_Y_predict), method='cubic')
+    #         ax_subplt = ax.contourf(grid_X, grid_Y, data, levels=100, cmap='jet')
+    #         # ax_subplt2 = ax.contourf(grid_X_predict, grid_Y_predict, data2, levels=100, cmap='jet')
+    #         ax.set_title(t)
+    #         fig.colorbar(ax_subplt, ax=ax)
+    #         # fig.colorbar(ax_subplt2, ax=ax)
+    #
+    # # nn1 = np.array(list_RR)
+    # # plt.figure()
+    # # print(max(nn1))
+    # # print(min(nn1))
+    # # fig, axs2 = plt.subplots(nrows=1, ncols=1, figsize=(20, 20))
+    # # zzr = griddata(arr_xy, nn1, xi=(grid_X, grid_Y), method='cubic')
+    # # ax_subplt = axs2.contourf(grid_X, grid_Y, zzr, levels=100, cmap='jet')
+    # # fig.colorbar(ax_subplt, ax=axs2)
+    # # axs2.set_title('r2')
+    #
+    # # plt.legend()
+    # plt.tight_layout()
+    # plt.show()
 
 
 draw()
