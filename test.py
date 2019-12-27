@@ -2,10 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-
-def R2fun(x_real, x_predict):
-    return 1 - (np.sum((x_real - x_predict) ** 2) / np.sum((x_real - np.mean(x_real)) ** 2))
-
+# def R2fun(x_real, x_predict):
+#     return 1 - (np.sum((x_real - x_predict) ** 2) / np.sum((x_real - np.mean(x_real)) ** 2))
+#
 
 # x = np.linspace(-np.pi, np.pi, 50)
 # y_sin = np.sin(x)
@@ -39,3 +38,12 @@ def R2fun(x_real, x_predict):
 # print(a)
 #
 # print(np.sort(data1, axis=0))
+a = [1, 23, 4]
+b = [2, 3.4]
+c = [1, 23, 4]
+
+dic = {}
+dic[a] = 1
+dic[b] = 1
+dic[c] = 1
+print(dic)

@@ -106,10 +106,13 @@ class ElementData(object):
             return
         # 将索引信息转为int类型后，每3个一组（称为【单面索引组】）进行排序，得到【顺序单面索引组】，再转为字符串，放入list_sort中。
         # 例如953转为'3,5,9'
+        dic_sort = {}
         list_sort = []
         for i in range(0, len(list_allEle), 3):
             list_temp = [list_allEle[i], list_allEle[i + 1], list_allEle[i + 2]]
-            list_temp.sort(key=lambda x: x)
+            list_temp_sorted = sorted(list_temp, key=lambda x: x)
+            str_temp_sorted = str(list_temp_sorted[0]) + ',' + str(list_temp_sorted[1]) + ',' + str(list_temp_sorted[2])
+            dic_sort[str_temp_sorted] = list_temp
             list_sort.append(str(list_temp[0]) + ',' + str(list_temp[1]) + ',' + str(list_temp[2]))
         # 直接使用set对相同的顺序单面索引组只保留一个，即对画多次的表面只画一次
         # 这一步使内部面片不用画两次了，但是还是会画一次

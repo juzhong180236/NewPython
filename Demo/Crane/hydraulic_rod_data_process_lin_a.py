@@ -9,7 +9,7 @@ path_four_read = path_prefix + path_switch
 # 写入路径(写在mid)
 path_four_write = path_prefix + r"post_lin_a_v2.0\\"
 # 网格类型
-geometry_type = ['3D4']
+geometry_type = ['3D4_L']
 # 训练自变量
 degreeArr = [0, 21, 42, 63]
 forceArr = [125, 250, 375, 500]
