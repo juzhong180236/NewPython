@@ -7,7 +7,7 @@ path_switch = r'pre_hydraulic_cylinder\\'
 # 读取路径(读pre)
 path_four_read = path_prefix + path_switch
 # 写入路径(写在mid)
-path_four_write = path_prefix + r"post_lin_a_v2.0\\"
+path_four_write = path_prefix + r"post_lin_a_v3.0\\"
 # 网格类型
 geometry_type = ['3D4_L']
 # 训练自变量

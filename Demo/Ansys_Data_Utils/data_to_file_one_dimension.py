@@ -283,13 +283,9 @@ class DataToFile(object):
         dSum_w = which_part + '_dSum_w'
         stress_w = which_part + '_stress_w'
 
-        if v_fd.ndim == 1:
-            x_train = ','.join(map(str, v_fd.tolist()))
-        elif v_fd.ndim == 2:
-            x_train = ','.join(map(lambda x: ','.join(map(str, x)), v_fd.tolist()))
         # 步数和最小值，方差，输入值
         tfc.text_Create(self.path_write, stepAndMin,
-                        txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + x_train)
+                        txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + ','.join(map(str,v_fd.tolist())))
         # 索引文件
         tfc.text_Create(self.path_write, ele, txt_ele)
         # 总位移文件

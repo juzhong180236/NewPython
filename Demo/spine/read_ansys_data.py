@@ -4,33 +4,25 @@ from displacement_data import DispalcementData
 from stress_data import StressData
 import text_file_create as tfc
 
-path_switch = 'no_displacement_1'
-# part_type = 'pulley_front'
-part_type = 'pulley_rear'
-# part_type = 'truss'
-# part_type = 'pedestal'
-# part_type = 'truss_30w'
-# part_type = 'hydraulic_rod'
-# part_type = 'hydraulic_cylinder'
-# part_type = 'truss_30w'
+part_type = 'spine'
+
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
-path_four_read = r"C:\Users\asus\Desktop\DT_Crane_v2.0\APP_models\\" + path_switch + r"\pre_" + part_type + r"\\"
+path_four_read = r"C:\Users\asus\Desktop\DT_Crane_v2.0\APP_models\\" + part_type + r"\\"
 
 path_four_read_dopAndCoord = path_four_read + r'dopAndCoord\\'  # coord、dispalcement
 path_four_read_ele = path_four_read + r'ele\\'  # ele
 # path_four_read_ele = r'C:\Users\asus\Desktop\\'  # ele
 path_four_read_equivalentStress = path_four_read + r'equivalent_stress\\'  # stress
-path_four_write = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\mid\\"
+path_four_write = r"C:\Users\asus\Desktop\DT_Crane_v2.0\APP_models\post\\"
 
 
 # ele_data
 def read_ed():
-    ed = ElementData(path_four_read_ele, ['3D4_L'])
+    ed = ElementData(path_four_read_ele, ['3D4_P'])
     print(len(ed.set_SurfaceEle()))
     txt_ed = ed.surfaceEle_Real_Sequence(path_four_read_dopAndCoord)
     # # txt_all = ','.join(map(str, ed.aa()))
-    # tfc.text_Create(r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\post\\", part_type + '_ele',
-    #                 txt_ed)
+    # tfc.text_Create(path_four_write, 'ele', txt_ed)
     # # tfc.text_Create(r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\mid\\", 'ele_all', txt_all)
     return ed
 
@@ -40,15 +32,9 @@ def read_ed():
 # coord_data
 def read_cd(ed):
     cd = CoordinateData(path_four_read_dopAndCoord, ed)
-    # 未更改的coordinate
-    cd_list_all = []
+
     cd_list = cd.surfaceCoord_To_List()
-    for i in range(1):
-        cd_list_all.append(','.join(cd_list))
-    cd_str = '\n'.join(cd_list_all)
-    tfc.text_Create(r"C:\Users\asus\Desktop\DT_Crane_v2.0\APP_models\\" + path_switch + r"\mid_coord\\",
-                    part_type + '_coord',
-                    cd_str)
+    tfc.text_Create(path_four_write, part_type + '_coord', ','.join(cd_list))
     return cd
 
 
@@ -56,7 +42,7 @@ def read_cd(ed):
 def read_dd(ed, cd):
     dd = DispalcementData(path_four_read_dopAndCoord, ed, cd)
     str_dopcoord, str_dopSum, str_Dcolor, str_D_StepandMin = dd.surface_DopCoords_DopSum_Dcolor()
-    tfc.text_Create(r"C:\Users\asus\Desktop\DT_Crane_v1.0\APP_models\\" + path_switch + r"\mid\\", 'dopCoords',
+    tfc.text_Create(r"C:\Users\asus\Desktop\DT_Crane_v1.0\APP_models\mid\\", 'dopCoords',
                     str_dopcoord)
 
 

@@ -6,7 +6,8 @@ import text_file_create as tfc
 
 path_switch = 'no_displacement_1'
 # part_type = 'pulley_front'
-part_type = 'pulley_rear'
+# part_type = 'pulley_rear'
+part_type = 'pulley_motor'
 # part_type = 'truss'
 # part_type = 'pedestal'
 # part_type = 'truss_30w'

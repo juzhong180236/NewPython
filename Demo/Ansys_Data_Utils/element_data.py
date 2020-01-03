@@ -56,18 +56,22 @@ class ElementData(object):
                     if TETRAHEDRON_LINEAR in self.geometry_type:
                         if (int(list_everyline[0]) - index_ele) != 1:
                             break
+                        # 1332  2391  1389  1389  1372  1372  1372  1372
+                        # 1594  1999  1617  1617  1616  1616  1616  1616
                         # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
-                        list_result.extend([list_temp[0] - 1, list_temp[1] - 1, list_temp[2] - 1,
-                                            list_temp[1] - 1, list_temp[2] - 1, list_temp[4] - 1,
-                                            list_temp[0] - 1, list_temp[2] - 1, list_temp[4] - 1,
-                                            list_temp[0] - 1, list_temp[1] - 1, list_temp[4] - 1])
+                        list_result.extend([list_temp[0] - 1, list_temp[2] - 1, list_temp[1] - 1,  # outter
+                                            list_temp[1] - 1, list_temp[2] - 1, list_temp[4] - 1,  # outter
+                                            list_temp[0] - 1, list_temp[4] - 1, list_temp[2] - 1,  # outter
+                                            list_temp[0] - 1, list_temp[1] - 1, list_temp[4] - 1])  # outter
                     elif TETRAHEDRON_PROGRAM_CONTROL in self.geometry_type:
                         if (int(list_everyline[0]) - index_ele) != 1:
                             break
+                        # 190     919    1105     747
+                        # 88239   88800   88850   89126
                         # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
-                        list_result.extend([list_temp[0] - 1, list_temp[1] - 1, list_temp[2] - 1,
+                        list_result.extend([list_temp[0] - 1, list_temp[2] - 1, list_temp[1] - 1,
                                             list_temp[1] - 1, list_temp[2] - 1, list_temp[3] - 1,
-                                            list_temp[0] - 1, list_temp[2] - 1, list_temp[3] - 1,
+                                            list_temp[0] - 1, list_temp[3] - 1, list_temp[2] - 1,
                                             list_temp[0] - 1, list_temp[1] - 1, list_temp[3] - 1])
                     elif HEXAHEDRON in self.geometry_type:
                         # 所有的ele【前8位】排列为【六面体】的画图形式，得到这些值并存在list_result中
@@ -106,13 +110,17 @@ class ElementData(object):
             return
         # 将索引信息转为int类型后，每3个一组（称为【单面索引组】）进行排序，得到【顺序单面索引组】，再转为字符串，放入list_sort中。
         # 例如953转为'3,5,9'
+        dic_sort = {}
         list_sort = []
         for i in range(0, len(list_allEle), 3):
             list_temp = [list_allEle[i], list_allEle[i + 1], list_allEle[i + 2]]
-            list_temp.sort(key=lambda x: x)
-            list_sort.append(str(list_temp[0]) + ',' + str(list_temp[1]) + ',' + str(list_temp[2]))
+            list_temp_sorted = sorted(list_temp, key=lambda x: x)
+            str_temp_sorted = str(list_temp_sorted[0]) + ',' + str(list_temp_sorted[1]) + ',' + str(list_temp_sorted[2])
+            dic_sort[str_temp_sorted] = ','.join(map(str, list_temp))
+            list_sort.append(str_temp_sorted)
         # 直接使用set对相同的顺序单面索引组只保留一个，即对画多次的表面只画一次
         # 这一步使内部面片不用画两次了，但是还是会画一次
+        # set_sort=list(dic_sort.keys())
         set_sort = set(list_sort)
         # 每个【顺序单面索引组】的初始出现次数设置为0，使用dict类型保存
         # 例如{'3,5,8':0,'4,5,8':0,...}
@@ -127,9 +135,33 @@ class ElementData(object):
         list_sort = []
         for key, value in dict_sort.items():
             if value == 1:
-                list_sort.append(key)
+                list_sort.append(dic_sort[key])
         # 返回逗号隔开的索引值字符串
         return ','.join(list_sort)
+        # list_sort = []
+        # for i in range(0, len(list_allEle), 3):
+        #     list_temp = [list_allEle[i], list_allEle[i + 1], list_allEle[i + 2]]
+        #     list_temp.sort(key=lambda x: x)
+        #     list_sort.append(str(list_temp[0]) + ',' + str(list_temp[1]) + ',' + str(list_temp[2]))
+        # # 直接使用set对相同的顺序单面索引组只保留一个，即对画多次的表面只画一次
+        # # 这一步使内部面片不用画两次了，但是还是会画一次
+        # set_sort = set(list_sort)
+        # # 每个【顺序单面索引组】的初始出现次数设置为0，使用dict类型保存
+        # # 例如{'3,5,8':0,'4,5,8':0,...}
+        # dict_sort = {}
+        # for ele in list_sort:
+        #     dict_sort[ele] = 0
+        # # 利用set_sort对list_sort进行检测，list_sort中出现多次的【顺序单面索引组】就会被识别。
+        # for ele in list_sort:
+        #     if ele in set_sort:
+        #         dict_sort[ele] += 1  # 如果检测到【顺序单面索引组】一次，就加1
+        # # 最终得到只出现一次的【顺序单面索引组】组成的dict_sort，将它的key保存在list_sort中，
+        # list_sort = []
+        # for key, value in dict_sort.items():
+        #     if value == 1:
+        #         list_sort.append(key)
+        # # 返回逗号隔开的索引值字符串
+        # return ','.join(list_sort)
 
     def surfaceEle_Sequence(self):
         """
@@ -174,11 +206,11 @@ class ElementData(object):
                 if everyline_index in set_surface_ele:  # 根据element_data中set_surfaceEle方法返回的信息，只需表面点的坐标
                     dict_coord[everyline_index] = iCoord  # 将对应点的真实编号和要更新的iCoord一一对应起来
                     iCoord += 1
+        # print(list_surface_ele)
         for i_ele in range(len(list_surface_ele)):  # 将排序好的表面点的索引值替换成更新后的0,1,2...索引
             if int(list_surface_ele[i_ele]) in dict_coord.keys():  # 如果list_ele中的索引是表面的点的索引，进行替换
-                # print(list_ele[iEle])
                 list_surface_ele[i_ele] = dict_coord[list_surface_ele[i_ele]]  # 获取字典dict_coord中的第一值替换list_ele
-                # print('替换后:' + list_ele[iEle])
+        # print('替换后:' + str(list_surface_ele))
         # 将真实索引值（real_index_12...）更新为[0,1...]返回
         coordfile.close()
         return ','.join(map(str, list_surface_ele))

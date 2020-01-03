@@ -38,12 +38,12 @@ import math
 # print(a)
 #
 # print(np.sort(data1, axis=0))
-a = [1, 23, 4]
-b = [2, 3.4]
-c = [1, 23, 4]
+a = 2
+b = 3
+c = 4
 
 dic = {}
 dic[a] = 1
 dic[b] = 1
 dic[c] = 1
-print(dic)
+print(list(dic.keys()))

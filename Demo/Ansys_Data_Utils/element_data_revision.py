@@ -116,6 +116,7 @@ class ElementData(object):
             list_sort.append(str(list_temp[0]) + ',' + str(list_temp[1]) + ',' + str(list_temp[2]))
         # 直接使用set对相同的顺序单面索引组只保留一个，即对画多次的表面只画一次
         # 这一步使内部面片不用画两次了，但是还是会画一次
+        # set_sort=list(dic_sort.keys())
         set_sort = set(list_sort)
         # 每个【顺序单面索引组】的初始出现次数设置为0，使用dict类型保存
         # 例如{'3,5,8':0,'4,5,8':0,...}
@@ -130,7 +131,7 @@ class ElementData(object):
         list_sort = []
         for key, value in dict_sort.items():
             if value == 1:
-                list_sort.append(key)
+                list_sort.append(dic_sort[key])
         # 返回逗号隔开的索引值字符串
         return ','.join(list_sort)
 

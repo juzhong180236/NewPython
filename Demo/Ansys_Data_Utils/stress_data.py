@@ -87,17 +87,19 @@ class StressData(object):
                     i_line = 1
                 infile.close()
             list_Scolor = sorted(list_Scolor, key=lambda x: int(x[0]))
+            # print(list_Scolor)
             # 有重复的应力
             # list_test = []
             # for ele in list_Scolor[::-1]:
             #     if ele[0] in list_test:
             #         print(ele[0])
-            #         list_Scolor[::-1].remove(ele)
+            #         list_Scolor.remove(ele)
             #     list_test.append(ele[0])
             length_Bysorted = len(list_Scolor)
             list_Scolor_Bysort = []
             for i in range(0, length_Bysorted):
                 list_Scolor_Bysort.append(list_Scolor[i][1])
+            # print(list_Scolor_Bysort)
             list_Scolor_result = map(colord.define_Color, map(float, list_Scolor_Bysort),
                                      itertools.repeat(float_Scolor_min),
                                      itertools.repeat(float_Scolor_step))
