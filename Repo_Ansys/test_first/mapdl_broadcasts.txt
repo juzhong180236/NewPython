@@ -1,0 +1,8 @@
+<<broadcast::set:ans-rpc-port:64345>>
+<<broadcast::started:pre-ans-rpc>>
+<<broadcast::visited:collaborative-aas-pid:1164>>
+<<broadcast::visited:instant-aas-in-commonfiles>>
+<<broadcast::set:command_line_input_file:tmp.inp>>
+<<broadcast::set:command_line_job_name:file>>
+<<broadcast::ended:pre-ans-rpc>>
+<<broadcast::started:setup-ans-rpc>>

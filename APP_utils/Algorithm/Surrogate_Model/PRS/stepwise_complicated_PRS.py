@@ -164,11 +164,11 @@ if __name__ == "__main__":
     # dy = np.array([55, 44, 88, 66, 88, 88, 88, 88, 88, 88, 88, 88, 88, 88, 88, 88])
     # prs1 = PRS(m=3)
     # w = prs1.fit(dd, dy, 1)
-    # first = dy.dot(dy) - (w[0].T.dot(w[1].T)).dot(dy)
-    # second = dy.shape[0] - w[0].shape[0]
+    # test_first = dy.dot(dy) - (w[0].T.dot(w[1].T)).dot(dy)
+    # test_second = dy.shape[0] - w[0].shape[0]
     # third = np.diag(np.linalg.inv(w[1].T.dot(w[1])))
     #
-    # limian = first / second * third
+    # limian = test_first / test_second * third
     # # 大于0的元素，防止除数为0报错
     # d = np.where(limian > 0)
     #

@@ -7,9 +7,10 @@ import text_file_create as tfc
 path_switch = 'no_displacement_1'
 # part_type = 'pulley_front'
 # part_type = 'pulley_rear'
-part_type = 'pulley_motor'
+# part_type = 'pulley_motor'
+# part_type = 'pulley_motor_360'
 # part_type = 'truss'
-# part_type = 'pedestal'
+part_type = 'pedestal'
 # part_type = 'truss_30w'
 # part_type = 'hydraulic_rod'
 # part_type = 'hydraulic_cylinder'
@@ -26,7 +27,7 @@ path_four_write = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_swi
 
 # ele_data
 def read_ed():
-    ed = ElementData(path_four_read_ele, ['3D4_L'])
+    ed = ElementData(path_four_read_ele, ['3D4_P'])
     print(len(ed.set_SurfaceEle()))
     txt_ed = ed.surfaceEle_Real_Sequence(path_four_read_dopAndCoord)
     # # txt_all = ','.join(map(str, ed.aa()))

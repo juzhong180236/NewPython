@@ -1,0 +1,25 @@
+FINISH
+/CLEAR
+*DIM,rst_path_,STRING,128
+rst_path_(1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss\20191220_files\dp0\SYS-3\MECH\file'
+/POST1
+FILE,rst_path_(1),RST
+INRES,ALL
+/OUTPUT, 'C:\Users\asus\AppData\Local\pyansys\pyansys\tmp_fxpycjtqks.out'
+*DO,j,1,16,1
+SET,j
+PRITER
+*CFOPEN,CHRVAL(j),txt
+ALLS,ALL
+*GET,nmax,NODE,,NUM,MAX
+*GET,nmin,NODE,,NUM,MIN
+*DO,i,nmin,nmax,1
+n_coord_x = UX(i)
+n_coord_y = UY(i)
+n_coord_z = UZ(i)
+*VWRITE,CHRVAL(i),n_coord_x,n_coord_y,n_coord_z
+(A6,F20.6,F20.6,F20.6)
+*CFCLOSE
+*ENDDO
+*ENDDO
+/OUTPUT

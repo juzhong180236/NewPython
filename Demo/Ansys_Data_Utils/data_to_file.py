@@ -3,6 +3,7 @@ from surface_data_process import SurfaceData
 from rbf import RBF
 import text_file_create as tfc
 import printf as pf
+import matplotlib.pyplot as plt
 
 
 def _getData(string, fileType):
@@ -256,6 +257,7 @@ class DataToFile(object):
         # list_y_name = []
         cycle_index = len(list_stress)
         for i in range(cycle_index):
+            # for i in range(2):
             stress_real = list_stress[i]
             dSum_real = list_dopSum[i]
             # rbfnet_1 = RBF(rbf_type)
@@ -272,8 +274,15 @@ class DataToFile(object):
             list_w_stress.append(w_stress)
             list_w_dSum.append(w_dSum)
             print("\r" + rbfnet_stress.__class__.__name__ + "程序当前已完成：" + str(
-                round(i / len(list_stress) * 10000) / 100) + '%',
-                  end="")
+                round(i / len(list_stress) * 10000) / 100) + '%', end="")
+            # x = np.array([0, 90, 180, 270, 360])
+            # plt.plot(x, rbfnet_stress.predict(np.array([[0, 125],
+            #                                             [90, 125],
+            #                                             [180, 125],
+            #                                             [270, 125],
+            #                                             [360, 125],
+            #                                             ])))
+            # plt.show()
 
         w_1 = 'w_1'
         w_2 = 'w_2'
@@ -287,12 +296,13 @@ class DataToFile(object):
             x_train = ','.join(map(str, v_fd.tolist()))
         elif v_fd.ndim == 2:
             x_train = ','.join(map(lambda x: ','.join(map(str, x)), v_fd.tolist()))
+
         # 步数和最小值，方差，输入值
-        tfc.text_Create(self.path_write, stepAndMin,
-                        txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + x_train)
-        # 索引文件
-        tfc.text_Create(self.path_write, ele, txt_ele)
-        # 总位移文件
-        tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
-        # 应力文件
-        tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
+        # tfc.text_Create(self.path_write, stepAndMin,
+        #                 txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + x_train)
+        # # 索引文件
+        # tfc.text_Create(self.path_write, ele, txt_ele)
+        # # 总位移文件
+        # tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
+        # # 应力文件
+        # tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)

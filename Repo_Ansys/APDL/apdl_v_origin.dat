@@ -1,0 +1,25 @@
+!在ANSYS中已经加载了结果数据时，使用下面的代码导出
+*create,temp
+     NSEL,ALL,NODE 
+     *get,nns,NODE,0,COUNT 
+     *vwrite, 
+     ('总节点数：') 
+     *vwrite,nns 
+%8I 
+     *vwrite, 
+     (' X坐标 Y坐标 Z坐标 应力') 
+     *get,nd,NODE,0,NUM,MIN 
+     *do,j,1,nns 
+         *get,x,node,nd,loc,x 
+         *get,y,node,nd,loc,y 
+         *get,z,node,nd,loc,z 
+         *get,sx,node,nd,s,X 
+         *VWRITE,x,y,z,sx 
+         (f20.14,f20.14,f20.14,3f15.5) 
+         nd=ndnext(nd) 
+     *enddo 
+     nall 
+     lsel,all 
+*end 
+*cfopen,StressExit,txt, 
+/input,temp

@@ -1,0 +1,68 @@
+
+ *** IMPORTANT LICENSING MESSAGE ***
+
+ ANSYS LICENSE MANAGER ERROR:
+ ANSYSLI exited or could not read server port ANSYSLI_DEMO_PORT.
+
+ *** ERROR - ANSYS license not available.
+
++--------------------- A N S Y S   S T A T I S T I C S ------------------------+
+
+Release: Release 19.1       Build: 19.1       Update: UP20180418   Platform: WINDOWS x64 
+Date Run: 01/11/2020   Time: 19:48     Process ID: 21124
+Operating System: Windows 10  (Build: 18362)
+
+Processor Model: Intel(R) Core(TM) i7-9700KF CPU @ 3.60GHz
+
+Compiler: Intel(R) FORTRAN Compiler Version 17.0.4  (Build: 20170411)
+          Intel(R) C/C++ Compiler Version 17.0.4  (Build: 20170411)
+          Intel(R) Math Kernel Library Version 2017.0.3 Product Build 20170413
+
+Number of machines requested            :    1
+Total number of cores available         :    8
+Number of physical cores available      :    8
+Number of processes requested           :    1
+Number of threads per process requested :    0
+Total number of cores requested         :    0 (Shared Memory Parallel)                    
+
+GPU Acceleration: Not Requested
+
+Job Name: file
+Working Directory: 
+
+Total CPU time for main thread                    :        0.2 seconds
+Total CPU time summed for all threads             :        0.1 seconds
+
+Elapsed time spent pre-processing model (/PREP7)  :        0.0 seconds
+Elapsed time spent solution - preprocessing       :        0.0 seconds
+Elapsed time spent computing solution             :        0.0 seconds
+Elapsed time spent solution - postprocessing      :        0.0 seconds
+Elapsed time spent post-processing model (/POST1) :        0.0 seconds
+ 
+
+Maximum total memory used                         :        2.0 MB
+Maximum total memory allocated                    :        0.0 MB
+Total physical memory available                   :         32 GB
+
++------------------ E N D   A N S Y S   S T A T I S T I C S -------------------+
+
+
+ *---------------------------------------------------------------------------*
+ |                                                                           |
+ |                            ANSYS RUN COMPLETED                            |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ | Ansys Release 19.1          Build 19.1         UP20180418     WINDOWS x64 |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ | Database Requested(-db)     0 MB    Scratch Memory Requested         0 MB |
+ | Maximum Database Used       1 MB    Maximum Scratch Memory Used      1 MB |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ |        CP Time      (sec) =          0.078       Time  =  19:48:32        |
+ |        Elapsed Time (sec) =         39.000       Date  =  01/11/2020      |
+ |                                                                           |
+ *---------------------------------------------------------------------------*

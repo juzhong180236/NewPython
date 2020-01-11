@@ -1,0 +1,16 @@
+/post26      
+file,wt,rst !   指明从哪一个结果文件中读取数据        
+nsol,2,10,u,z !   结点  10  的  z  方向的位移输出        
+deriv,3,2,1,,v10 !   结点  10  的  z  方向的速度        
+*dim,d,,n,3 !   定义数组  n  需要给出具体的数值        
+vget,d(1,1),1 !   存储时间向量        
+vget,d(1,2),2 !   存储位移向量        
+vget,d(1,3),3 !   存储速度向量        !   以下程序段是上面三个数值结果的导出        
+*create,temp      
+*cfopen,w,dat      
+*vwrite,d(1,1),d(1,2),d(1,3)      
+(f10.6,' ',f10.6,' ',f10.6)      
+*cfclos      
+*end      
+/input,temp      
+fini 

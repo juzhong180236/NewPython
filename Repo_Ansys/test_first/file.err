@@ -1,0 +1,716 @@
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       09:18:01
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       09:21:04
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       09:26:35
+
+ *** ERROR ***                           CP =       0.328   TIME= 09:26:43
+ Keypoint 1 belongs to line 1 and cannot be moved.                       
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       09:27:21
+
+ *** WARNING ***                         CP =       0.391   TIME= 09:27:28
+ K is not a recognized BEGIN command, abbreviation, or macro.  This      
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       09:27:44
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       09:52:17
+
+ *** WARNING ***                         CP =       0.344   TIME= 09:52:24
+ UY is not a valid degree of freedom for this solution.  The DOF         
+ command may be used to add degrees of freedom.                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:16:11
+
+ *** WARNING ***                         CP =       0.422   TIME= 10:16:18
+ UY is not a valid degree of freedom for this solution.  The DOF         
+ command may be used to add degrees of freedom.                          
+
+ *** WARNING ***                         CP =       0.469   TIME= 10:16:18
+ K is not a recognized BEGIN command, abbreviation, or macro.  This      
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:16:45
+
+ *** WARNING ***                         CP =       0.391   TIME= 10:16:52
+ UY is not a valid degree of freedom for this solution.  The DOF         
+ command may be used to add degrees of freedom.                          
+
+ *** WARNING ***                         CP =       0.422   TIME= 10:16:52
+ K is not a recognized BEGIN command, abbreviation, or macro.  This      
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       09:52:32
+
+ *** WARNING ***                         CP =       0.281   TIME= 09:52:36
+ FILE is not a recognized BEGIN command, abbreviation, or macro.  This   
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       09:55:08
+
+ *** WARNING ***                         CP =       0.266   TIME= 09:55:13
+ FILE is not a recognized BEGIN command, abbreviation, or macro.  This   
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:03:17
+
+ *** WARNING ***                         CP =       0.219   TIME= 10:03:21
+ FILE is not a recognized BEGIN command, abbreviation, or macro.  This   
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:04:15
+
+ *** WARNING ***                         CP =       0.250   TIME= 10:04:19
+ FILE is not a recognized BEGIN command, abbreviation, or macro.  This   
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:05:02
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:08:22
+
+ *** WARNING ***                         CP =       0.234   TIME= 10:08:27
+ FILE is not a recognized BEGIN command, abbreviation, or macro.  This   
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:14:03
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:14:47
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:22:04
+
+ *** WARNING ***                         CP =       0.234   TIME= 10:22:09
+ The use of PATH as a parameter name may conflict with ANSYS predefined  
+ labels in some command fields.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:25:50
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:26:06
+
+ *** WARNING ***                         CP =       0.250   TIME= 10:26:13
+ The use of PATH as a parameter name may conflict with ANSYS predefined  
+ labels in some command fields.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:26:49
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:27:26
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:28:00
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:28:18
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:30:04
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:34:03
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:34:43
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:35:51
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:36:43
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:38:11
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:41:57
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:42:40
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:45:35
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       10:50:54
+
+ *** ERROR ***                           CP =       0.297   TIME= 10:51:01
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.297   TIME= 10:51:01
+ The above error occurred processing field=                              
+ "D:/ALAI/ANSYS_ALAI/CRANE/CRANE_PARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS 
+ -3/MECH/FILE"                                                           
+  Line=                                                                  
+ *SET,A,("D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/20191220_files 
+ s/dp0/SYS-3/MECH/file").                                                
+
+ *** ERROR ***                           CP =       0.297   TIME= 10:51:01
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.297   TIME= 10:51:01
+ The above error occurred processing field=                              
+ "D:/ALAI/ANSYS_ALAI/CRANE/CRANE_PARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS 
+ -3/MECH/FILE"                                                           
+  Line=                                                                  
+ *SET,A,("D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/20191220_files 
+ s/dp0/SYS-3/MECH/file").                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:29:16
+
+ *** ERROR ***                           CP =       0.219   TIME= 11:29:23
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.219   TIME= 11:29:23
+ The above error occurred processing field=                              
+ "D:/ALAI/ANSYS_ALAI/CRANE/CRANE_PARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS 
+ -3/MECH/FILE"                                                           
+  Line=                                                                  
+ *SET,A,("D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/20191220_files 
+ s/dp0/SYS-3/MECH/file").                                                
+
+ *** ERROR ***                           CP =       0.219   TIME= 11:29:23
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.219   TIME= 11:29:23
+ The above error occurred processing field=                              
+ "D:/ALAI/ANSYS_ALAI/CRANE/CRANE_PARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS 
+ -3/MECH/FILE"                                                           
+  Line=                                                                  
+ *SET,A,("D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/20191220_files 
+ s/dp0/SYS-3/MECH/file").                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:29:32
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:30:13
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:31:52
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:33:40
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:40:24
+
+ *** ERROR ***                           CP =       0.250   TIME= 11:40:30
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.250   TIME= 11:40:30
+ The above error occurred processing field=                              
+ "D:/ALAI/ANSYS_ALAI/CRANE/CRANE_PARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS 
+ -3/MECH/FILE"                                                           
+  Line=                                                                  
+ *SET,path_(1),("D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/2019122 
+ 20_files/dp0/SYS-3/MECH/file").                                         
+
+ *** ERROR ***                           CP =       0.250   TIME= 11:40:30
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.250   TIME= 11:40:30
+ The above error occurred processing field=                              
+ "D:/ALAI/ANSYS_ALAI/CRANE/CRANE_PARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS 
+ -3/MECH/FILE"                                                           
+  Line=                                                                  
+ *SET,path_(1),("D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/2019122 
+ 20_files/dp0/SYS-3/MECH/file").                                         
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:41:28
+
+ *** ERROR ***                           CP =       0.266   TIME= 11:41:34
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.266   TIME= 11:41:34
+ The above error occurred processing field= "DLE"                        
+  Line= *SET,path_(1),("Dle").                                           
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:41:55
+
+ *** WARNING ***                         CP =       0.250   TIME= 11:42:02
+ Unknown parameter name= DLE.  A value of 7.888609052E-31 will be used.  
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:45:01
+
+ *** WARNING ***                         CP =       0.250   TIME= 11:45:07
+ Unknown parameter name= D.  A value of 7.888609052E-31 will be used.    
+
+ *** ERROR ***                           CP =       0.250   TIME= 11:45:07
+ Two consecutive operations.  Add parentheses as needed.                 
+
+ *** ERROR ***                           CP =       0.250   TIME= 11:45:07
+ The above error occurred processing field=                              
+ D:/ALAI/ANSYS_ALAI/CRANE/CRANE_PARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS- 
+ 3/MECH/FILE                                                             
+  Line=                                                                  
+ *SET,A,(D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/20191220_files/ 
+ /dp0/SYS-3/MECH/file).                                                  
+
+ *** ERROR ***                           CP =       0.250   TIME= 11:45:07
+ Missing separator between two fields.                                   
+
+ *** ERROR ***                           CP =       0.250   TIME= 11:45:07
+ The above error occurred processing field=                              
+ D:/ALAI/ANSYS_ALAI/CRANE/CRANE_PARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS- 
+ 3/MECH/FILE                                                             
+  Line=                                                                  
+ *SET,A,(D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/20191220_files/ 
+ /dp0/SYS-3/MECH/file).                                                  
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:45:22
+
+ *** WARNING ***                         CP =       0.266   TIME= 11:45:28
+ Unknown parameter name= D.  A value of 7.888609052E-31 will be used.    
+
+ *** WARNING ***                         CP =       0.281   TIME= 11:45:28
+ Unknown parameter name= FILE.  A value of 7.888609052E-31 will be used. 
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       11:45:59
+
+ *** ERROR ***                           CP =       0.219   TIME= 11:46:06
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.219   TIME= 11:46:06
+ The above error occurred processing field= "D:FILE"                     
+  Line= *SET,A,("D:file").                                               
+
+ *** ERROR ***                           CP =       0.219   TIME= 11:46:06
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.219   TIME= 11:46:06
+ The above error occurred processing field= "D:FILE"                     
+  Line= *SET,A,("D:file").                                               
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:01:46
+
+ *** WARNING ***                         CP =       0.266   TIME= 12:01:52
+ Unknown parameter name= D.  A value of 7.888609052E-31 will be used.    
+
+ *** WARNING ***                         CP =       0.266   TIME= 12:01:52
+ Unknown parameter name= FILE.  A value of 7.888609052E-31 will be used. 
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:02:17
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:02:32
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:03:07
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:03:28
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:04:18
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:04:29
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:06:28
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:08:43
+
+ *** ERROR ***                           CP =       0.234   TIME= 12:08:49
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.234   TIME= 12:08:49
+ The above error occurred processing field=                              
+ "ARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS-3/MECH/FILE"                    
+  Line=                                                                  
+ *SET,path_(1),("arts_v2.0/truss/20191220_files/dp0/SYS-3/MECH/file").   
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:25:18
+
+ *** ERROR ***                           CP =       0.266   TIME= 12:25:25
+ Unknown expression in input line.                                       
+
+ *** ERROR ***                           CP =       0.266   TIME= 12:25:25
+ The above error occurred processing field=                              
+ "ARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS-3/MECH/FILE"                    
+  Line=                                                                  
+ *SET,path_(1),("arts_v2.0/truss/20191220_files/dp0/SYS-3/MECH/file").   
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:25:35
+
+ *** WARNING ***                         CP =       0.250   TIME= 12:25:41
+ Unknown parameter name= ARTS_V2.0.  A value of 7.888609052E-31 will be  
+ used.                                                                   
+
+ *** WARNING ***                         CP =       0.250   TIME= 12:25:41
+ Unknown parameter name= TRUSS.  A value of 7.888609052E-31 will be      
+ used.                                                                   
+
+ *** ERROR ***                           CP =       0.250   TIME= 12:25:41
+ Missing separator between two fields.                                   
+
+ *** ERROR ***                           CP =       0.266   TIME= 12:25:41
+ The above error occurred processing field=                              
+ ARTS_V2.0/TRUSS/20191220_FILES/DP0/SYS-3/MECH/FILE                      
+  Line=                                                                  
+ *SET,path_(1),(arts_v2.0/truss/20191220_files/dp0/SYS-3/MECH/file).     
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:26:14
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:26:39
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:27:03
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:27:42
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:28:02
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:28:54
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:29:43
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:30:12
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:33:28
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:35:19
+
+ *** WARNING ***                         CP =       0.250   TIME= 12:35:26
+ INRES is not a recognized BEGIN command, abbreviation, or macro.  This  
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:35:35
+
+ *** WARNING ***                         CP =       0.234   TIME= 12:35:42
+ /INRES is not a recognized BEGIN command, abbreviation, or macro.       
+ This command will be ignored.                                           
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:36:25
+
+ *** WARNING ***                         CP =       0.281   TIME= 12:36:31
+ /INRES is not a recognized BEGIN command, abbreviation, or macro.       
+ This command will be ignored.                                           
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:41:48
+
+ *** WARNING ***                         CP =       0.266   TIME= 12:41:55
+ /FILE is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:42:09
+
+ *** WARNING ***                         CP =       0.266   TIME= 12:42:15
+ /INRES is not a recognized POST1 command, abbreviation, or macro.       
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:42:36
+
+ *** WARNING ***                         CP =       0.281   TIME= 12:42:42
+ /INRES is not a recognized POST26 command, abbreviation, or macro.      
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:42:56
+
+ *** WARNING ***                         CP =       0.281   TIME= 12:43:02
+ /INRES is not a recognized BEGIN command, abbreviation, or macro.       
+ This command will be ignored.                                           
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:43:32
+
+ *** WARNING ***                         CP =       0.234   TIME= 12:43:39
+ /INRES is not a recognized BEGIN command, abbreviation, or macro.       
+ This command will be ignored.                                           
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:44:53
+
+ *** WARNING ***                         CP =       0.250   TIME= 12:45:00
+ *INRES is not a recognized BEGIN command, abbreviation, or macro.       
+ This command will be ignored.                                           
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:46:18
+
+ *** WARNING ***                         CP =       0.234   TIME= 12:46:25
+ /INRES is not a recognized BEGIN command, abbreviation, or macro.       
+ This command will be ignored.                                           
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:46:31
+
+ *** WARNING ***                         CP =       0.234   TIME= 12:46:37
+ INRES is not a recognized BEGIN command, abbreviation, or macro.  This  
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:46:46
+
+ *** WARNING ***                         CP =       0.281   TIME= 12:46:52
+ /FILE is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:47:16
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:47:46
+
+ *** WARNING ***                         CP =       0.219   TIME= 12:47:52
+ /INRES is not a recognized POST1 command, abbreviation, or macro.       
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:48:15
+
+ *** WARNING ***                         CP =       0.234   TIME= 12:48:21
+ CLEAR is not a recognized BEGIN command, abbreviation, or macro.  This  
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       12:48:29
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:35:08
+
+ *** ERROR ***                           CP =       0.297   TIME= 13:35:15
+ An error occurred while attempting to open the results file             
+ D:/Alai/ansys_Alai/Crane/Crane_P.rst.                                   
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:36:10
+
+ *** ERROR ***                           CP =       0.266   TIME= 13:36:16
+ An error occurred while attempting to open the results file             
+ D:/Alai/ansys_Alai/Crane/Crane_P.rst.                                   
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:37:15
+
+ *** ERROR ***                           CP =       0.328   TIME= 13:37:22
+ An error occurred while attempting to open the results file file.rst.   
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:37:52
+
+ *** ERROR ***                           CP =       0.281   TIME= 13:37:58
+ An error occurred while attempting to open the results file file.rst.   
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:39:34
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:41:45
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:42:22
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:42:42
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:44:34
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:45:55
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:46:45
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:47:50
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:48:12
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:48:25
+
+ *** ERROR ***                           CP =       0.219   TIME= 13:48:32
+ An error occurred while attempting to open the results file file.rst.   
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:49:50
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:50:04
+
+ *** ERROR ***                           CP =       0.281   TIME= 13:50:11
+ Unable to open file file\file.RST.                                      
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:51:06
+
+ *** ERROR ***                           CP =       0.266   TIME= 13:51:13
+ Unable to open file D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/2019
+ 1220_files/dp0/SYS-3/MECH/.RST.                                         
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:51:30
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:52:35
+
+ *** WARNING ***                         CP =       0.250   TIME= 13:52:42
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:54:56
+
+ *** WARNING ***                         CP =       0.250   TIME= 13:55:03
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       13:55:47
+
+ *** WARNING ***                         CP =       0.250   TIME= 13:55:54
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:11:08
+
+ *** WARNING ***                         CP =       0.250   TIME= 14:11:14
+ POST1 is not a recognized BEGIN command, abbreviation, or macro.  This  
+ command will be ignored.                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:11:29
+
+ *** ERROR ***                           CP =       0.250   TIME= 14:11:36
+ No dimensions set for parameter= PATH_.                                 
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:12:17
+
+ *** ERROR ***                           CP =       0.281   TIME= 14:12:23
+ No dimensions set for parameter= PATH_.                                 
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:12:43
+
+ *** WARNING ***                         CP =       0.281   TIME= 14:12:50
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.438   TIME= 14:12:51
+ GET is not a recognized POST1 command, abbreviation, or macro.          
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:14:48
+
+ *** WARNING ***                         CP =       0.297   TIME= 14:14:54
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:19:06
+
+ *** WARNING ***                         CP =       0.266   TIME= 14:19:13
+ Geometry is not available.  The PRNSOL command is ignored.              
+
+ *** WARNING ***                         CP =       0.266   TIME= 14:19:13
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:20:45
+
+ *** WARNING ***                         CP =       0.297   TIME= 14:20:51
+ Geometry is not available.  The PRNSOL command is ignored.              
+
+ *** WARNING ***                         CP =       0.297   TIME= 14:20:51
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:25:22
+
+ *** WARNING ***                         CP =       0.250   TIME= 14:25:28
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       14:25:59
+
+ *** WARNING ***                         CP =       0.266   TIME= 14:26:06
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:27:24
+
+ *** WARNING ***                         CP =       0.297   TIME= 15:27:31
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.422   TIME= 15:27:32
+ *COPEN is not a recognized POST1 command, abbreviation, or macro.       
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:27:45
+
+ *** WARNING ***                         CP =       0.312   TIME= 15:27:52
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.453   TIME= 15:27:52
+ COPEN is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:27:59
+
+ *** WARNING ***                         CP =       0.297   TIME= 15:28:05
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.469   TIME= 15:28:06
+ COPEN is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:29:35
+
+ *** WARNING ***                         CP =       0.297   TIME= 15:29:42
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.500   TIME= 15:29:42
+ COPEN is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:30:14
+
+ *** WARNING ***                         CP =       0.312   TIME= 15:30:21
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:30:37
+
+ *** WARNING ***                         CP =       0.281   TIME= 15:30:44
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.438   TIME= 15:30:45
+ COPEN is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:31:28
+
+ *** WARNING ***                         CP =       0.328   TIME= 15:31:34
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.516   TIME= 15:31:35
+ COPEN is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:33:19
+
+ *** WARNING ***                         CP =       0.266   TIME= 15:33:25
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.469   TIME= 15:33:26
+ COPEN is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:34:23
+
+ *** WARNING ***                         CP =       0.359   TIME= 15:34:30
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.438   TIME= 15:34:30
+ COPEN is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:34:54
+
+ *** WARNING ***                         CP =       0.312   TIME= 15:35:00
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.438   TIME= 15:35:01
+ COPEN is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+
+ *** WARNING ***                         CP =       2.438   TIME= 15:35:01
+ VWRITE is not a recognized POST1 command, abbreviation, or macro.       
+  This command will be ignored.                                          
+
+ *** WARNING ***                         CP =       2.438   TIME= 15:35:01
+ (F1.0,F1 is not a recognized POST1 command, abbreviation, or macro.     
+  This command will be ignored.                                          
+
+ *** WARNING ***                         CP =       2.438   TIME= 15:35:01
+ ENDDO is not a recognized POST1 command, abbreviation, or macro.        
+  This command will be ignored.                                          
+
+ *** WARNING ***                         CP =       2.438   TIME= 15:35:01
+ CFCLOSE is not a recognized POST1 command, abbreviation, or macro.      
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:36:21
+
+ *** WARNING ***                         CP =       0.312   TIME= 15:36:28
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.453   TIME= 15:36:29
+ *COPEN is not a recognized POST1 command, abbreviation, or macro.       
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:42:27
+
+ *** WARNING ***                         CP =       0.312   TIME= 15:42:33
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.469   TIME= 15:42:34
+ *COPEN is not a recognized POST1 command, abbreviation, or macro.       
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:43:25
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:43:33
+
+ *** WARNING ***                         CP =       0.297   TIME= 15:43:40
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+
+ *** WARNING ***                         CP =       2.359   TIME= 15:43:41
+ *COPEN is not a recognized POST1 command, abbreviation, or macro.       
+  This command will be ignored.                                          
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:45:34
+
+ *** WARNING ***                         CP =       0.312   TIME= 15:45:41
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       15:46:53
+
+ *** WARNING ***                         CP =       0.328   TIME= 15:47:00
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       18:56:03
+
+ *** WARNING ***                         CP =       0.328   TIME= 18:56:10
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       18:57:46
+
+ *** WARNING ***                         CP =       0.312   TIME= 18:57:53
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:15:09
+
+ *** WARNING ***                         CP =       0.312   TIME= 19:15:15
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:27:54
+
+ *** WARNING ***                         CP =       0.297   TIME= 19:28:03
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:30:23
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:30:38
+
+ *** WARNING ***                         CP =       0.328   TIME= 19:30:44
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:36:18
+
+ *** WARNING ***                         CP =       0.281   TIME= 19:36:25
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:37:34
+
+ *** WARNING ***                         CP =       0.281   TIME= 19:37:40
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:40:20
+
+ *** WARNING ***                         CP =       0.328   TIME= 19:40:26
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:41:06
+
+ *** WARNING ***                         CP =       0.297   TIME= 19:41:13
+ Nodes and elements currently do not exist in the database and will be   
+ obtained from the results file.  If you subsequently save this model    
+ (SAVE or /EXIT command), it will overwrite the data currently on        
+ file.db.                                                                
+/COM,ANSYS RELEASE Release 19.1      BUILD 19.1      UP20180418       19:47:54

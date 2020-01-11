@@ -7,11 +7,11 @@ path_switch = r'pre_hydraulic_rod\\'
 # 读取路径(读pre)
 path_four_read = path_prefix + path_switch
 # 写入路径(写在mid)
-path_four_write = path_prefix + r"post\\"
+path_four_write = path_prefix + r"post_360\\"
 # 网格类型
 geometry_type = ['3D4_L']
 # 训练自变量
-degreeArr = [0, 21, 42, 63]
+degreeArr = [0, 21, 42, 64]
 forceArr = [125, 250, 375, 500]
 combine = []
 for iDegree in range(len(degreeArr)):
@@ -22,5 +22,7 @@ fd_flat = fd.flatten()
 # 训练模型
 dtf = DataToFile(path_four_read, path_four_write, geometry_type)
 # dtf.dataToPostFile_v2_Bysorted(v_fd=fd, rbf_type='lin_a', which_part=path_switch[4:-2])
-dtf.dataToPostFile_v2_Bysorted(v_fd=fd, rbf_type='lin_a', which_part=path_switch[4:-2])
+dtf.dataToPostFile_v2_Bysorted(v_fd=fd,
+                               rbf_type='lin_a',
+                               which_part=path_switch[4:-2])
 # dtf.dataToMidFile()
