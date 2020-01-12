@@ -1,25 +1,31 @@
 FINISH
 /CLEAR
-*DIM,rst_path_,STRING,128
-rst_path_(1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss\20191220_files\dp0\SYS-3\MECH\file'
+*DIM,rst_path_,STRING,128,2
+*STATUS,PRM_
+rst_path_(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss\20191220_files\dp0\SYS-3\MECH\file'
+rst_path_(1,2)='C:\Users\asus\Desktop\History\History_ansys\ANSYS WorkDir\equivalent_stress\\'
 /POST1
-FILE,rst_path_(1),RST
+/MKDIR,rst_path_(1,2)
+/CWD,rst_path_(1,2)
+FILE,rst_path_(1,1),RST
 INRES,ALL
-/OUTPUT, 'C:\Users\asus\AppData\Local\pyansys\pyansys\tmp_fxpycjtqks.out'
+/OUTPUT, 'C:\Users\asus\AppData\Local\pyansys\pyansys\tmp_qfixqyedet.out'
 *DO,j,1,16,1
 SET,j
 PRITER
-*CFOPEN,CHRVAL(j),txt
+file_name=CHRVAL(j)
+*CFOPEN,%file_name%,txt
 ALLS,ALL
 *GET,nmax,NODE,,NUM,MAX
 *GET,nmin,NODE,,NUM,MIN
 *DO,i,nmin,nmax,1
 n_coord_x = UX(i)
+bb = EL
 n_coord_y = UY(i)
 n_coord_z = UZ(i)
 *VWRITE,CHRVAL(i),n_coord_x,n_coord_y,n_coord_z
 (A6,F20.6,F20.6,F20.6)
-*CFCLOSE
 *ENDDO
+*CFCLOSE
 *ENDDO
 /OUTPUT

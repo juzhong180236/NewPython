@@ -1,68 +1,121 @@
 
- *** IMPORTANT LICENSING MESSAGE ***
-
- ANSYS LICENSE MANAGER ERROR:
- ANSYSLI exited or could not read server port ANSYSLI_DEMO_PORT.
-
- *** ERROR - ANSYS license not available.
-
-+--------------------- A N S Y S   S T A T I S T I C S ------------------------+
-
-Release: Release 19.1       Build: 19.1       Update: UP20180418   Platform: WINDOWS x64 
-Date Run: 01/11/2020   Time: 19:48     Process ID: 21124
-Operating System: Windows 10  (Build: 18362)
-
-Processor Model: Intel(R) Core(TM) i7-9700KF CPU @ 3.60GHz
-
-Compiler: Intel(R) FORTRAN Compiler Version 17.0.4  (Build: 20170411)
-          Intel(R) C/C++ Compiler Version 17.0.4  (Build: 20170411)
-          Intel(R) Math Kernel Library Version 2017.0.3 Product Build 20170413
-
-Number of machines requested            :    1
-Total number of cores available         :    8
-Number of physical cores available      :    8
-Number of processes requested           :    1
-Number of threads per process requested :    0
-Total number of cores requested         :    0 (Shared Memory Parallel)                    
-
-GPU Acceleration: Not Requested
-
-Job Name: file
-Working Directory: 
-
-Total CPU time for main thread                    :        0.2 seconds
-Total CPU time summed for all threads             :        0.1 seconds
-
-Elapsed time spent pre-processing model (/PREP7)  :        0.0 seconds
-Elapsed time spent solution - preprocessing       :        0.0 seconds
-Elapsed time spent computing solution             :        0.0 seconds
-Elapsed time spent solution - postprocessing      :        0.0 seconds
-Elapsed time spent post-processing model (/POST1) :        0.0 seconds
- 
-
-Maximum total memory used                         :        2.0 MB
-Maximum total memory allocated                    :        0.0 MB
-Total physical memory available                   :         32 GB
-
-+------------------ E N D   A N S Y S   S T A T I S T I C S -------------------+
+ ANSYS Mechanical Enterprise                       
 
 
- *---------------------------------------------------------------------------*
- |                                                                           |
- |                            ANSYS RUN COMPLETED                            |
- |                                                                           |
- |---------------------------------------------------------------------------|
- |                                                                           |
- | Ansys Release 19.1          Build 19.1         UP20180418     WINDOWS x64 |
- |                                                                           |
- |---------------------------------------------------------------------------|
- |                                                                           |
- | Database Requested(-db)     0 MB    Scratch Memory Requested         0 MB |
- | Maximum Database Used       1 MB    Maximum Scratch Memory Used      1 MB |
- |                                                                           |
- |---------------------------------------------------------------------------|
- |                                                                           |
- |        CP Time      (sec) =          0.078       Time  =  19:48:32        |
- |        Elapsed Time (sec) =         39.000       Date  =  01/11/2020      |
- |                                                                           |
- *---------------------------------------------------------------------------*
+ *------------------------------------------------------------------*
+ |                                                                  |
+ |   W E L C O M E   T O   T H E   A N S Y S (R)  P R O G R A M     |
+ |                                                                  |
+ *------------------------------------------------------------------*
+
+
+
+
+ ***************************************************************
+ *            ANSYS Release 19.1     LEGAL NOTICES             *
+ ***************************************************************
+ *                                                             *
+ * Copyright 1971-2018 ANSYS, Inc.  All rights reserved.       *
+ * Unauthorized use, distribution or duplication is            *
+ * prohibited.                                                 *
+ *                                                             *
+ * Ansys is a registered trademark of ANSYS, Inc. or its       *
+ * subsidiaries in the United States or other countries.       *
+ * See the ANSYS, Inc. online documentation or the ANSYS, Inc. *
+ * documentation CD or online help for the complete Legal      *
+ * Notice.                                                     *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * THIS ANSYS SOFTWARE PRODUCT AND PROGRAM DOCUMENTATION       *
+ * INCLUDE TRADE SECRETS AND CONFIDENTIAL AND PROPRIETARY      *
+ * PRODUCTS OF ANSYS, INC., ITS SUBSIDIARIES, OR LICENSORS.    *
+ * The software products and documentation are furnished by    *
+ * ANSYS, Inc. or its subsidiaries under a software license    *
+ * agreement that contains provisions concerning               *
+ * non-disclosure, copying, length and nature of use,          *
+ * compliance with exporting laws, warranties, disclaimers,    *
+ * limitations of liability, and remedies, and other           *
+ * provisions.  The software products and documentation may be *
+ * used, disclosed, transferred, or copied only in accordance  *
+ * with the terms and conditions of that software license      *
+ * agreement.                                                  *
+ *                                                             *
+ * ANSYS, Inc. is a UL registered                              *
+ * ISO 9001:2008 company.                                      *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * This product is subject to U.S. laws governing export and   *
+ * re-export.                                                  *
+ *                                                             *
+ * For U.S. Government users, except as specifically granted   *
+ * by the ANSYS, Inc. software license agreement, the use,     *
+ * duplication, or disclosure by the United States Government  *
+ * is subject to restrictions stated in the ANSYS, Inc.        *
+ * software license agreement and FAR 12.212 (for non-DOD      *
+ * licenses).                                                  *
+ *                                                             *
+ ***************************************************************
+
+ Release 19.1
+     
+ Point Releases and Patches installed:   
+     
+ ANSYS, Inc. Products Release 19.1   
+ SpaceClaim Release 19.1 
+ AIM Release 19.1
+ Autodyn Release 19.1
+ LS-DYNA Release 19.1
+ CFX (includes CFD-Post) Release 19.1
+ Chemkin Release 19.1
+ EnSight Release 19.1
+ FENSAP-ICE Release 19.1 
+ Fluent (includes CFD-Post) Release 19.1 
+ Forte Release 19.1  
+ Polyflow (includes CFD-Post) Release 19.1   
+ TurboGrid Release 19.1  
+ ICEM CFD Release 19.1   
+ Aqwa Release 19.1   
+ Mechanical Products Release 19.1
+ Icepak (includes CFD-Post) Release 19.1 
+ ACIS Geometry Interface Release 19.1
+ AutoCAD Geometry Interface Release 19.1 
+ Catia, Version 4 Geometry Interface Release 19.1
+ Catia, Version 6 Geometry Interface Release 19.1
+ Creo Elements/Direct Modeling Geometry Interface Release 19.1   
+ Creo Parametric Geometry Interface Release 19.1 
+ Inventor Geometry Interface Release 19.1
+ JTOpen Geometry Interface Release 19.1  
+ NX Geometry Interface Release 19.1  
+ Parasolid Geometry Interface  Release 19.1  
+ Solid Edge Geometry Interface Release 19.1  
+ SOLIDWORKS Geometry Interface Release 19.1  
+ ANSYS, Inc. License Manager Release 19.1
+
+
+          *****  ANSYS COMMAND LINE ARGUMENTS  *****
+  INITIAL JOBNAME              = file                                                                                                                                                                                                                                                    
+  BATCH MODE REQUESTED (-b)    = LIST
+  INPUT FILE COPY MODE (-c)    = COPY
+  SHARED MEMORY PARALLEL REQUESTED
+    SINGLE PROCESS WITH   6 THREADS REQUESTED
+    TOTAL OF     6 CORES REQUESTED
+  INPUT FILE NAME              = C:\Users\asus\Desktop\History\History_codes\NewPython\Repo_Ansys\test_first\tmp.inp
+  OUTPUT FILE NAME             = C:\Users\asus\Desktop\History\History_codes\NewPython\Repo_Ansys\test_first\out.txt
+    SERVER PORT REQUESTED      = 51905       
+
+ RELEASE= Release 19.1         BUILD= 19.1      UP20180418   VERSION=WINDOWS x64 
+ CURRENT JOBNAME=file  14:46:22  JAN 12, 2020 CP=      0.203
+
+     1  FINISH  
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v191\ANSYS\apdl\start.ans
+   - MAPDL RPC server started...
+   - MAPDL RPC server is waiting for the incoming connection...
+   - MAPDL RPC server connected...
+
+ /INPUT FILE= C:\Program Files\ANSYS Inc\v191\ANSYS\apdl\start.ans  LINE=       0
+子目录或文件 C:\Users\asus\Desktop\History\History_ansys\ANSYS WorkDir\equivalent_stress\\ 已经存在。
+
+ /OUTPUT FILE= C:\Users\asus\AppData\Local\pyansys\pyansys\tmp_qfixqyedet.out
