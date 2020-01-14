@@ -1,0 +1,35 @@
+!直接通过结果文件导出displacement
+FINISH
+/CLEAR
+/NOPR
+*DIM,path_,STRING,128,2
+path_(1,1)='D:/Alai/ansys_Alai/pump/pump_files/dp0/SYS/MECH/file'
+path_(1,2)='D:\disp_pump\'
+/POST1
+/MKDIR,path_(1,2)
+/CWD,path_(1,2)
+FILE,path_(1,1),'rst'
+INRES,ALL
+*DO,j,60,62,0.1
+    SET,0,0,,,j
+    PRITER
+    file_name=CHRVAL((j)
+    *CFOPEN,%file_name%,txt
+    !ALLS,ALL
+    NSEL,S,NODE,,2075,2844
+    NSEL,A,NODE,,1283,1293
+    *GET,n_count,NODE,0,COUNT
+    *GET,n_current,NODE,,NUM,MIN
+    *DO,i,1,n_count,1
+        n_coord_disp_x = NX(n_current)+UX(n_current)
+        n_coord_disp_y = NY(n_current)+UY(n_current)
+        n_coord_disp_z = NZ(n_current)+UZ(n_current)
+        *VWRITE,CHRVAL(n_current),n_coord_disp_x,n_coord_disp_y,n_coord_disp_z
+        (A9,F16.8,F16.8,F16.8)
+        n_current=NDNEXT(n_current)
+    *ENDDO
+    *CFCLOSE
+*ENDDO
+/GOPR
+/CLEAR
+/DELETE,file,page

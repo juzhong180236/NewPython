@@ -103,10 +103,10 @@
     TOTAL OF     6 CORES REQUESTED
   INPUT FILE NAME              = C:\Users\asus\Desktop\History\History_codes\NewPython\Repo_Ansys\test_first\tmp.inp
   OUTPUT FILE NAME             = C:\Users\asus\Desktop\History\History_codes\NewPython\Repo_Ansys\test_first\out.txt
-    SERVER PORT REQUESTED      = 51905       
+    SERVER PORT REQUESTED      = 65049       
 
  RELEASE= Release 19.1         BUILD= 19.1      UP20180418   VERSION=WINDOWS x64 
- CURRENT JOBNAME=file  14:46:22  JAN 12, 2020 CP=      0.203
+ CURRENT JOBNAME=file  20:35:20  JAN 14, 2020 CP=      0.172
 
      1  FINISH  
 
@@ -118,4 +118,7 @@
  /INPUT FILE= C:\Program Files\ANSYS Inc\v191\ANSYS\apdl\start.ans  LINE=       0
 子目录或文件 C:\Users\asus\Desktop\History\History_ansys\ANSYS WorkDir\equivalent_stress\\ 已经存在。
 
- /OUTPUT FILE= C:\Users\asus\AppData\Local\pyansys\pyansys\tmp_qfixqyedet.out
+ /OUTPUT FILE= C:\Users\asus\AppData\Local\pyansys\pyansys\tmp_qtfjkiqydk.out
+
+   - MAPDL RPC client requesting shutdown...
+

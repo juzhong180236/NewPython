@@ -51,7 +51,7 @@ ansys.run("/CWD,rst_path_(1,2)")
 ansys.run("FILE,rst_path_(1,1),RST")  # 指定读入ansys中的结果文，FILE
 ansys.run("INRES,ALL")  # 从读入的结果文件中读出指定类型的数据，INRES
 with ansys.non_interactive:
-    ansys.run('*DO,j,1,16,1')
+    ansys.run('*DO,j,1,1,1')
     ansys.run("SET,j")  # 从结果文件中读出所指定的数据集
     ansys.run("PRITER")  # 列表出结果的汇总数据
     # ansys.run("PRNSOL,U,X")  # 列表出结果的汇总数据
@@ -62,7 +62,7 @@ with ansys.non_interactive:
     ansys.run('*GET,nmax,NODE,,NUM,MAX')
     ansys.run('*GET,nmin,NODE,,NUM,MIN')
     ansys.run('*DO,i,nmin,nmax,1')
-    ansys.run('n_coord_x = UX(i)')
+    ansys.run('n_coord_x = UX(i)+UX(i)')
     ansys.run('n_coord_y = UY(i)')
     ansys.run('n_coord_z = UZ(i)')
     ansys.run('*VWRITE,CHRVAL(i),n_coord_x,n_coord_y,n_coord_z')
