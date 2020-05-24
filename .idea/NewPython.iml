@@ -6,6 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$/Demo/Crane/RBF_Crane" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/APP_utils/Algorithm/Surrogate_Model/RBF" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/APP_utils/Algorithm/data" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Demo/Ruler/RBF_Ruler" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Demo/Ansys_Data_Utils_2020" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

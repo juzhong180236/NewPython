@@ -6,7 +6,7 @@ from RBF_ruler import RBF
 path_switch = "has_dut_35"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读mid)
 # path_hex = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/mid/"
-path_hex = r"C:\Users\asus\Desktop\History\History_codes\DT_Origin_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\\"
+path_hex = r"C:\Users\asus\Desktop\History\History_codes\DT_SlingTool_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\\"
 '''调用RBF'''
 rbf_type = 'lin_a'
 
@@ -14,7 +14,7 @@ rbf_type = 'lin_a'
 def Text_Create(name, msg, hexOrfour):
     # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
     # save_path = "C:/Users/asus/Desktop/DT_DEMO/new_models/" + path_switch + "/post/"
-    save_path = r"C:\Users\asus\Desktop\History\History_codes\DT_Origin_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\\"
+    save_path = r"C:\Users\asus\Desktop\History\History_codes\DT_SlingTool_Demo\APP_A_CantileverBeam\APP_models\list_new\pre\\"
     if hexOrfour == 'four':
         # 存储路径@@@@@@@@@@@@@@@@@@@@@@@(存post)
         # save_path += 'lin_a/'
@@ -205,10 +205,10 @@ def realXYZ():
         z_pred = rbfnet_z.predict(d_pred)
         stress_pred = rbfnet_stress.predict(d_pred)
         dSum_pred = rbfnet_dSum.predict(d_pred)
-        plt.plot(d_pred, y_pred, color='#0000ff', marker='+', linestyle='-.',
+        plt.plot(d_pred, stress_pred, color='#0000ff', marker='o', linestyle='-.',
                  label=('' if i == 0 else '_') + 'y_predict')
-        plt.plot(d_whole, y_real, color='#ff00ff', marker='+', linestyle='-',
-                 label=('' if i == 0 else '_') + 'y-real')
+        # plt.plot(d_whole, y_real, color='#ff00ff', marker='+', linestyle='-',
+        #          label=('' if i == 0 else '_') + 'y-real')
         # plt.plot(d_pred, z_pred, color='#ff0000', marker='+', linestyle='-.',
         #          label=('' if i == 0 else '_') + 'z-predict')
         # plt.plot(d_whole, z_real, color='#ff00ff', marker='+', linestyle='-.',

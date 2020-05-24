@@ -1,0 +1,52 @@
+!直接通过结果文件导出coordinates
+FINISH
+/CLEAR
+/NOPR
+*DIM,path_read,STRING,128,1
+*DIM,path_write,STRING,128,1
+
+path_write(1,1)='C:\Users\asus\Desktop\ansys_0518\excavator\gear_pre\dopAndCoord\'
+path_read(1,1)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SYS\MECH\file'
+
+
+/POST1
+/MKDIR,path_write(1,1)
+/CWD,path_write(1,1)
+FILE,path_read(1,1),'rst'
+INRES,ALL
+SET
+!PRITER
+!*CFOPEN,NLIST,lis
+!ALLS,ALL
+ESEL,S,TYPE,,1
+!ALL也可以，但是CORNER稳妥一些
+!NSLE,S,ALL
+NSLE,S,CORNER
+!*GET,nmax,NODE,,NUM,MAX
+*GET,n_count,NODE,0,COUNT
+!*GET,n_current,NODE,,NUM,MIN
+*DO,j,1,2,1
+    *GET,n_current,ELEM,,NUM,MIN
+    *IF,j,EQ,1,THEN
+        file_name='NLIST_DELETE'
+    *ELSE
+        file_name='NLIST'
+    *ENDIF
+    !file_name=CHRVAL(j)
+    *CFOPEN,%file_name%,lis
+    *DO,i,1,n_count,1
+        n_coord_x = NX(n_current)
+        n_coord_y = NY(n_current)
+        n_coord_z = NZ(n_current)
+        *VWRITE,CHRVAL(n_current),n_coord_x,n_coord_y,n_coord_z
+        (A9,1PE16.8,1PE16.8,1PE16.8,1PE16.8)
+        n_current=NDNEXT(n_current)
+    *ENDDO
+*ENDDO
+*CFCLOSE
+/GOPR
+FINISH
+/CLEAR
+/DELETE,file,page
+/DELETE,NLIST_DELETE,lis
+!/EOF
