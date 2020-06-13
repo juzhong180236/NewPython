@@ -37,8 +37,8 @@ class ElementData(object):
             #     print(list_temp)
             if len(list_temp) == 8:
                 if TETRAHEDRON_LINEAR in self.geometry_type:
-                    # if (int(list_everyline[0]) - index_ele) != 1:
-                    #     break
+                    if (int(list_everyline[0]) - index_ele) != 1:
+                        break
                     # 1332  2391  1389  1389  1372  1372  1372  1372
                     # 1594  1999  1617  1617  1616  1616  1616  1616
                     # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
@@ -76,7 +76,7 @@ class ElementData(object):
                     list_result.extend([list_temp[0] - 1, list_temp[1] - 1,
                                         list_temp[2] - 1, list_temp[2] - 1,
                                         list_temp[0] - 1, list_temp[3] - 1])
-            # index_ele += 1
+            index_ele += 1
         eleFile.close()
         pf.printf('文件[' + self.path_ele[len(self.path_ele) - self.path_ele[::-1].index('\\'):] + ']读取完成！')
         return list_result

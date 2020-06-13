@@ -4,7 +4,7 @@ import os
 import itertools
 
 # path_switch = "/pulley/"
-path_switch = "/11/"
+path_switch = "/"
 # 读取路径@@@@@@@@@@@@@@@@@@@@@(读pre)
 path_four = "C:/Users/asus/Desktop/Demo_DT_Crane/APP_models" + path_switch + "pre/"
 # '''四面体ELIST.lis路径'''

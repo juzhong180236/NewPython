@@ -16,7 +16,7 @@ def create_dir_in_current(dirname):
         return path
 
 
-# path = r'D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\rod\20191223 wanggedi_files\dp0\SYS-6\MECH\file.rst'
+# path = r'D:\Alai\ansys_Alai\Crane_2019\Crane_Parts_v2.0\rod\20191223 wanggedi_files\dp0\SYS-6\MECH\file.rst'
 # result = py.read_binary(path)
 # nn = result.principal_nodal_stress(0)
 

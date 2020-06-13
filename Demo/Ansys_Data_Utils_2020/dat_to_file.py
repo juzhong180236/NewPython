@@ -1,6 +1,6 @@
 import os
 from surf_data_process import SurfaceData
-from rbf import RBF
+from rbf_2020 import RBF
 import txt_file_create as tfc
 import print_f as pf
 import matplotlib.pyplot as plt
@@ -241,7 +241,7 @@ class DataToFile(object):
         txt_displacement, txt_dopSum, txt_DstepandMin = surfaced.get_Displacement_DopSum_Dcolor_Bysorted()
         # 应力
         txt_stress, txt_SstepandMin = surfaced.get_Stress_SStepandMin_Bysorted()
-
+        # print(len(txt_coord.split('\n')[0].split(',')))
         stds = ''
         list_stress, len_data_stress = _getData(txt_stress, 'stressOrdSum')
         list_dopSum, len_data_dopSum = _getData(txt_dopSum, 'stressOrdSum')
@@ -257,7 +257,7 @@ class DataToFile(object):
         # list_y_name = []
         cycle_index = len(list_stress)
         for i in range(cycle_index):
-            # for i in range(2):
+        # for i in range(1):
             stress_real = list_stress[i]
             dSum_real = list_dopSum[i]
             # rbfnet_1 = RBF(rbf_type)
@@ -291,18 +291,22 @@ class DataToFile(object):
         ele = which_part + '_ele'
         dSum_w = which_part + '_dSum_w'
         stress_w = which_part + '_stress_w'
+        coord = which_part + '_coord'
 
         if v_fd.ndim == 1:
             x_train = ','.join(map(str, v_fd.tolist()))
         elif v_fd.ndim == 2:
             x_train = ','.join(map(lambda x: ','.join(map(str, x)), v_fd.tolist()))
-
+        else:
+            x_train = "null"
         # 步数和最小值，方差，输入值
-        # tfc.text_Create(self.path_write, stepAndMin,
-        #                 txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + x_train)
-        # # 索引文件
-        # tfc.text_Create(self.path_write, ele, txt_ele)
-        # # 总位移文件
-        # tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
-        # # 应力文件
-        # tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
+        tfc.text_Create(self.path_write, stepAndMin,
+                        txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + x_train)
+        # 索引文件
+        tfc.text_Create(self.path_write, ele, txt_ele)
+        # 总位移文件
+        tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
+        # 应力文件
+        tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
+        # # 坐标文件【坐标一般需要变换一下，就不直接输出了】
+        tfc.text_Create(self.path_write, coord, txt_coord)

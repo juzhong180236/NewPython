@@ -1,0 +1,71 @@
+!直接通过结果文件导出equivalent stress
+FINISH
+/CLEAR
+/NOPR
+*DIM,path_write,STRING,128,1
+*DIM,path_read,STRING,128,3
+
+path_write(1,1)='C:\Users\asus\Desktop\ansys_0518\excavator\gear_pre\equivalent_stress\'
+!有几个file.rst文件，就将path_read舍为几维数组
+path_read(1,1)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SYS\MECH\file'
+path_read(1,2)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SYS-1\MECH\file'
+path_read(1,3)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SYS-2\MECH\file'
+
+/POST1
+/MKDIR,path_write(1,1)
+/CWD,path_write(1,1)
+!最外层循环是对.rst结果文件的循环
+*DO,s,1,3,1
+    FILE,path_read(1,s),'rst'
+    INRES,ALL
+    file_name_out=CHRVAL(s)
+    *DO,j,1,9,1
+        SET,j
+        !PRITER
+        !ALLS,ALL
+        ESEL,S,TYPE,,1
+        !ALL也可以，但是CORNER稳妥一些
+        !NSLE,S,ALL
+        NSLE,S,CORNER
+        !*GET,nmax,NODE,,NUM,MAX
+        *GET,n_count,NODE,0,COUNT
+        !*GET,n_current,NODE,,NUM,MIN
+        *IF,j,EQ,1,THEN
+            *DO,n,1,2,1
+               *GET,n_current,NODE,,NUM,MIN
+               !n_current=0
+               *IF,n,EQ,1,THEN
+                  file_name=CHRVAL(0)
+                  *CFOPEN,%file_name%,txt
+               *ELSE
+                  file_name=CHRVAL(1)
+                  *CFOPEN,%file_name_out%%file_name%,txt
+               *ENDIF
+               *DO,i,1,n_count,1
+                  *GET,s_eqv,NODE,i,S,EQV
+                  *VWRITE,CHRVAL(n_current),s_eqv
+                  (A9,E16.8)
+                  n_current=NDNEXT(n_current)
+               *ENDDO
+            *ENDDO
+        *ELSE
+            file_name=CHRVAL(j)
+            *CFOPEN,%file_name_out%%file_name%,txt
+            *GET,n_current,NODE,,NUM,MIN
+            *DO,i,1,n_count,1
+                 *GET,s_eqv,NODE,i,S,EQV
+                 *VWRITE,CHRVAL(n_current),s_eqv
+                 (A9,E16.8)
+                 n_current=NDNEXT(n_current)
+            *ENDDO
+        *ENDIF
+        *CFCLOSE
+    *ENDDO
+*ENDDO
+/GOPR
+FINISH
+/CLEAR
+/DELETE,file,page
+/DELETE,RPCRequestTmp,out
+/DELETE,CHRVAL(0),txt
+!/EOF

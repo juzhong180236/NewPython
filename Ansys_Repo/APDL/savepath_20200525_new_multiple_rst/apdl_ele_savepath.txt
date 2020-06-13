@@ -5,8 +5,8 @@ FINISH
 *DIM,path_write,STRING,128,1
 *DIM,path_read,STRING,128,1
 
-path_write(1,1)='C:\Users\asus\Desktop\ansys_0518\excavator\gear_pre\ele\'
-path_read(1,1)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SYS\MECH\file'
+path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models\pre_pedestal_gyration\ele\'
+path_read(1,1)='C:\Users\asus\Desktop\file'
 
 /POST1
 /MKDIR,path_write(1,1)
@@ -16,8 +16,16 @@ INRES,ALL
 SET
 !PRITER
 !*CFOPEN,ELIST,lis
-!ALLS,ALL
-ESEL,S,TYPE,,1
+ALLS,ALL,ELEM
+!ALLS,BELOW,AREA
+!page 402 175-199 316-336 391
+!ESEL,S,TYPE,,1,10
+!asel,all
+!ESEL,S,TSHA,,,
+!NSLE,S,ALL
+!NSLA,s,1
+!ESLN,s,0,ALL
+!NSLE,R,CORNER
 *GET,e_count,ELEM,0,COUNT
 !*GET,emax,ELEM,,NUM,MAX
 !*GET,e_current,ELEM,,NUM,MIN

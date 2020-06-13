@@ -224,7 +224,7 @@ class DataToFile(object):
 
     def dataToPostFile_v2_Bysorted(self, v_fd, rbf_type='lin_a', which_part='truss'):
         """
-        和上一版本的区别是，位移数据和坐标数据分开导出
+        和上一版本的区别是，位移数据和坐标数据分开导出，并加入了节点画面索引的顺序
         :param v_fd: 输入的训练自变量
         :param rbf_type: 使用的rbf类型
         :param which_part: 存储的数据是哪个零件的

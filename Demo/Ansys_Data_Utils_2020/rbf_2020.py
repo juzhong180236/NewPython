@@ -78,7 +78,6 @@ class RBF(object):
             else:
                 list_result.append(self.rbf(X[i], X, self.std).ravel())
         Gaussian_result = np.array(list_result)
-        # print(Gaussian_result)
         self.w = np.linalg.pinv(Gaussian_result).dot(Y)
         return ','.join(map(str, self.w))
 

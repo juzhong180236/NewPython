@@ -47,7 +47,7 @@ def read_list(read_path, num=3):
 
 
 if __name__ == '__main__':
-    # test_read_path = r'D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\rod\20191223 wanggedi_files\dp0\SYS-3\MECH\file.rst'
+    # test_read_path = r'D:\Alai\ansys_Alai\Crane_2019\Crane_Parts_v2.0\rod\20191223 wanggedi_files\dp0\SYS-3\MECH\file.rst'
     test_read_path = r'D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss\20191220_files\dp0\SYS-3\MECH\file.rst'
 
     # test_read_path = r'D:\Alai\ansys_Alai\2020.1.10\peristaltic pump1231_14_0.5r\pristaltic_pump1231_files\dp0\SYS\MECH\file.rst'
