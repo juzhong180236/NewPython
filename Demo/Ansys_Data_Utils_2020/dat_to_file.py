@@ -3,6 +3,10 @@ from surf_data_process import SurfaceData
 from rbf_2020 import RBF
 import txt_file_create as tfc
 import print_f as pf
+from ele_data import ElementData
+from coords_data import CoordinateData
+from disp_data import DispalcementData
+from stre_data import StressData
 import matplotlib.pyplot as plt
 
 
@@ -257,7 +261,7 @@ class DataToFile(object):
         # list_y_name = []
         cycle_index = len(list_stress)
         for i in range(cycle_index):
-        # for i in range(1):
+            # for i in range(1):
             stress_real = list_stress[i]
             dSum_real = list_dopSum[i]
             # rbfnet_1 = RBF(rbf_type)
@@ -310,3 +314,79 @@ class DataToFile(object):
         tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
         # # 坐标文件【坐标一般需要变换一下，就不直接输出了】
         tfc.text_Create(self.path_write, coord, txt_coord)
+
+    def dataToPostFile_paper_result_pulley(self, v_fd, path_real_data, rbf_type='lin_a'):
+        """
+        :param v_fd: 输入的训练自变量
+        :param path_real_data: 真实数据的路径
+        :param rbf_type: 使用的rbf类型
+        :return:
+        """
+        import numpy as np
+
+        def read_data(path):
+            isExisted = os.path.exists(path)
+            if not isExisted:
+                pf.printf(path)
+                pf.printf('上面列出的路径不存在，请设置正确路径！')
+                return
+            else:
+                pf.printf('目录[' + path + ']存在,正在读取...')
+            files = os.listdir(path)  # 获取当前文档下的文件
+            files_cut = sorted(files, key=lambda x: int(x[:-4]))
+            list_125 = []
+            list_250 = []
+            list_375 = []
+            list_500 = []
+            for file in files_cut:
+                if int(file[:-4].split('_')[1]) == 1:
+                    file_content = open(self.path_read + os.path.basename(file), 'rt')
+                    first_line = file_content.read()
+                    list_125.append(float(first_line.strip()))
+                    file_content.close()
+                elif int(file[:-4].split('_')[1]) == 2:
+                    file_content = open(self.path_read + os.path.basename(file), 'rt')
+                    first_line = file_content.read()
+                    list_250.append(float(first_line.strip()))
+                    file_content.close()
+                elif int(file[:-4].split('_')[1]) == 3:
+                    file_content = open(self.path_read + os.path.basename(file), 'rt')
+                    first_line = file_content.read()
+                    list_375.append(float(first_line.strip()))
+                    file_content.close()
+                else:
+                    file_content = open(self.path_read + os.path.basename(file), 'rt')
+                    first_line = file_content.read()
+                    list_500.append(float(first_line.strip()))
+                    file_content.close()
+            return np.asarray(list_125), np.asarray(list_250), np.asarray(list_375), np.asarray(list_500)
+
+        # list_train_stress_125, list_train_stress_250, \
+        # list_train_stress_375, list_train_stress_500 = read_data(self.path_read)
+
+        list_real_stress_125, list_real_stress_250, \
+        list_real_stress_375, list_real_stress_500 = read_data(path_real_data)
+
+        rbfnet_125 = RBF(rbf_type)
+        rbfnet_250 = RBF(rbf_type)
+        rbfnet_375 = RBF(rbf_type)
+        rbfnet_500 = RBF(rbf_type)
+
+        # rbfnet_125.fit(v_fd, list_train_stress_125)
+        # rbfnet_250.fit(v_fd, list_train_stress_250)
+        # rbfnet_375.fit(v_fd, list_train_stress_375)
+        # rbfnet_500.fit(v_fd, list_train_stress_500)
+
+        stds_125 = str(rbfnet_125.std)
+        stds_250 = str(rbfnet_250.std)
+        stds_375 = str(rbfnet_375.std)
+        stds_500 = str(rbfnet_500.std)
+
+        # print("\r" + rbfnet_125.__class__.__name__ + "程序当前已完成：" + str(
+        #     round(i / len(list_w_125) * 10000) / 100) + '%', end="")
+
+        x = np.arange(0, 66, 1)
+
+        # plt.plot(x, rbfnet_125.predict(x))
+        # plt.plot(x, list_real_stress_125)
+        # plt.show()

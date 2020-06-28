@@ -31,7 +31,9 @@ class Kriging(object):
         self.sigma2 = None  # 方差
         self.beta_normalize = None  # 归一化均值
         self.sigma2_normalize = None  # 归一化方差
-        self.Vkriging = None  # 模型中可复用的部分
+        # self.Vkriging = None  # 模型中可复用的部分
+        self.inverse_matrix_normalize = None
+        self.F = np.ones(X.shape[-1])
 
         # 根据解的精度确定染色体(chromosome)的长度——确定二进制编码的长度
 
@@ -320,8 +322,8 @@ class Kriging(object):
         # R = sys.float_info.min if R == 0 else R
         # 自己的方法，直接用 np.finfo(np.float64).tiny替换掉零
         R = np.finfo(np.float64).tiny if R == 0 else R
-        if np.linalg.det(matrix) == 0:
-            print(np.linalg.det(matrix))
+        # if np.linalg.det(matrix) == 0:
+            # print(np.linalg.det(matrix))
         # return -self.sigma2 * (F.shape[-1] / 2) - np.log(np.linalg.det(matrixR))
         return -self.sigma2 * (F.shape[-1] / 2) - np.log(R)
 
@@ -386,10 +388,10 @@ class Kriging(object):
         # 相关矩阵
         # matrix = self.corelation(self.gaussian, self.x_normalization_0, self.x_normalization_1, self.parameters)
         matrix = self.corelation(self.gaussian, self.x_normalization, self.x_normalization, self.parameters)
-        inverse_matrix_normalize = np.linalg.pinv(matrix)
-        F = np.ones(matrix.shape[-1])
-        self.beta_normalize = F.T.dot(inverse_matrix_normalize).dot(self.Y) / (F.T.dot(inverse_matrix_normalize).dot(F))
-        self.Vkriging = inverse_matrix_normalize.dot((self.Y - F.dot(self.beta_normalize)))
+        self.inverse_matrix_normalize = np.linalg.inv(matrix + 1e-8 * np.eye(len(self.x_normalization)))
+        # self.F = np.ones(matrix.shape[-1])
+        self.beta_normalize = self.F.T.dot(self.inverse_matrix_normalize).dot(self.Y) / (
+            self.F.T.dot(self.inverse_matrix_normalize).dot(self.F))
         # 相关矩阵求逆
         return self.parameters
 
@@ -397,8 +399,9 @@ class Kriging(object):
         # 预测值归一化
         x_pred_normalization = X_pre / (np.max(X_pre, axis=0) - np.min(X_pre, axis=0))
         # 相关向量
-        vector_0 = self.corelation(self.gaussian, self.x_normalization, x_pred_normalization, self.parameters)
-        Y_pre = self.beta_normalize + vector_0.T.dot(self.Vkriging)
+        vector = self.corelation(self.gaussian, self.x_normalization, x_pred_normalization, self.parameters)
+        Y_pre = self.beta_normalize + vector.T.dot(self.inverse_matrix_normalize).dot(
+            self.Y - self.F.dot(self.beta_normalize))
         # 预测值
         return Y_pre
 
@@ -417,10 +420,12 @@ class coKriging(object):
         self.Xe = None
         self.Y = None
         self.beta = None
-        self.Vkriging = None
+        # self.Vkriging = None
         self.C_Xe = None
         self.Xc_normalization = None
         self.Xe_normalization = None
+        self.co_F=None
+        self.C_inverse=None
 
     def corelation(self, func, X1, X2, para_array):
         list_result = []
@@ -453,6 +458,7 @@ class coKriging(object):
         self.C_Xe = self.C_krig.predict(Xe)
         self.D_krig = Kriging(X=self.C_Xe, Y=Ye, para_array=self.Dpara_arr, max_iter=self.max_iter)
         self.D_parameters = self.D_krig.get_parameters()[2]
+        print(self.D_parameters)
         # self.D_parameters = self.D_krig.fit()[2]
         # D_matrix_ee = self.corelation(self.D_krig.gaussian, Xe, Xe, self.D_krig.parameters)  # D的ee矩阵
         D_matrix_ee = self.corelation(self.D_krig.gaussian, self.Xe_normalization, self.Xe_normalization,
@@ -463,12 +469,12 @@ class coKriging(object):
         C3 = self.D_parameters * self.C_sigma2 * C_matrix_ce.T
         C4 = self.D_parameters ** 2 * self.C_sigma2 * C_matrix_ee + self.D_sigma2 * D_matrix_ee
         C = np.vstack((np.hstack((C1, C2)), np.hstack((C3, C4))))
-        F = np.ones(C.shape[-1])
-        C_inverse = np.linalg.pinv(C)
+        self.co_F = np.ones(C.shape[-1])
+        self.C_inverse = np.linalg.pinv(C)
         self.Y = np.hstack((Yc, Ye))
         # 均值
-        self.beta = F.T.dot(C_inverse).dot(self.Y) / (F.T.dot(C_inverse).dot(F))
-        self.Vkriging = C_inverse.dot((self.Y - F.dot(self.beta)))
+        self.beta = self.co_F.T.dot(self.C_inverse).dot(self.Y) / (self.co_F.T.dot(self.C_inverse).dot(self.co_F))
+        # self.Vkriging = self.C_inverse.dot((self.Y - self.co_F.dot(self.beta)))
         # print(self.Vkriging)
         # print(self.beta)
         # print(self.C_sigma2)
@@ -490,7 +496,7 @@ class coKriging(object):
         c1 = self.D_parameters * self.C_sigma2 * C_matrix_cx
         c2 = (self.D_parameters ** 2 * self.C_sigma2 + self.D_sigma2) * D_matrix_ex
         c = np.vstack((c1, c2))
-        Y_pre = self.beta + c.T.dot(self.Vkriging)
+        Y_pre = self.beta + c.T.dot(self.C_inverse).dot(self.Y - self.co_F.dot(self.beta))
         return Y_pre
 
     def model(self):
@@ -559,7 +565,7 @@ if __name__ == "__main__":
         cokriging = coKriging(Cpara_arr=parameter_array_c, Dpara_arr=parameter_array_d, max_iter=10)
         cokriging.fit(XC_point, YC_point, XE_point, YE_point)
         XE_PRED = np.linspace(0, 1)
-        print(cokriging.D_krig.parameters)
+        # print(cokriging.D_krig.parameters)
         # YY = cokriging.C_krig.predict(XE_PRED)
         Y_results_points = cokriging.predict(XC_point)
         Y_results_curve = cokriging.predict(XE_PRED)

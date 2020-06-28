@@ -1,0 +1,134 @@
+!直接通过结果文件导出equivalent stress
+FINISH
+/CLEAR
+/NOPR
+*DIM,path_write,STRING,128,1
+*DIM,path_read,STRING,128,65
+
+path_write(1,1)='C:\Users\asus\Desktop\papre_result_pulley\equivalent_stress_point\'
+!有几个file.rst文件，就将path_read舍为几维数组
+path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-14\MECH\file'
+path_read(1,2)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-15\MECH\file'
+path_read(1,3)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-16\MECH\file'
+path_read(1,4)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-17\MECH\file'
+path_read(1,5)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-18\MECH\file'
+path_read(1,6)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-19\MECH\file'
+path_read(1,7)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-20\MECH\file'
+path_read(1,8)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-21\MECH\file'
+path_read(1,9)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-22\MECH\file'
+path_read(1,10)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-23\MECH\file'
+path_read(1,11)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-24\MECH\file'
+path_read(1,12)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-25\MECH\file'
+path_read(1,13)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-26\MECH\file'
+path_read(1,14)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-27\MECH\file'
+path_read(1,15)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-28\MECH\file'
+path_read(1,16)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-29\MECH\file'
+path_read(1,17)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-30\MECH\file'
+path_read(1,18)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-31\MECH\file'
+path_read(1,19)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-32\MECH\file'
+path_read(1,20)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-33\MECH\file'
+path_read(1,21)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-34\MECH\file'
+path_read(1,22)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-35\MECH\file'
+path_read(1,23)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-36\MECH\file'
+path_read(1,24)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-37\MECH\file'
+path_read(1,25)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-38\MECH\file'
+path_read(1,26)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-39\MECH\file'
+path_read(1,27)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-40\MECH\file'
+path_read(1,28)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-41\MECH\file'
+path_read(1,29)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-42\MECH\file'
+path_read(1,30)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-43\MECH\file'
+path_read(1,31)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-44\MECH\file'
+path_read(1,32)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-45\MECH\file'
+path_read(1,33)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-46\MECH\file'
+path_read(1,34)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-47\MECH\file'
+path_read(1,35)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-48\MECH\file'
+path_read(1,36)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-49\MECH\file'
+path_read(1,37)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-50\MECH\file'
+path_read(1,38)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-51\MECH\file'
+path_read(1,39)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-52\MECH\file'
+path_read(1,40)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-53\MECH\file'
+path_read(1,41)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-54\MECH\file'
+path_read(1,42)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-55\MECH\file'
+path_read(1,43)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-56\MECH\file'
+path_read(1,44)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-57\MECH\file'
+path_read(1,45)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-58\MECH\file'
+path_read(1,46)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-59\MECH\file'
+path_read(1,47)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-60\MECH\file'
+path_read(1,48)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-61\MECH\file'
+path_read(1,49)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-62\MECH\file'
+path_read(1,50)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-63\MECH\file'
+path_read(1,51)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-64\MECH\file'
+path_read(1,52)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-65\MECH\file'
+path_read(1,53)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-66\MECH\file'
+path_read(1,54)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-67\MECH\file'
+path_read(1,55)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-68\MECH\file'
+path_read(1,56)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-69\MECH\file'
+path_read(1,57)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-70\MECH\file'
+path_read(1,58)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-71\MECH\file'
+path_read(1,59)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-72\MECH\file'
+path_read(1,60)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-73\MECH\file'
+path_read(1,61)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-74\MECH\file'
+path_read(1,62)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-75\MECH\file'
+path_read(1,63)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-76\MECH\file'
+path_read(1,64)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-77\MECH\file'
+path_read(1,65)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front_dgree_change_force\qiantianlun_files\dp0\SYS-78\MECH\file'
+!109 和 115 行是输出stress的节点的序号
+
+/POST1
+/MKDIR,path_write(1,1)
+/CWD,path_write(1,1)
+!最外层循环是对.rst结果文件的循环
+file_name_middle='_'
+
+*DO,s,1,65,1
+
+    FILE,path_read(1,s),'rst'
+    INRES,ALL
+    file_name_out=CHRVAL(s)
+
+    *DO,j,1,39,1
+        SET,j
+        !program control 187, linear 185
+        !ESEL,S,ENAME,,187
+        ESEL,S,ENAME,,185
+        NSLE,S,CORNER
+
+        *GET,n_count,NODE,0,COUNT
+
+        !CORNER取角节点
+
+        *IF,j,EQ,1,THEN
+            *DO,n,1,2,1
+               !n_current=0
+               *IF,n,EQ,1,THEN
+                  file_name=CHRVAL(0)
+                  *CFOPEN,%file_name%,txt
+               *ELSE
+                  file_name=CHRVAL(1)
+                  *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
+               *ENDIF
+
+               *GET,s_eqv,NODE,4182,S,EQV
+               *VWRITE,s_eqv
+               (E16.8)
+
+            *ENDDO
+        *ELSE
+            file_name=CHRVAL(j)
+            *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
+
+            *GET,s_eqv,NODE,4182,S,EQV
+            *VWRITE,s_eqv
+            (E16.8)
+
+        *ENDIF
+        *CFCLOSE
+    *ENDDO
+*ENDDO
+/GOPR
+FINISH
+/CLEAR
+/DELETE,file,page
+/DELETE,RPCRequestTmp,out
+/DELETE,CHRVAL(0),txt
+!/EOF

@@ -8,6 +8,9 @@
       <sourceFolder url="file://$MODULE_DIR$/APP_utils/Algorithm/data" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Demo/Ruler/RBF_Ruler" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Demo/Ansys_Data_Utils_2020" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/APP_utils/Algorithm/Surrogate_Model/GPR" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/APP_utils/Algorithm/Surrogate_Model/Kriging" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Demo/Crane_2019/RBF_Crane" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

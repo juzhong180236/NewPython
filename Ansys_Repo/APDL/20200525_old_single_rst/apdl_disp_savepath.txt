@@ -5,10 +5,11 @@ FINISH
 !*DIM,path_,STRING,128,2
 *DIM,path_write,STRING,128,1
 *DIM,path_read,STRING,128,1
-!path_(1,1)='D:/Alai/ansys_Alai/Crane/Crane_Parts_v2.0/truss/20191220_files/dp0/SYS-3/MECH/file'
-!path_(1,2)='C:\Users\asus\Desktop\History\History_ansys\ANSYS WorkDir\dopAndCoord\'
-path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models\pre_pedestal_gyration\dopAndCoord\'
+
+path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models_gyration_v2.0\pre_pedestal_gyration\dopAndCoord\'
+!path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models_gyration_v2.0\pre_slewer\dopAndCoord\'
 path_read(1,1)='C:\Users\asus\Desktop\file'
+
 /POST1
 /MKDIR,path_write(1,1)
 /CWD,path_write(1,1)
@@ -18,7 +19,8 @@ INRES,ALL
     SET,j
 
     ESEL,S,ENAME,,187
-    NSLE,S,CORNER
+    !NSLE,S,ACTIVE
+    NSLE,R,CORNER
 
     !*GET,nmax,NODE,,NUM,MAX
     *GET,n_count,NODE,0,COUNT
@@ -37,7 +39,7 @@ INRES,ALL
                 n_disp_x = UX(n_current)
                 n_disp_y = UY(n_current)
                 n_disp_z = UZ(n_current)
-                *GET,n_disp_sum,NODE,m,U,SUM
+                *GET,n_disp_sum,NODE,n_current,U,SUM
                 !n_disp_sum= SQRT(n_disp_x**2+n_disp_y**2+n_disp_z**2)
                 *VWRITE,CHRVAL(n_current),n_disp_x,n_disp_y,n_disp_z,n_disp_sum
                 (A9,E16.8,E16.8,E16.8,E16.8)
@@ -52,7 +54,7 @@ INRES,ALL
             n_disp_x = UX(n_current)
             n_disp_y = UY(n_current)
             n_disp_z = UZ(n_current)
-            *GET,n_disp_sum,NODE,i,U,SUM
+            *GET,n_disp_sum,NODE,n_current,U,SUM
             !n_disp_sum= SQRT(n_disp_x**2+n_disp_y**2+n_disp_z**2)
             *VWRITE,CHRVAL(n_current),n_disp_x,n_disp_y,n_disp_z,n_disp_sum
             (A9,E16.8,E16.8,E16.8,E16.8)

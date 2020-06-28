@@ -5,31 +5,33 @@ FINISH
 *DIM,path_write,STRING,128,1
 *DIM,path_read,STRING,128,3
 
-path_write(1,1)='C:\Users\asus\Desktop\ansys_0518\excavator\gear_pre\equivalent_stress\'
+path_write(1,1)='C:\Users\asus\Desktop\equivalent_stress\'
 !有几个file.rst文件，就将path_read舍为几维数组
-path_read(1,1)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SYS\MECH\file'
-path_read(1,2)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SYS-1\MECH\file'
-path_read(1,3)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SYS-2\MECH\file'
+path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front _more_samples\qiantianlun_files\dp0\SYS-14\MECH\file'
+path_read(1,2)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front _more_samples\qiantianlun_files\dp0\SYS-15\MECH\file'
+path_read(1,3)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\pulley_front _more_samples\qiantianlun_files\dp0\SYS-16\MECH\file'
 
 /POST1
 /MKDIR,path_write(1,1)
 /CWD,path_write(1,1)
 !最外层循环是对.rst结果文件的循环
 *DO,s,1,3,1
+
     FILE,path_read(1,s),'rst'
     INRES,ALL
     file_name_out=CHRVAL(s)
-    *DO,j,1,9,1
+
+    *DO,j,1,4,1
         SET,j
-        !PRITER
-        !ALLS,ALL
-        ESEL,S,TYPE,,1
-        !ALL也可以，但是CORNER稳妥一些
-        !NSLE,S,ALL
+        !program control 187, linear 185
+        !ESEL,S,ENAME,,187
+        ESEL,S,ENAME,,185
         NSLE,S,CORNER
-        !*GET,nmax,NODE,,NUM,MAX
+
         *GET,n_count,NODE,0,COUNT
-        !*GET,n_current,NODE,,NUM,MIN
+
+        !CORNER取角节点
+
         *IF,j,EQ,1,THEN
             *DO,n,1,2,1
                *GET,n_current,NODE,,NUM,MIN
@@ -41,8 +43,9 @@ path_read(1,3)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SY
                   file_name=CHRVAL(1)
                   *CFOPEN,%file_name_out%%file_name%,txt
                *ENDIF
+
                *DO,i,1,n_count,1
-                  *GET,s_eqv,NODE,i,S,EQV
+                  *GET,s_eqv,NODE,n_current,S,EQV
                   *VWRITE,CHRVAL(n_current),s_eqv
                   (A9,E16.8)
                   n_current=NDNEXT(n_current)
@@ -53,7 +56,7 @@ path_read(1,3)='C:\Users\asus\Desktop\ansys_0518\car_gear_test\gear_files\dp0\SY
             *CFOPEN,%file_name_out%%file_name%,txt
             *GET,n_current,NODE,,NUM,MIN
             *DO,i,1,n_count,1
-                 *GET,s_eqv,NODE,i,S,EQV
+                 *GET,s_eqv,NODE,n_current,S,EQV
                  *VWRITE,CHRVAL(n_current),s_eqv
                  (A9,E16.8)
                  n_current=NDNEXT(n_current)

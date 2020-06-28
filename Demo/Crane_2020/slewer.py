@@ -7,7 +7,7 @@ import txt_file_create as tfc
 import numpy as np
 from dat_to_file import DataToFile
 
-path_prefix = r"C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models\\"
+path_prefix = r"C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models_gyration_v2.0\\"
 
 path_switch = r'pre_slewer\\'
 

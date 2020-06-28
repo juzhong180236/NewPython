@@ -25,7 +25,7 @@ class DispalcementData(object):
         files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
         # files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
         files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        print(files_cut)
+        # print(files_cut)
         float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut, self.path_displacement, 'd')  # 获取step
 
         list_coords = self.cd.surfaceCoord_To_List()  # 获取xyz坐标信息

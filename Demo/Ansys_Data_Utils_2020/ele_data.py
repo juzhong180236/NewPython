@@ -8,7 +8,7 @@ class ElementData(object):
         self.geometry_type = geometry_type
         pass
 
-    def aa(self):
+    def all_Ele_To_List(self):
         return self.__allEle_To_List()
 
     # 【输入int,str】：ELIST.lis文件中是四面体节点输入4，六面体节点输入6，第二个参数为ELIST.lis的路径

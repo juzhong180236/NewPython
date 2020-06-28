@@ -37,6 +37,8 @@ class Kriging(object):
         self.beta_normalize = None
         self.sigma2 = None
         self.Vkriging = None
+        self.inverse_matrix_normalize = None
+        self.F = None
 
         # 根据解的精度确定染色体(chromosome)的长度——确定二进制编码的长度
 
@@ -331,12 +333,12 @@ class Kriging(object):
         self.x_normalization = self.X / (np.max(self.X, axis=0) - np.min(self.X, axis=0))
         # 相关矩阵
         matrix = self.corelation(gaussian, self.x_normalization, self.x_normalization, self.parameters)
-        inverse_matrix_normalize = np.linalg.inv(matrix)
-        F = np.ones(matrix.shape[-1])
-        self.beta_normalize = F.T.dot(inverse_matrix_normalize).dot(self.Y) / (F.T.dot(inverse_matrix_normalize).dot(F))
-        self.Vkriging = inverse_matrix_normalize.dot((self.Y - F.dot(self.beta_normalize)))
+        self.inverse_matrix_normalize = np.linalg.inv(matrix + 1e-8 * np.eye(len(self.x_normalization)))
+        self.F = np.ones(matrix.shape[-1])
+        self.beta_normalize = self.F.T.dot(self.inverse_matrix_normalize).dot(self.Y) / (
+            self.F.T.dot(self.inverse_matrix_normalize).dot(self.F))
         # 相关矩阵求逆
-        return self.Vkriging
+        return self.inverse_matrix_normalize
 
     def predict(self, X_pre):
         # 预测值归一化
@@ -345,17 +347,20 @@ class Kriging(object):
         vector = self.corelation(gaussian, self.x_normalization, x_pred_normalization, self.parameters)
         # print(vector)
         # 预测值
-        Y_pre = self.beta_normalize + vector.T.dot(self.Vkriging)
+        Y_pre = self.beta_normalize + vector.T.dot(self.inverse_matrix_normalize).dot(
+            self.Y - self.F.dot(self.beta_normalize))
         return Y_pre
 
 
 if __name__ == "__main__":
-    parameter_array_c = np.array([[0, 1], [1, 2]])
+    parameter_array_c = np.array([[0, 1], [0.1, 2]])
+
+
     # 第一组数据
-    path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\Function1.xlsx"
-    data_real = readExcel(path_excel, "Sheet2", 1, 20, 2)
-    data_pre = readExcel(path_excel, "Sheet2", 50, 100, 2)
-    start = time.perf_counter()
+    # path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\Function1.xlsx"
+    # data_real = readExcel(path_excel, "Sheet2", 1, 20, 2)
+    # data_pre = readExcel(path_excel, "Sheet2", 50, 100, 2)
+    # start = time.perf_counter()
     # kriging = Kriging(X=data_real[0], Y=data_real[1], para_array=parameter_array_c, max_iter=50)
     # Vkriging = kriging.fit()
     # print(Vkriging)
@@ -369,86 +374,34 @@ if __name__ == "__main__":
     # kriging = Kriging(X=d, Y=y, para_array=parameter_array_c, max_iter=3)
     # Vkriging1 = kriging.fit()
     # y_pred = kriging.predict(d_pred)
-    A_value = 0.5
-    B_value = 10
-    C_value = -5
-
+    # A_value = 0.5
+    # B_value = 10
+    # C_value = -5
 
     # 高保真的曲线函数表达式
     def high_fidelity_curve(x):
-        return (6 * x - 2) ** 2 * np.sin(12 * x - 4)
+        return np.cos(x)
 
 
-    # 高保真的曲线函数表达式
-    def low_fidelity_curve(x, A=A_value, B=B_value, C=C_value):
-        return A * high_fidelity_curve(x) + B * (x - 0.5) + C
+    # # 高保真的曲线函数表达式
+    # def low_fidelity_curve(x, A=A_value, B=B_value, C=C_value):
+    #     return A * high_fidelity_curve(x) + B * (x - 0.5) + C
 
-        # 低保真的曲线
+    # 低保真的曲线
+    XC = np.linspace(0, 10)
+    YC = high_fidelity_curve(XC)
 
+    XC_point = np.array([0, 3, 5, 8, 10, 1])
+    YC_point = high_fidelity_curve(XC_point)
 
-    XC = np.linspace(0, 1)
-    YC = low_fidelity_curve(XC)
-
-    XC_point = np.array([0, 0.2, 0.5, 0.6, 0.9, 1])
-    YC_point = low_fidelity_curve(XC_point)
-    # print(YC_point)
-
-    kriging = Kriging(X=XC_point, Y=YC_point, para_array=parameter_array_c, max_iter=3)
-    Vkriging1 = kriging.fit()
-    XE_PRED = np.linspace(0, 1)
+    kriging = Kriging(X=XC_point, Y=YC_point, para_array=parameter_array_c, max_iter=30)
+    kriging.fit()
+    XE_PRED = np.linspace(0, 10)
     YE_pred = kriging.predict(XE_PRED)
-    plt.plot(XE_PRED, YE_pred, color='#ff0000', label='Kriging data interpolation curve', linestyle=':')
-    plt.plot(XC, YC, color='#ffff00', label='Kriging curve', linestyle='-')
-    plt.scatter(XC_point, YC_point, color='#000000', label='low fidelity sample data', marker='s')
-
+    plt.plot(XE_PRED, YE_pred, color='#ff0000', label='predict', linestyle=':')
+    plt.plot(XC, YC, color='#0000ff', label='real', linestyle='-')
+    plt.scatter(XC_point, YC_point, color='#000000', label='point', marker='s')
     print('theta和p的最优解分别是:', kriging.parameters)
     # print('最优目标函数值:', value)
-    plt.figure()
-    # plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
-    #          label='z-real')
-    # plt.plot(data_pre[0], data_pred, color='#0000ff', marker='+', linestyle='-.',
-    #          label='z-predict')
-    # plt.plot(d, y, color='#ff00ff', linestyle='-',
-    #          label='y-real')
-    # plt.scatter(d_pred, y_pred, color='#000000', marker='8',
-    #             label='y-predict')
-
-    # RR = 1 - (np.sum(np.square(data_pre[1] - y_pred)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
-    # RR1 = 1 - (np.sum(np.square(y - y_pred)) / np.sum(np.square(y - np.mean(y))))
-    # print(RR)
-
-    # fig = plt.figure()
-    # ax = fig.gca(projection='3d')
-    # print(data_pre)
-    # X = np.array(data_pre[0][:, 0])
-    # Y = np.array(data_pre[0][:, 1])
-    # Z = np.array(data_pre[1]).reshape(Y.shape[0])
-    # Z_pred = np.array(y_pred)
-
-    # print(X)
-    # print(Y)
-    # print(Z)
-    # ax.scatter(X, Y, Z, c='#ff0000', s=30, label='dot', alpha=0.6, edgecolors='black')
-    # ax.plot_trisurf(X, Y, Z, linewidth=0.2, antialiased=True)
-    # ax.plot_trisurf(X, Y, y_pred, linewidth=0.2, antialiased=True, color='r')
-    # ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
-    # ax.plot_surface(X, Y, Z, rstride=1, cstride=1, color='r')
-    # ax.plot_surface(X, Y, Z, linewidth=0, antialiased=False)
-    # ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-
-    # cset = ax.contour(X, Y, Z, zdir='z', offset=-100, cmap=cm.coolwarm)
-    # cset = ax.contour(X, Y, Z, zdir='x', offset=-40, cmap=cm.coolwarm)
-    # cset = ax.contour(X, Y, Z, zdir='y', offset=40, cmap=cm.coolwarm)
-    # ax.set_xlabel('X')
-    # ax.set_xlim(-1, 1)
-    # ax.set_ylabel('Y')
-    # ax.set_ylim(-1, 1)
-    # ax.set_zlabel('Z')
-    # ax.set_zlim(-10, 10)
-    # plt.legend()
+    plt.legend()
     plt.show()
-    elapsed = (time.perf_counter() - start)
-    print("Time used:", elapsed)
-    # 测量运行时间
-    # elapsed_time = timeit.timeit(stmt=main, number=1)
-    # print('Searching Time Elapsed:(S)', elapsed_time)

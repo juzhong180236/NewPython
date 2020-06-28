@@ -5,7 +5,8 @@ FINISH
 *DIM,path_write,STRING,128,1
 *DIM,path_read,STRING,128,1
 
-path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models\pre_pedestal_gyration\ele\'
+path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models_gyration_v2.0\pre_pedestal_gyration\ele\'
+!path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models_gyration_v2.0\pre_slewer\ele\'
 path_read(1,1)='C:\Users\asus\Desktop\file'
 
 /POST1
