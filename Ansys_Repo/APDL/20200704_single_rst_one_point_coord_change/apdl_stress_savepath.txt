@@ -1,0 +1,71 @@
+!直接通过结果文件导出equivalent stress
+FINISH
+/CLEAR
+/NOPR
+*DIM,path_,STRING,128,2
+*DIM,path_write,STRING,128,1
+*DIM,path_read,STRING,128,1
+!样本点，节点编号，坐标系
+!1 29261
+!7 29807
+!2 50668 15
+!6 48369 16
+!3 48867
+!5 28416
+!8 29808
+!4 30373 17
+! 0 总坐标系，12开始自定义坐标
+
+sys_num = 0
+which_point=29808
+path_write(1,1)='C:\Users\asus\Desktop\Papers\paper_result_truss\equivalent_stress_point_v2_72\8\'
+
+!path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models_gyration_v2.0\pre_slewer\equivalent_stress\'
+path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_degree_change_72\20191220_files\dp0\SYS-3\MECH\file'
+
+/POST1
+/MKDIR,path_write(1,1)
+/CWD,path_write(1,1)
+FILE,path_read(1,1),'rst'
+INRES,ALL
+*DO,j,1,73,1
+    SET,j
+    RSYS,sys_num
+    ESEL,S,ENAME,,185
+    NSLE,S,CORNER
+
+    !*GET,nmax,NODE,,NUM,MAX
+    *GET,n_count,NODE,0,COUNT
+
+    *IF,j,EQ,1,THEN
+        *DO,n,1,2,1
+           !n_current=0
+           *IF,n,EQ,1,THEN
+              file_name=CHRVAL(0)
+              *CFOPEN,%file_name%,txt
+           *ELSE
+              file_name=CHRVAL(1)
+              *CFOPEN,%file_name%,txt
+           *ENDIF
+           *GET,s_eqv,NODE,which_point,S,EQV
+           *GET,s_x,NODE,which_point,S,X
+           *VWRITE,s_eqv,s_x
+           (E16.8,E16.8)
+        *ENDDO
+    *ELSE
+        file_name=CHRVAL(j)
+        *CFOPEN,%file_name%,txt
+        *GET,s_eqv,NODE,which_point,S,EQV
+        *GET,s_x,NODE,which_point,S,X
+        *VWRITE,s_eqv,s_x
+        (E16.8,E16.8)
+    *ENDIF
+    *CFCLOSE
+*ENDDO
+/GOPR
+FINISH
+/CLEAR
+/DELETE,file,page
+/DELETE,RPCRequestTmp,out
+/DELETE,CHRVAL(0),txt
+!/EOF

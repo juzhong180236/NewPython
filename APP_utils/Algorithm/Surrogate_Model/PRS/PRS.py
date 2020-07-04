@@ -18,7 +18,7 @@ class PRS(object):
         self.prs = None
     """
 
-    def __init__(self, name='full', m=3):
+    def __init__(self, name='simple', m=3):
         self.name = name
         self.m = m
         self.prs = None

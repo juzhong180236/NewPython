@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from ReadExcel import readExcel
+import os
 
-x = np.arange(0, 65.1, 0.1)
-print(x)
+os.remove(r"C:\Users\asus\Desktop\equivalent_stress_point_v1\8\file0.page")

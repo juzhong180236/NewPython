@@ -1,0 +1,7 @@
+coord：就是coordinates的数据，也就是坐标的数据。
+ele：就是单元数据，里面有每个点的索引数据。
+以上两个数据不论是几个static structural都一样，所以是通用的。
+
+disp：是deformation，也就是变形数据
+stress：是应力数据
+以上两个数据多个static structural和单个是不一样的输出方式

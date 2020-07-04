@@ -5,7 +5,7 @@ from scipy.optimize import minimize
 
 class GPR:
 
-    def __init__(self, optimize=False):
+    def __init__(self, optimize=True):
         self.is_fit = False
         self.x = None
         self.y = None
@@ -49,11 +49,13 @@ class GPR:
 
         self.mu = Kfy.T.dot(self.Kff_inv).dot(self.y)
         self.cov = Kyy - Kfy.T.dot(self.Kff_inv).dot(Kfy)
-        return self.mu, self.cov
+        return self.mu
+        # return self.mu, self.cov
 
     def kernel(self, x1, x2):
         dist_matrix = np.sum(x1 ** 2, 1).reshape(-1, 1) + np.sum(x2 ** 2, 1) - 2 * np.dot(x1, x2.T)
-        return self.params["sigma"] ** 2 * np.exp(-0.5 / self.params["s"] ** 2 * dist_matrix)
+        # return self.params["sigma"] ** 2 * np.exp(-0.5 / self.params["s"] ** 2 * dist_matrix)
+        return self.params["sigma"] * np.exp(-0.5 / self.params["s"] ** 2 * dist_matrix)
 
 
 if __name__ == "__main__":
@@ -67,7 +69,7 @@ if __name__ == "__main__":
     y = y(x, noise_sigma=1e-4)
     test_X = np.arange(0, 10, 0.1).reshape(-1, 1)
 
-    gpr = GPR()  #
+    gpr = GPR(optimize=True)  #
     gpr.fit(x, y)  #
 
     mu, cov = gpr.predict(test_X)

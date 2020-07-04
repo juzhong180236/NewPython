@@ -58,7 +58,7 @@ str_no_s = ['linear', 'cubic', 'square', 'linear_abs']
 
 class RBF(object):
     # def RBF(X, Y, X_Pre):
-    def __init__(self, rbf="mq", std=0, w=None, x=np.array([])):
+    def __init__(self, rbf="lin_a", std=0, w=None, x=np.array([])):
         self.rbf = func[rbf]  # rbf名称
         self.std = std
         self.w = w
