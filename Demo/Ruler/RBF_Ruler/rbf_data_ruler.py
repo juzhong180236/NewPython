@@ -130,6 +130,7 @@ def realXYZ():
     # 预测值
     start = time.perf_counter()
     # 更换样本点时，这里要改
+    # 30 25 13 5 0
     # d = np.array([-30, -22, -13, -5, 0, 5, 13, 22, 30])
     # d = np.arange(-50, 51)
     d = np.array([

@@ -428,7 +428,7 @@ class DataToFile(object):
             # 训练用的提取出的角度数据
             list_selected_train_data_angle = []
             if input_dimension == 1:
-                angle_arr = ["1", "42", "83", "126"]
+                angle_arr = ["0", "24", "48", "72"]
             else:
                 angle_arr = []
             # 取出所有的数据，因为前面排序好了，取出来就是先按照角度排序，后按照力排序的数据
@@ -439,7 +439,7 @@ class DataToFile(object):
                 list_different_angle.append(np.abs(float(each_ele[-1])))
                 file_content.close()
                 # 根据文件名判断是不是训练数据
-                which_angle = file[:-4]
+                which_angle = str(int(file[:-4]) - 1)  # 因为apdl导出的文件一直是从1开始
                 # 取出训练的数据
                 if which_angle in angle_arr:
                     list_selected_train_data_angle.append(np.abs(float(each_ele[-1].strip())))
@@ -447,7 +447,8 @@ class DataToFile(object):
                 list_selected_train_data_angle)
 
         list_real_data, list_train_data = Read_Data_Single(self.path_read)
-        print(list_train_data)
+
+        # print(list_train_data)
         # print(list_train_data)
 
         def Which_Surrogate_Model_Single(_x_pre, func, train_data):
@@ -515,14 +516,14 @@ class DataToFile(object):
             file_content.close()
             return list_1, list_2, list_3, list_4, list_5, list_6, list_7, list_8, list_angle
 
-        path = r"C:\Users\asus\Desktop\stress data\\"
-        load = "25"
-        list_simulation_data = Read_SData(path + load + r".txt")
-        x_pre2 = np.asarray(list_simulation_data[8])
+        # path = r"C:\Users\asus\Desktop\stress data\\"
+        # load = "25"
+        # list_simulation_data = Read_SData(path + load + r".txt")
+        # x_pre2 = np.asarray(list_simulation_data[8])
         x_pre = np.arange(0, 73, 1)
-        x_pre1 = np.arange(3.5, 66.5, 0.5)
-        # y_pre = Which_Surrogate_Model_Mutiple(x_pre, GaussianProcessRegressor,list_train_data)
+        # y_pre = Which_Surrogate_Model_Mutiple(x_pre, RBF,list_train_data)
         y_pre, w, cov = Which_Surrogate_Model_Single(x_pre, RBF, list_real_data)
+        # y_pre, w, cov = Which_Surrogate_Model_Single(x_pre, RBF, list_train_data)
 
         # uncertainty = 1.96 * np.sqrt(np.diag(cov))
         # plt.fill_between(x_pre2.ravel(), y_pre.ravel() + uncertainty, y_pre.ravel() - uncertainty, alpha=0.1)
@@ -545,6 +546,6 @@ class DataToFile(object):
         plt.ylabel("Stress(Mpa)")
         plt.xlabel("Luffing angle(°)")
         plt.legend()
-        plt.show()
+        # plt.show()
         # 应力文件
         return w

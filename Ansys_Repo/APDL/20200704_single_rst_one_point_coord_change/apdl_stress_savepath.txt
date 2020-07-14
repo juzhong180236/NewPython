@@ -16,12 +16,12 @@ FINISH
 !4 30373 17
 ! 0 总坐标系，12开始自定义坐标
 
-sys_num = 0
-which_point=29808
-path_write(1,1)='C:\Users\asus\Desktop\Papers\paper_result_truss\equivalent_stress_point_v2_72\8\'
+sys_num = 17
+which_point=30373
+path_write(1,1)='C:\Users\asus\Desktop\Papers\paper_result_truss\equivalent_stress_point_v2_72_400N\4\'
 
 !path_write(1,1)='C:\Users\asus\Desktop\DT_Crane_v3.0\APP_models_gyration_v2.0\pre_slewer\equivalent_stress\'
-path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_degree_change_72\20191220_files\dp0\SYS-3\MECH\file'
+path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_degree_change_72\20191220_files\dp0\SYS-4\MECH\file'
 
 /POST1
 /MKDIR,path_write(1,1)

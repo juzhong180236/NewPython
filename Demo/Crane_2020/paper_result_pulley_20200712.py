@@ -37,13 +37,14 @@ def read_test_data():
 
 # path_prefix = r"C:\Users\asus\Desktop\Papers\paper_result_pulley\\"
 # path_prefix = r"C:\Users\asus\Desktop\paper_result_pulley\\"
-path_prefix = r"C:\Users\asus\Desktop\Papers\paper_result_truss\equivalent_stress_point_v2_72\\"
+path_prefix = r"C:\Users\asus\Desktop\Papers\paper_result_truss\equivalent_stress_point_v2_72_400N\\"
 
 # path_real_stress = r'equivalent_stress_point\\'
 
 geometry_type = ['3D4_L']
 # fd_train = np.asarray([3.5, 24, 44.5, 66])
 fd_train = np.arange(0, 73)
+fd = np.asarray([0, 24, 48, 73])
 data_test = read_test_data()
 list_result_w = []
 for i in range(1, 9):  # 总共8个测试点
@@ -56,10 +57,10 @@ for i in range(1, 9):  # 总共8个测试点
     # 桁架
     dtf_stress = DataToFile(path_read_real_stress, path_prefix, geometry_type)
     w = dtf_stress.dataToPostFile_paper_result_pulley(fd_train, data_title='Sample Point No.' + str(i),
-                                                      input_dimension=1,
+                                                      input_dimension=2,
                                                       which_point=i, data_test=data_test)
     list_result_w.append(w)
-text_Create(path_prefix, "w", "\n".join(list_result_w))
+text_Create(path_prefix, "w_4", "\n".join(list_result_w))
 # 天轮
 # dtf_dis = DataToFile(path_read_real_displacement, None, geometry_type)
 # dtf_dis.dataToPostFile_paper_result_pulley(fd_train, path_real_data=path_read_real_displacement, rbf_type=rbf_type)
