@@ -15,7 +15,7 @@ path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_degree_change_v1
 /CWD,path_write(1,1)
 FILE,path_read(1,1),'rst'
 INRES,ALL
-*DO,j,1,126,1
+*DO,j,1,154,1
     SET,j
 
     ESEL,S,ENAME,,185

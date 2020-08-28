@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-class Training_Points_Data():
+class Training_Points_Data(object):
     def __init__(self, first_pieces=None, second_pieces=None):
         self.first_pieces = first_pieces
         self.second_pieces = second_pieces
@@ -92,6 +92,7 @@ class Training_Points_Data():
             for i_condition in range(self.first_pieces):
                 list_all_points_diverse_condition[i_condition][i_path] = list_single_point_diverse_condition[
                     i_condition]
+        # 最外围是不同的受力，内层是不同的点，再内层是每个点在不同角度的值
         return list_all_points_diverse_condition
 
     def Multiple_Data_Training(self, x_train, func):
@@ -106,6 +107,7 @@ class Training_Points_Data():
                 _w, _cov = Which_Surrogate_Model_Single(x_train,
                                                         list_all_points_diverse_condition[_i_condition][_i_point], func)
                 # print(list_all_points_diverse_condition[_i_condition][_i_point])
+
                 list_w_same_condition.append(_w)
             list_w_diverse_condition.append(list_w_same_condition)
         return list_w_diverse_condition

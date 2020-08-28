@@ -2,14 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 
-
 class GPR:
 
-    def __init__(self, optimize=True):
+    def __init__(self, optimize=False):
         self.is_fit = False
         self.x = None
         self.y = None
-        self.params = {"s": 0.5, "sigma": 0.2}
+        self.params = {"s": 4.3, "sigma":0.5}  # 0.5,0.2
         self.optimize = optimize
 
         self.Kff = None
@@ -36,7 +35,8 @@ class GPR:
 
         self.is_fit = True
         self.Kff = self.kernel(self.x, self.x)  # (N, N)
-        self.Kff_inv = np.linalg.inv(self.Kff + 1e-8 * np.eye(len(self.x)))  # (N, N)
+        # self.Kff_inv = np.linalg.inv(self.Kff + 1e-8 * np.eye(len(self.x)))  # (N, N)
+        self.Kff_inv = np.linalg.inv(self.Kff + 1.8 * np.eye(len(self.x)))  # (N, N) 置信区间
         return self.Kff, self.Kff_inv
 
     def predict(self, X_pre):
@@ -49,8 +49,8 @@ class GPR:
 
         self.mu = Kfy.T.dot(self.Kff_inv).dot(self.y)
         self.cov = Kyy - Kfy.T.dot(self.Kff_inv).dot(Kfy)
-        return self.mu
-        # return self.mu, self.cov
+        # return self.mu
+        return self.mu, self.cov
 
     def kernel(self, x1, x2):
         dist_matrix = np.sum(x1 ** 2, 1).reshape(-1, 1) + np.sum(x2 ** 2, 1) - 2 * np.dot(x1, x2.T)
