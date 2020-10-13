@@ -13,8 +13,9 @@
       <sourceFolder url="file://$MODULE_DIR$/Demo/Crane_2019/RBF_Crane" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/APP_utils/Algorithm/Surrogate_Model/PRS" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Demo/Crane_2020" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (venv)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">
