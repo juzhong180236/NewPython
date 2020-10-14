@@ -96,7 +96,7 @@ for i in range(1, length):
     x_plus[i] = np.sum(x_new) / n
 plt.plot(time, x, label="real value", linewidth=2)
 plt.plot(time, y, label="observed value")
-plt.plot(time, x_plus, label="observed value", linewidth=1)
+plt.plot(time, x_plus, label="predicted value", linewidth=1)
 plt.legend()
 plt.show()
 
