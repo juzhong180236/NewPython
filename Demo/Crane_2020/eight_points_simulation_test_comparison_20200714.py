@@ -206,8 +206,8 @@ def Plot_Luffing_Angle(_num, _simulation_index, _path_train):
     ax.spines['bottom'].set_position(('data', 0))
     ax.spines['left'].set_position(('data', 0))
     plt.grid()  # x坐标轴的网格使用主刻度
-    plt.savefig(_path_train[:-3] + load + "_" + str(simulation_number) + r"\\luffing_angle.png")
-    # plt.show()
+    # plt.savefig(_path_train[:-3] + load + "_" + str(simulation_number) + r"\\luffing_angle.png")
+    plt.show()
 
 
 def Read_W(_path_train):

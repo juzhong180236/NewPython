@@ -3,17 +3,26 @@ from sklearn import tree
 from sklearn.datasets import load_wine
 from sklearn.model_selection import train_test_split
 import graphviz
+import matplotlib.pyplot as plt
 
 """
+决策树对月亮型、对半形的数据效果不错，但天生对环形数据分类不太好
+月亮型数据：最近邻KNN，RBF支持向量机，高斯过程GP
+环形数据：最近邻KNN，高斯过程GP
+对半形数据：朴素贝叶斯，神经网络，随机森林
+
 [1] 如何从数据表中找出最佳节点和最佳分枝
 [2] 如何让决策树停止生长，防止过拟合
 """
+
 """加载数据"""
 wine = load_wine()
+
 # print(wine)
-# print(wine.data)
-# print(wine.target)
+# print(wine.data[:, 0:60])
+# print(wine.target[0:60])
 """将特征与标签合并"""
+# data = pd.concat([pd.DataFrame(wine.data[:, 0:60]), pd.DataFrame(wine.target[0:60])], axis=1)
 data = pd.concat([pd.DataFrame(wine.data), pd.DataFrame(wine.target)], axis=1)
 # print(data)
 # print(wine.feature_names)
@@ -46,35 +55,62 @@ min_samples_leaf限定，一个节点在分枝后的每个子节点都必须包�
 
 min_samples_split限定，一个节点必须包含至少min_samples_split个训练样本，才被允许分枝。
 
+max_feature
+降维的话建立使用PCA,ICA或者特征选择模块中的降维算法
 
+max_impurity_decrease
+限制信息增益的大小，信息增益小于设定数值的分枝不会发生，是0.19更新的功能，以前是max_impurity_split
+
+确定最优的剪枝参数
+超参数的学习曲线来进行判断，一条以超参数的取值为横坐标，模型的度量指标为纵坐标
+
+目标权重参数
+class_weight
+min_weight_fraction_leaf 基于权重的剪枝参数
 """
+
 """创建、训练并给模型评分"""
-# 模型
-clf = tree.DecisionTreeClassifier(criterion='entropy',
-                                  random_state=30,
-                                  splitter='random',
-                                  # max_depth=3, #这个模型得7层才最优
-                                  # min_samples_leaf=10,
-                                  # min_samples_split=26,
-                                  )
-clf = clf.fit(x_train, y_train)
-# 训练集打分
-score_train = clf.score(x_train, y_train)
-print(score_train)
-# 测试集打分
-score = clf.score(x_test, y_test)  # 返回预测的准确度accuracy
-print(score)
+test = []
+for i in range(10):
+    # 模型
+    clf = tree.DecisionTreeClassifier(criterion='entropy',
+                                      random_state=30,
+                                      splitter='random',
+                                      max_depth=i + 1,  # 这个模型得7层才最优
+                                      # min_samples_leaf=10,
+                                      # min_samples_split=26,
+                                      )
+    clf = clf.fit(x_train, y_train)
+    clf_index = clf.apply(x_test)  # 返回每个测试样本所在的叶子节点的索引
+    clf_predict = clf.predict(x_test)  # 返回每个测试样本的分类/回归结果
+    print(clf_index)
+    print(clf_predict)
+    # 训练集打分
+    score_train = clf.score(x_train, y_train)
+    # print(score_train)
+    # 测试集打分
+    score = clf.score(x_test, y_test)  # 返回预测的准确度accuracy
+    print(score)
+    # print(clf.classes_)  # 输出所有的标签
+    # print(clf.n_classes_)  # 标签类别的数据
+    # print(clf.n_features_)  # 在训练模型时使用的特征个数
+    # print(clf.n_outputs_)  # 在训练模型时输出的结果个数
+    # print(clf.max_features_)  # 参数max_features的推断值
+    test.append(score)
+plt.plot(range(1, 11), test, color='red', label='max_depth')
+plt.legend()
+plt.show()
 """将决策树画图"""
-feature_names = ['酒精', '苹果酸', '灰', '灰的碱性', '镁', '总酚', '类黄酮', '非酚类', '花青素', '颜色强度', '色调', 'od280/od315稀释葡萄酒', '脯氨酸']
-dot_data = tree.export_graphviz(clf,  # 决策树名称
-                                # out_file=None,
-                                feature_names=feature_names,  # 特征名字
-                                class_names=['琴酒', '雪梨', '贝尔摩德'],  # 标签名字
-                                filled=True,  # 给画的图中的框填充颜色
-                                rounded=True,  # 给画出的框加圆边
-                                )
-graph = graphviz.Source(dot_data)
-graph.view()
+# feature_names = ['酒精', '苹果酸', '灰', '灰的碱性', '镁', '总酚', '类黄酮', '非酚类', '花青素', '颜色强度', '色调', 'od280/od315稀释葡萄酒', '脯氨酸']
+# dot_data = tree.export_graphviz(clf,  # 决策树名称
+#                                 # out_file=None,
+#                                 feature_names=feature_names,  # 特征名字
+#                                 class_names=['琴酒', '雪梨', '贝尔摩德'],  # 标签名字
+#                                 filled=True,  # 给画的图中的框填充颜色
+#                                 rounded=True,  # 给画出的框加圆边
+#                                 )
+# graph = graphviz.Source(dot_data)
+# graph.view()
 # graph.render('tree')
 """特征重要性"""
 # print(clf.feature_importances_)
