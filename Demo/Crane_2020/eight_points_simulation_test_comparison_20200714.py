@@ -234,13 +234,13 @@ if __name__ == "__main__":
     # 存储路径：应变仪采集的数据和在采集时实时仿真出来的数据
     path_test = r"D:\Alai\paper_Alai\Papers_v1\1\v2\Papers\paper_result_truss\20200713_stress_data\\"
     # 测试数据文件名，实时仿真数据的文件名
-    load = "25"  # 10 15 20 23 23_2 25_1 25 30 35 40 实际的重物质量(kg)
+    load = "23_2"  # 10 15 20 23 23_2 25_1 25 30 35 40 实际的重物质量(kg)
     simulation_number = 500  # 300 400 200 600 500 700 800 仿真的重物重力(N)
     row_index = 3  # 因为应变采集仪在开始测量的时候总是慢一拍，所以要调整到和仿真的一致，从3开始调
     simulation_index = 5  # 仿真的偏移值
     stress_y_limit = 35  # y刻度最大值
     stress_y_limit_separate = 5  # y刻度分度数
-    x_tick = 108  # x的最大值
+    x_tick = 105  # x的最大值
 
     simulation_number_dic = {300: 0, 400: 1, 200: 2, 600: 3, 500: 4, 700: 5, 800: 6}
     x_train = np.arange(0, 73)
