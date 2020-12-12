@@ -170,7 +170,7 @@ def Plot_Simulation_Test(_num, _simulation_index, _simulation_number, _simulate_
 def Plot_Luffing_Angle(_num, _simulation_index, _path_train):
     fig = plt.figure(figsize=(12, 6), dpi=100)
 
-    plt.title('Luffing angle of the crane boom (' + str(load) + ' kg)', fontsize=24)
+    plt.title('Luffing angle of the crane boom (' + str(23) + ' kg)', fontsize=24)
     # 角度
     plot_3 = plt.plot(list_test_data[0][0:_num],
                       list_real_time_simulation_data[8][_simulation_index:_num + _simulation_index],
@@ -265,7 +265,7 @@ if __name__ == "__main__":
     mkdir(path_train[:-3] + load + "_" + str(simulation_number))
     # 读取RBF训练的权重w数据
 
-    for i in range(1, 9):
+    # for i in range(1, 9):
     # 几个时序的点，仿真从第几个时序开始，仿真的哪个状态的数据，仿真第几个点，实验第几个点，仿真的训练权重读取路径,训练数据的已知点
-        Plot_Simulation_Test(num, simulation_index, simulation_number_dic[simulation_number], i, i, path_train, x_train)
+    #     Plot_Simulation_Test(num, simulation_index, simulation_number_dic[simulation_number], i, i, path_train, x_train)
     Plot_Luffing_Angle(num, simulation_index, path_train)

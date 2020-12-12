@@ -25,4 +25,4 @@ plt.plot(XE_PRED, y_real, color='#ff0000',
 plt.plot(XE_PRED, y_pre_E[0], color='#000000',
          label='co-Kriging low-high fidelity data interpolation curve',
          linestyle='--')
-# plt.show()
+plt.show()

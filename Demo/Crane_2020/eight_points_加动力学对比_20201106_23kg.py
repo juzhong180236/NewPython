@@ -44,11 +44,11 @@ save_path = r"C:\Users\asus\Desktop\Papers\paper_result_truss\20200713_stress_da
     读取ansys动力学数据
 """
 xls_file1 = pd.read_excel(
-    'D:\Alai\paper_Alai\Journal of Mechanical Design\起重机论文\提交过程\【2】第一次审回\粗糙网格.xlsx',
+    'D:\Alai\paper_Alai\【1】期刊论文\【1】Journal of Mechanical Design\起重机论文\提交过程\【2】第一次审回\粗糙网格.xlsx',
     sheet_name=0,
 )
 xls_file2 = pd.read_excel(
-    'D:\Alai\paper_Alai\Journal of Mechanical Design\起重机论文\提交过程\【2】第一次审回\精细网格.xlsx',
+    'D:\Alai\paper_Alai\【1】期刊论文\【1】Journal of Mechanical Design\起重机论文\提交过程\【2】第一次审回\精细网格.xlsx',
     sheet_name=0,
 )
 data_dynamics1 = np.asarray(xls_file1.values.tolist())
@@ -127,13 +127,13 @@ adjust3_fem = 0.5  # 0.5
 adjust4_rom = 1.6  # 1.6
 adjust4_fem = 4  # 4
 # 输出哪个点
-which_point = 2
+which_point = 4
 which_point_dic = {1: 1, 2: 8, 3: 3, 4: 5}
 # 图的标题名字
 load_title = "23"
 # 测试数据文件名，实时仿真数据的文件名
 load = "23_2"  # 10 15 20 23 23_2 25_1 25 30 35 40 实际的重物质量(kg)
-simulation_number = 400  # 300 400 200 600 500 700 800 仿真的重物重力(N)
+simulation_number = 500  # 300 400 200 600 500 700 800 仿真的重物重力(N)
 row_index = 3  # 因为应变采集仪在开始测量的时候总是慢一拍，所以要调整到和仿真的一致，从3开始调
 simulation_index = 0  # 仿真的偏移值
 stress_y_limit = 35  # y刻度最大值
@@ -241,7 +241,7 @@ def Plot(_num, _simulation_index, _simulation_number, _simulate_point, _test_poi
         plot_4 = plt.plot(list_test_data[0][0:_num], mu2.ravel() + adjust2_fem, label="FEM-based Stress",
                           linewidth=1.5,
                           color='g')
-        plt.title('Sample Point No.' + str(2) + ' (' + str(load_title) + 'kg)', fontsize=24)
+        plt.title('Sample Point No. ' + str(2) + ' (' + str(load_title) + ' kg)', fontsize=24)
         list_mu1.append(list_test_data[1][_test_point - 1][0:_num])
         list_mu2.append(mu + adjust_gs)
         list_mu3.append(mu1 + adjust2_rom)
@@ -256,7 +256,7 @@ def Plot(_num, _simulation_index, _simulation_number, _simulate_point, _test_poi
         plot_4 = plt.plot(list_test_data[0][0:_num], np.abs(mu2.ravel()) + adjust4_fem, label="FEM-based Stress",
                           linewidth=1.5,
                           color='g')
-        plt.title('Sample Point No.' + str(4) + ' (' + str(load_title) + 'kg)', fontsize=24)
+        plt.title('Sample Point No. ' + str(4) + ' (' + str(load_title) + ' kg)', fontsize=24)
         list_mu1.append(list_test_data[1][_test_point - 1][0:_num])
         list_mu2.append(mu + adjust_gs)
         list_mu3.append(np.abs(mu1) + adjust4_rom)
@@ -270,7 +270,7 @@ def Plot(_num, _simulation_index, _simulation_number, _simulate_point, _test_poi
         plot_4 = plt.plot(list_test_data[0][0:_num], mu2.ravel() + adjust1_fem, label="FEM-based Stress", linewidth=1.5,
                           color='g')
 
-        plt.title('Sample Point No.' + str(1) + ' (' + str(load_title) + 'kg)', fontsize=24)
+        plt.title('Sample Point No. ' + str(1) + ' (' + str(load_title) + ' kg)', fontsize=24)
         list_mu1.append(list_test_data[1][_test_point - 1][0:_num])
         list_mu2.append(mu)
         list_mu3.append(mu1 + adjust1_rom)
@@ -285,7 +285,7 @@ def Plot(_num, _simulation_index, _simulation_number, _simulate_point, _test_poi
         plot_4 = plt.plot(list_test_data[0][0:_num], np.abs(mu2.ravel()) + adjust3_fem, label="FEM-based Stress",
                           linewidth=1.5,
                           color='g')
-        plt.title('Sample Point No.' + str(3) + ' (' + str(load_title) + 'kg)', fontsize=24)
+        plt.title('Sample Point No. ' + str(3) + ' (' + str(load_title) + ' kg)', fontsize=24)
 
         list_mu1.append(list_test_data[1][_test_point - 1][0:_num])
         list_mu2.append(mu)
@@ -294,14 +294,14 @@ def Plot(_num, _simulation_index, _simulation_number, _simulate_point, _test_poi
     else:
         plot_3 = None
         plot_4 = None
-        plt.title('Sample Point No.' + str(_simulate_point) + ' (' + str(load_title) + 'kg)', fontsize=24)
+        plt.title('Sample Point No. ' + str(_simulate_point) + ' (' + str(load_title) + ' kg)', fontsize=24)
 
     _plot = plot_1 + plot_2 + plot_3 + plot_4
     labs = [_p.get_label() for _p in _plot]
     # bbox_to_anchor=(x, y, 长, 宽),总图是1*1的 loc是bbox中落在xy位置的角点或中点
     plt.legend(_plot, labs, bbox_to_anchor=(0, 0.75, 1, 0.2), borderaxespad=0, ncol=4, loc="upper center", fontsize=15)
     plt.xlabel("Time (s)", fontsize=20)
-    plt.ylabel("Stress (Mpa)", fontsize=20)
+    plt.ylabel("Stress (MPa)", fontsize=20)
     plt.ylim(0, stress_y_limit)
     plt.xlim(0, x_tick)
     x_ticks = np.arange(0, x_tick, 20)

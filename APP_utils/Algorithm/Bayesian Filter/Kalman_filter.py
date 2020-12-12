@@ -180,8 +180,9 @@ M_3 = Model_3()
 
 plt.plot(time, x, label="real value")
 plt.plot(time, y, label="observed value")
-plt.plot(time, M_1, label="predicted value 1")
-plt.plot(time, M_2, label="predicted value 2")
-plt.plot(time, M_3, label="predicted value 3")
+# plt.plot(time, M_1, label="predicted value 1")  # 模型一是粗糙的状态方程
+# plt.plot(time, M_2, label="predicted value 2")  # 模型二是精细的状态方程
+plt.plot(time, y2, label="observed value 2")    # 模型三的另一个观测值
+plt.plot(time, M_3, label="predicted value 3")  # 模型三是两个传感器滤波
 plt.legend()
 plt.show()

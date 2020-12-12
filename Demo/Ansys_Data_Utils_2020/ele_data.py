@@ -37,8 +37,15 @@ class ElementData(object):
             #     print(list_temp)
             if len(list_temp) == 8:
                 if TETRAHEDRON_LINEAR in self.geometry_type:
-                    if (int(list_everyline[0]) - index_ele) != 1:
-                        break
+                    """ 
+                    2020.12.12
+                    有时候单元序号是不连续的，但是单元类型是相同的。
+                    【变保真的会议论文中，桁架的单元序号出现了不连续209179直接跳到了209276】，
+                    但都是solid185单元。
+                    其实在apdl导出时，程序通常仅保留单个类型的单元，所以下面这一句判断可以不加，但也要看情况
+                    """
+                    # if (int(list_everyline[0]) - index_ele) != 1:
+                    #     break
                     # 1332  2391  1389  1389  1372  1372  1372  1372
                     # 1594  1999  1617  1617  1616  1616  1616  1616
                     # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
