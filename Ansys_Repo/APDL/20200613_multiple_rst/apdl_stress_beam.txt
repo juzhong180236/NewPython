@@ -1,3 +1,4 @@
+!2020.12.13
 !直接通过结果文件导出equivalent stress
 FINISH
 /CLEAR
@@ -24,6 +25,14 @@ path_read(1,10)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_low_fidelity_20
 /MKDIR,path_write(1,1)
 /CWD,path_write(1,1)
 !最外层循环是对.rst结果文件的循环，几个rst，倒数第二个数字就为几
+
+FILE,path_read(1,1),'rst'
+INRES,ALL
+SET,1
+*GET,e_count,ELEM,0,COUNT
+!*DIM,数组名，关键字ARRAY,大小
+*DIM,arr_stress,ARRAY,e_count!----定义ARR_STRAIN数组，数目为e_count
+
 *DO,s,1,10,1
 
     FILE,path_read(1,s),'rst'
@@ -35,16 +44,25 @@ path_read(1,10)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_low_fidelity_20
         !program control 187, linear 185, beam 188
         !ESEL,S,ENAME,,187
         ESEL,S,ENAME,,188
-        NSLE,S,CORNER
+        !NSLE,S,CORNER
+        !NSLE,S,ALL
 
-        *GET,n_count,NODE,0,COUNT
-
+        *GET,e_count,ELEM,0,COUNT
+        !*DIM,数组名，关键字ARRAY,大小
+        !*DIM,arr_stress,ARRAY,e_count!----定义ARR_STRAIN数组，数目为e_count
         !CORNER取角节点
 
         *IF,j,EQ,1,THEN
             *DO,n,1,2,1
-               *GET,n_current,NODE,,NUM,MIN
-               !n_current=0
+               !建立表格，名称ETAB_STRAIN
+               ETABLE,etab_seqv,SMISC,31
+               !将表中的数值赋值到表中
+               *DO,COUNT,1,e_count,1
+                   !*GET,数组(i)，关键字Elem，i，关键字Etab，表格名
+                   *GET,arr_stress(count),ELEM,count,ETAB,etab_seqv
+               *ENDDO
+
+               *GET,e_current,ELEM,,NUM,MIN
                *IF,n,EQ,1,THEN
                   file_name=CHRVAL(0)
                   *CFOPEN,%file_name%,txt
@@ -52,23 +70,31 @@ path_read(1,10)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_low_fidelity_20
                   file_name=CHRVAL(1)
                   *CFOPEN,%file_name_out%%file_name%,txt
                *ENDIF
-
-               *DO,i,1,n_count,1
-                  *GET,s_eqv,NODE,n_current,S,EQV
-                  *VWRITE,CHRVAL(n_current),s_eqv
+               *DO,i,1,e_count,1
+                  *GET,s_eqv,ELEM,e_current,etab,etab_seqv
+                  *VWRITE,CHRVAL(e_current),s_eqv
                   (A9,E16.8)
-                  n_current=NDNEXT(n_current)
+                  e_current=ELNEXT(e_current)
                *ENDDO
             *ENDDO
         *ELSE
             file_name=CHRVAL(j)
             *CFOPEN,%file_name_out%%file_name%,txt
-            *GET,n_current,NODE,,NUM,MIN
-            *DO,i,1,n_count,1
-                 *GET,s_eqv,NODE,n_current,S,EQV
-                 *VWRITE,CHRVAL(n_current),s_eqv
+
+            !建立表格，名称ETAB_STRAIN
+            ETABLE,etab_seqv,SMISC,31
+            !将表中的数值赋值到表中
+            *DO,COUNT,1,e_count,1
+                !*GET,数组(i)，关键字Elem，i，关键字Etab，表格名
+                *GET,arr_stress(count),ELEM,count,ETAB,etab_seqv
+            *ENDDO
+
+            *GET,e_current,ELEM,,NUM,MIN
+            *DO,i,1,e_count,1
+                 *GET,s_eqv,ELEM,e_current,etab,etab_seqv
+                 *VWRITE,CHRVAL(e_current),s_eqv
                  (A9,E16.8)
-                 n_current=NDNEXT(n_current)
+                 e_current=ELNEXT(e_current)
             *ENDDO
         *ENDIF
         *CFCLOSE

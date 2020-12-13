@@ -1,3 +1,4 @@
+!2020.12.13
 !直接通过结果文件导出ele
 FINISH
 /CLEAR
@@ -15,9 +16,8 @@ FILE,path_read(1,1),'rst'
 INRES,ALL
 SET
 
-!page 402 175-199 316-336 391
-!选择需要的单元，Program control默认的就是SOLID187单元
-ESEL,S,ENAME,,185
+!低保真的Beam 188
+ESEL,S,ENAME,,188
 
 *GET,e_count,ELEM,0,COUNT
 !*GET,emax,ELEM,,NUM,MAX
@@ -37,18 +37,8 @@ ESEL,S,ENAME,,185
         e_node_1=CHRVAL(NELEM(e_current,1))
         e_node_2=CHRVAL(NELEM(e_current,2))
         e_node_3=CHRVAL(NELEM(e_current,3))
-        e_node_4=CHRVAL(NELEM(e_current,4))
-        e_node_5=CHRVAL(NELEM(e_current,5))
-        e_node_6=CHRVAL(NELEM(e_current,6))
-        e_node_7=CHRVAL(NELEM(e_current,7))
-        e_node_8=CHRVAL(NELEM(e_current,8))
-        !*DO,j,1,8,1
-            !e_node_arr(1,j) = NELEM(e_current,j)
-        !*ENDDO
-        !*VWRITE,CHRVAL(e_current),e_node_arr(1,1),e_node_arr(1,2),e_node_arr(1,3),e_node_arr(1,4),e_node_arr(1,5),e_node_arr(1,6),e_node_arr(1,7),e_node_arr(1,8)
-        !*VWRITE,CHRVAL(e_current),e_node_arr
-        *VWRITE,CHRVAL(e_current),e_node_1,e_node_2,e_node_3,e_node_4,e_node_5,e_node_6,e_node_7,e_node_8
-        (A9,A9,A9,A9,A9,A9,A9,A9,A9)
+        *VWRITE,CHRVAL(e_current),e_node_1,e_node_2,e_node_3
+        (A9,A9,A9,A9)
         e_current =ELNEXT(e_current)
     *ENDDO
 *ENDDO
