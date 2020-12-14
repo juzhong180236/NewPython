@@ -11,7 +11,12 @@ from disp_data import DispalcementData
 from stre_data import StressData
 import matplotlib.pyplot as plt
 
-
+"""
+这个程序的用处是将应力或者位移数据从一个第一维为M个状态，第二维为N个节点的列表
+转换为一个第一维为N个节点，第二维为M个状态的列表。
+例如，100个状态，力10个，角度10个，总共100个。节点数为336个。
+则输入100*336的列表，输出336*100的列表。
+"""
 def _getData(string, fileType):
     # 将多个文件（5个）合并过的变形、应力、坐标值数据等字符串以换行符分解为list
     list_separateByNewline = string.split('\n')

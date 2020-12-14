@@ -1,15 +1,13 @@
 import numpy as np
 
-result0 = np.random.randn(2000, 2000)
-result1 = np.random.randn(2000, 2000)
+# result0 = np.random.randn(10000, 10000)
+# result1 = np.random.randn(7000, 7000)
+# result = np.linalg.inv(result1)
+# print(result)
 
-result = result1.dot(result0)
-# 创建空的ndarray装每一个特征的样本点
-# temp = np.empty([10])
 
-# temp[0] = 1
-# temp[1] = 2
-# temp[2] = 3
+str = [1, 2, 3]
 
-# result[0] = temp
-print(result)
+list_after = [val for val in str for i in range(2)]
+
+print(list_after)

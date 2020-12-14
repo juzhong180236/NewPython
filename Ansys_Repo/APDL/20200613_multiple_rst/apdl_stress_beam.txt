@@ -31,14 +31,16 @@ INRES,ALL
 SET,1
 *GET,e_count,ELEM,0,COUNT
 !*DIM,数组名，关键字ARRAY,大小
-*DIM,arr_stress,ARRAY,e_count!----定义ARR_STRAIN数组，数目为e_count
+！31和36好像是一样的，不需要数组直接输出
+!*DIM,arr_stress_31,ARRAY,e_count!----定义ARR_STRAIN数组，数目为e_count
+!*DIM,arr_stress_36,ARRAY,e_count!----定义ARR_STRAIN数组，数目为e_count
 
 *DO,s,1,10,1
 
     FILE,path_read(1,s),'rst'
     INRES,ALL
     file_name_out=CHRVAL(s)
-!里层的循环是每个结果文件有几个时间步
+    !里层的循环是每个结果文件有几个时间步
     *DO,j,1,10,1
         SET,j
         !program control 187, linear 185, beam 188
@@ -55,12 +57,14 @@ SET,1
         *IF,j,EQ,1,THEN
             *DO,n,1,2,1
                !建立表格，名称ETAB_STRAIN
-               ETABLE,etab_seqv,SMISC,31
+               !ETABLE,etab_sdir_31,SMISC,36
+               !ETABLE,etab_sdir_36,SMISC,31
                !将表中的数值赋值到表中
-               *DO,COUNT,1,e_count,1
+               !*DO,count,1,e_count,1
                    !*GET,数组(i)，关键字Elem，i，关键字Etab，表格名
-                   *GET,arr_stress(count),ELEM,count,ETAB,etab_seqv
-               *ENDDO
+                   !*GET,arr_stress_31(count),ELEM,count,ETAB,etab_sdir_31
+                   !*GET,arr_stress_36(count),ELEM,count,ETAB,etab_sdir_36
+               !*ENDDO
 
                *GET,e_current,ELEM,,NUM,MIN
                *IF,n,EQ,1,THEN
@@ -71,8 +75,11 @@ SET,1
                   *CFOPEN,%file_name_out%%file_name%,txt
                *ENDIF
                *DO,i,1,e_count,1
-                  *GET,s_eqv,ELEM,e_current,etab,etab_seqv
-                  *VWRITE,CHRVAL(e_current),s_eqv
+                  !最后直接使用这种方式导出的等效应力
+                  *GET,sercstress,SECR,e_current,S,EQV,MAX
+                  !*GET,sdir_31,ELEM,e_current,etab,etab_sdir_31
+                  !*GET,sdir_36,ELEM,e_current,etab,etab_sdir_36
+                  *VWRITE,CHRVAL(e_current),sercstress
                   (A9,E16.8)
                   e_current=ELNEXT(e_current)
                *ENDDO
@@ -82,17 +89,21 @@ SET,1
             *CFOPEN,%file_name_out%%file_name%,txt
 
             !建立表格，名称ETAB_STRAIN
-            ETABLE,etab_seqv,SMISC,31
+            !ETABLE,etab_sdir_31,SMISC,36
+            !ETABLE,etab_sdir_36,SMISC,31
             !将表中的数值赋值到表中
-            *DO,COUNT,1,e_count,1
+            !*DO,count,1,e_count,1
                 !*GET,数组(i)，关键字Elem，i，关键字Etab，表格名
-                *GET,arr_stress(count),ELEM,count,ETAB,etab_seqv
-            *ENDDO
+                !*GET,arr_stress_31(count),ELEM,count,ETAB,etab_sdir_31
+                !*GET,arr_stress_36(count),ELEM,count,ETAB,etab_sdir_36
+            !*ENDDO
 
             *GET,e_current,ELEM,,NUM,MIN
             *DO,i,1,e_count,1
-                 *GET,s_eqv,ELEM,e_current,etab,etab_seqv
-                 *VWRITE,CHRVAL(e_current),s_eqv
+                 *GET,sercstress,SECR,e_current,S,EQV,MAX
+                 !*GET,sdir_31,ELEM,e_current,etab,etab_sdir_31
+                 !*GET,sdir_36,ELEM,e_current,etab,etab_sdir_36
+                 *VWRITE,CHRVAL(e_current),sercstress
                  (A9,E16.8)
                  e_current=ELNEXT(e_current)
             *ENDDO

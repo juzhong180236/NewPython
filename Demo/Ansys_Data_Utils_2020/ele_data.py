@@ -19,6 +19,10 @@ class ElementData(object):
         TETRAHEDRON_PROGRAM_CONTROL = '3D4_P'
         HEXAHEDRON = '3D6'
         TETRAHEDRAL_SHEET = '2D4'
+        """
+        2020.12.13 增加BEAM188的解析
+        """
+        BEAM_188 = 'BEAM_188'
         isExisted = os.path.exists(self.path_ele)
         if not isExisted:
             pf.printf(self.path_ele)
@@ -84,6 +88,9 @@ class ElementData(object):
                     list_result.extend([list_temp[0] - 1, list_temp[1] - 1,
                                         list_temp[2] - 1, list_temp[2] - 1,
                                         list_temp[0] - 1, list_temp[3] - 1])
+            elif len(list_temp) == 3:
+                if BEAM_188 in self.geometry_type:
+                    list_result.extend([list_temp[0] - 1, list_temp[1] - 1])
             index_ele += 1
         eleFile.close()
         pf.printf('文件[' + self.path_ele[len(self.path_ele) - self.path_ele[::-1].index('\\'):] + ']读取完成！')
