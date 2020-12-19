@@ -14,15 +14,14 @@ model = MultiFiCoKriging(theta0=1, thetaL=1e-5, thetaU=50.)
 model.fit([Xc, Xe], [yc, ye])
 # Prediction on x=0.05
 # print(np.abs(float(model.predict([0.05])[0]) - ((0.05 * 6 - 2) ** 2) * np.sin((0.05 * 6 - 2) * 2)) < 0.05)
-print(model.y_std)
 XE_PRED = np.linspace(0, 1).reshape(-1, 1)
 y_pre_E = model.predict(XE_PRED)
 # print(y_pre_E)
 y_real = ((XE_PRED * 6 - 2) ** 2) * np.sin((XE_PRED * 6 - 2) * 2)
 plt.plot(XE_PRED, y_real, color='#ff0000',
-         label='co-Kriging low-high fidelity data interpolation curve',
+         label='real data',
          linestyle='--')
 plt.plot(XE_PRED, y_pre_E[0], color='#000000',
-         label='co-Kriging low-high fidelity data interpolation curve',
+         label='predict data',
          linestyle='--')
 plt.show()

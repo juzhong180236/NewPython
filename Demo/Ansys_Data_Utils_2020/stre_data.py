@@ -21,15 +21,30 @@ class StressData(object):
             return
         else:
             pf.printf('目录[' + self.path_stress + ']存在,正在读取...')
+        """
+        2020.12.19 从其他程序移植两个功能：
+        1、自动删除"file0.page", "file1.page"
+        2、对中间加了横杠的文件进行排序
+        """
+        files = os.listdir(self.path_stress)  # 获取当前文档下的文件
+        abandon_files = ["file0.page", "file1.page"]
+        for file in files:
+            file_name = os.path.basename(file)
+            if file_name in abandon_files:
+                os.remove(self.path_stress + file_name)
         files_stress = os.listdir(self.path_stress)  # 获取当前文档下的文件
         # files_stress.sort(key=lambda x: int(x[:-4]))
-        files_stress.sort(key=lambda x: int(x[:-4]))
-        float_Scolor_step, float_Scolor_min = colord.color_Step(files_stress, self.path_stress, 's')  # 获取step
+        # 先按照文件名的第二个数字排列
+        files_cut_sorted_1 = sorted(files_stress, key=lambda x: int(x[:-4].split('_')[1]))
+        # 再按照文件名的第一个数字排列
+        files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
+
+        float_Scolor_step, float_Scolor_min = colord.color_Step(files_cut_sorted_2, self.path_stress, 's')  # 获取step
 
         i_processing = 0
         str_Scolor_allFile = ''
         str_stress_allFile = ''
-        for file in files_stress:  # 遍历文件夹
+        for file in files_cut_sorted_2:  # 遍历文件夹
             list_Scolor = []
             if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
                 filename = os.path.basename(file)  # 返回文件名
@@ -44,7 +59,7 @@ class StressData(object):
                                      itertools.repeat(float_Scolor_step))
 
             i_processing += 1
-            print("\r应力信息读取程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
+            print("\r应力信息读取程序当前已完成：" + str(round(i_processing / len(files_cut_sorted_2) * 100)) + '%', end="")
             str_Scolor_allFile += ','.join(map(str, list_Scolor_result)) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
             str_stress_allFile += ','.join(list_Scolor) + '\n'
 
@@ -59,17 +74,31 @@ class StressData(object):
             return
         else:
             pf.printf('目录[' + self.path_stress + ']存在,正在读取...')
+        """
+        2020.12.19 从其他程序移植两个功能：
+        1、自动删除"file0.page", "file1.page"
+        2、对中间加了横杠的文件进行排序
+        """
+        files = os.listdir(self.path_stress)  # 获取当前文档下的文件
+        abandon_files = ["file0.page", "file1.page"]
+        for file in files:
+            file_name = os.path.basename(file)
+            if file_name in abandon_files:
+                os.remove(self.path_stress + file_name)
         files_stress = os.listdir(self.path_stress)  # 获取当前文档下的文件
         # files_stress.sort(key=lambda x: int(x[:-4]))
-        files_stress.sort(key=lambda x: int(x[:-4]))
-        float_Scolor_step, float_Scolor_min = colord.color_Step(files_stress, self.path_stress, 's')  # 获取step
+        # 先按照文件名的第二个数字排列
+        files_cut_sorted_1 = sorted(files_stress, key=lambda x: int(x[:-4].split('_')[1]))
+        # 再按照文件名的第一个数字排列
+        files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
+        float_Scolor_step, float_Scolor_min = colord.color_Step(files_cut_sorted_2, self.path_stress, 's')  # 获取step
 
         set_surface_ele = self.ed.set_SurfaceEle()
 
         i_processing = 0
         str_Scolor_allFile = ''
         str_stress_allFile = ''
-        for file in files_stress:  # 遍历文件夹
+        for file in files_cut_sorted_2:  # 遍历文件夹
             list_Scolor = []
             if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
                 filename = os.path.basename(file)  # 返回文件名
@@ -87,7 +116,7 @@ class StressData(object):
                                      itertools.repeat(float_Scolor_step))
 
             i_processing += 1
-            print("\r应力信息读取程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
+            print("\r应力信息读取程序当前已完成：" + str(round(i_processing / len(files_cut_sorted_2) * 100)) + '%', end="")
             str_Scolor_allFile += ','.join(map(str, list_Scolor_result)) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
             str_stress_allFile += ','.join(list_Scolor) + '\n'
 
@@ -102,17 +131,26 @@ class StressData(object):
             return
         else:
             pf.printf('目录[' + self.path_stress + ']存在,正在读取...')
+        files = os.listdir(self.path_stress)  # 获取当前文档下的文件
+        abandon_files = ["file0.page", "file1.page"]
+        for file in files:
+            file_name = os.path.basename(file)
+            if file_name in abandon_files:
+                os.remove(self.path_stress + file_name)
         files_stress = os.listdir(self.path_stress)  # 获取当前文档下的文件
         # files_stress.sort(key=lambda x: int(x[:-4]))
-        files_stress.sort(key=lambda x: int(x[:-4]))
-        float_Scolor_step, float_Scolor_min = colord.color_Step(files_stress, self.path_stress, 's')  # 获取step
+        # 先按照文件名的第二个数字排列
+        files_cut_sorted_1 = sorted(files_stress, key=lambda x: int(x[:-4].split('_')[1]))
+        # 再按照文件名的第一个数字排列
+        files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
+        float_Scolor_step, float_Scolor_min = colord.color_Step(files_cut_sorted_2, self.path_stress, 's')  # 获取step
 
         set_surface_ele = self.ed.set_SurfaceEle()
 
         i_processing = 0
         str_Scolor_allFile = ''
         str_stress_allFile = ''
-        for file in files_stress:  # 遍历文件夹
+        for file in files_cut_sorted_2:  # 遍历文件夹
             list_Scolor = []
             if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
                 filename = os.path.basename(file)  # 返回文件名
@@ -145,7 +183,7 @@ class StressData(object):
             str_Scolor_allFile += ','.join(map(str, list_Scolor_result)) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
             str_stress_allFile += ','.join(list_Scolor_Bysort) + '\n'
             i_processing += 1
-            print("\r应力信息读取程序当前已完成：" + str(round(i_processing / len(files_stress) * 100)) + '%', end="")
+            print("\r应力信息读取程序当前已完成：" + str(round(i_processing / len(files_cut_sorted_2) * 100)) + '%', end="")
 
         str_Scolor_allFile += str(float_Scolor_step * 21 / 9)
         return str_stress_allFile.rstrip('\n'), str_Scolor_allFile, str(float_Scolor_step) + ',' + str(float_Scolor_min)

@@ -28,12 +28,16 @@ nt_cheap = Xt_c.shape[0]
 yt_e = HF_function(Xt_e)
 yt_c = LF_function(Xt_c)
 
-sm = MFK(theta0=np.array(Xt_e.shape[1] * [1.0]))
+sm = MFK(theta0=np.array(Xt_e.shape[1] * [1.0]), print_global=False)
+
+print(Xt_e.shape[1] * [1.0])
 
 # low-fidelity dataset names being integers from 0 to level-1
 sm.set_training_values(Xt_c, yt_c, name=0)
+print(Xt_c)
 # high-fidelity dataset without name
 sm.set_training_values(Xt_e, yt_e)
+print(Xt_e)
 
 # train the model
 sm.train()

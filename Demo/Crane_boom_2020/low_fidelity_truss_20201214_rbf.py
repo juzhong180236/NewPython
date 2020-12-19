@@ -7,6 +7,10 @@ from stre_data import StressData
 from txt_file_create import text_Create
 from rbf_2020 import RBF
 
+"""
+2020.12.17 14号的版本将角度和力的顺序与ansys算出来的搞反了
+"""
+
 
 def list_results_data(list_ele, list_input):
     list_results = []
@@ -134,7 +138,6 @@ def Surrogate_Model():
     rbf_type = 'lin_a'
     list_w_stress = []
     list_w_dSum = []
-    # list_y_name = []
     stds = ''
     cycle_index = len(list_stress)
     for i in range(cycle_index):
@@ -172,7 +175,8 @@ def Surrogate_Model():
 
 """模型训练"""
 # Surrogate_Model()
-# 测试用，直接输出颜色数据
+
+"""测试用，直接输出颜色数据"""
 text_Create(path_four_write, "stress", str_stress_color)
 
 # 下面两个是应力和位移的训练数据

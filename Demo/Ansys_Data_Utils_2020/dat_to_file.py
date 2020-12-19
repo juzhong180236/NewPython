@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from surf_data_process import SurfaceData
 from rbf_2020 import RBF
 from GPR import GPR
@@ -9,7 +10,9 @@ from ele_data import ElementData
 from coords_data import CoordinateData
 from disp_data import DispalcementData
 from stre_data import StressData
+from openmdao.surrogate_models.kriging import KrigingSurrogate
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 """
 这个程序的用处是将应力或者位移数据从一个第一维为M个状态，第二维为N个节点的列表
@@ -17,6 +20,8 @@ import matplotlib.pyplot as plt
 例如，100个状态，力10个，角度10个，总共100个。节点数为336个。
 则输入100*336的列表，输出336*100的列表。
 """
+
+
 def _getData(string, fileType):
     # 将多个文件（5个）合并过的变形、应力、坐标值数据等字符串以换行符分解为list
     list_separateByNewline = string.split('\n')
@@ -241,7 +246,6 @@ class DataToFile(object):
         :param which_part: 存储的数据是哪个零件的
         :return:
         """
-        import numpy as np
         surfaced = SurfaceData(self.path_read, self.geometry_type)
         """以下为节点数据"""
         # 索引
@@ -310,6 +314,10 @@ class DataToFile(object):
             x_train = ','.join(map(lambda x: ','.join(map(str, x)), v_fd.tolist()))
         else:
             x_train = "null"
+        pathisExists = os.path.exists(self.path_write)
+        if not pathisExists:
+            os.makedirs(self.path_write)  # 不存在创建目录
+            pf.printf('文件夹[' + self.path_write + ']创建成功,正在写入文件...')
         # 步数和最小值，方差，输入值
         tfc.text_Create(self.path_write, stepAndMin,
                         txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + x_train)
@@ -466,3 +474,140 @@ class DataToFile(object):
         plt.plot(x_pre, list_real_data[0], label="train")
         plt.scatter(v_fd, list_train_data[0], label="train", c="red", marker="x")
         # plt.show()
+
+    def dataToPostFile_Kriging(self, fd, which_part):
+        """
+        :param fd: 输入的训练自变量
+        :return:
+        """
+        surfaced = SurfaceData(self.path_read, self.geometry_type)
+        """以下为节点数据"""
+        # 索引
+        txt_ele = surfaced.get_Ele_Data()
+        # print(len(set(sorted(map(int, txt_ele.split(',')), key=lambda x: x))))
+        txt_coord = surfaced.get_Coord_Data()
+        # 位移
+        txt_displacement, txt_dopSum, txt_DstepandMin = surfaced.get_Displacement_DopSum_Dcolor_Bysorted()
+        # 应力
+        txt_stress, txt_SstepandMin = surfaced.get_Stress_SStepandMin_Bysorted()
+        # print(len(txt_coord.split('\n')[0].split(',')))
+        stds = ''
+        list_stress, len_data_stress = _getData(txt_stress, 'stressOrdSum')
+        list_dopSum, len_data_dopSum = _getData(txt_dopSum, 'stressOrdSum')
+        if len_data_stress != len_data_dopSum:
+            print('displacement数据与stress数据数目不同!\n'
+                  'displacemen数据个数：' + str(len_data_dopSum)
+                  + '      stress数据个数:' + str(len_data_stress))
+            return
+        list_w_stress = []
+        list_w_dSum = []
+        cycle_index = len(list_stress)
+        for i in range(cycle_index):
+        # for i in [19137]:
+            stress_real = np.asarray(list_stress[i]).reshape(-1, 1)
+            # dSum_real = np.asarray(list_disp_sum[i]).reshape(-1, 1)
+            kriging_stress = KrigingSurrogate()
+            # kriging_dSum = KrigingSurrogate()
+            kriging_stress.train(fd, stress_real)
+            # kriging_dSum.train(fd, dSum_real)
+            _forceArr = np.linspace(50, 500, 20)
+            _degreeArr = np.linspace(0, 72, 20)
+            """
+            画三维图一定不能忘了meshgrid
+            """
+            _X, _Y = np.meshgrid(_forceArr, _degreeArr)
+            # print(_X.shape, _Y.shape)
+            # print(_X)
+            """
+            2018.12.18 训练点的X,Y，可以通过打印X,Y得到X的排布，在根据这个排布去决定Z轴的排布。
+            """
+            forceArr = [50, 200, 350, 500]
+            degreeArr = [0, 24, 48, 72]
+            X, Y = np.meshgrid(forceArr, degreeArr)
+            """
+            2020.12.17 两个combine最终组成的数据因为顺序不一样，导致预测出来的stress顺序不同，
+            而最终的三维图像只是简单地进行了一个reshape，很容易因为没有对应上而出错
+            """
+            # combine = []
+            # for _iForce in range(_forceArr.shape[0]):
+            #     for _iDegree in range(_degreeArr.shape[0]):
+            #         combine.append((_forceArr[_iForce], _degreeArr[_iDegree]))
+            # _fd = np.array(combine)
+            combine = []
+            for _i in range(_X.shape[0]):
+                for _j in range(_X.shape[1]):
+                    combine.append((_X[_i, _j], _Y[_i, _j]))
+            _fd1 = np.array(combine)
+            # list_w_stress.append(kriging_stress)
+            _y_stress = kriging_stress.predict(_fd1).reshape(_X.shape)
+            # print(stress_real)
+            # _y_stress = kriging_stress.predict(_fd[0])
+            # print(kriging_stress.predict(np.asarray([[500., 0.], [500, 72], [50, 0], [50, 72]])))
+            # print(_y_stress)
+            # print(_fd[0])
+            # _y_d = kriging_dSum.predict(_fd)
+            # list_w_dSum.append(w_dSum)
+            fig = plt.figure()
+            ax = Axes3D(fig)
+            # ax = fig.add_subplot(111, projection='3d')
+            # rstride:行之间的跨度  cstride:列之间的跨度，只能为正整数，默认是1，
+            # 就是和linspace分割的块数一致，数字越大，图形的块数越少
+            # rcount:设置间隔个数，默认50个，ccount:列的间隔个数  不能与上面两个参数同时出现
+            ax.plot_surface(
+                _X,
+                _Y,
+                _y_stress,
+                rstride=1,
+                cstride=1,
+                cmap=plt.get_cmap('rainbow')  # coolwarm
+            )
+            """
+            2020.12.18 因为应力是按照：力为第一维，角度为第二维，但是X是力的广播，Y是角度的广播。
+            所以要对应力的数值进行转置。
+            """
+            ax.scatter(
+                X,
+                Y,
+                stress_real.reshape(4, 4).T,
+                c='k',
+            )
+            # 绘制从3D曲面到底部的投影,zdir 可选 'z'|'x'|'y'| 分别表示投影到z,x,y平面
+            # zdir = 'z', offset = -2 表示投影到z = -2上
+            # ax.contour(_degreeArr, _forceArr, _y_stress, zdir='z', offset=-2, cmap=plt.get_cmap('rainbow'))
+            # 设置z轴的维度，x,y类似
+            # ax.set_zlim(-2, 2)
+            plt.savefig(r"C:\Users\asus\Desktop\pics_high\\" + str(i) + '.png')
+            """
+            2020.12.19 避免画图内存泄露
+            """
+            plt.close('all')  # 避免内存泄漏
+            print("\r" + kriging_stress.__class__.__name__ + "程序当前已完成：" + str(
+                round(i / len(list_stress) * 10000) / 100) + '%', end="")
+        # plt.show()
+        stepAndMin = which_part + '_others'
+        ele = which_part + '_ele'
+        dSum_w = which_part + '_dSum_w'
+        stress_w = which_part + '_stress_w'
+        coord = which_part + '_coord'
+        #
+        # if v_fd.ndim == 1:
+        #     x_train = ','.join(map(str, v_fd.tolist()))
+        # elif v_fd.ndim == 2:
+        #     x_train = ','.join(map(lambda x: ','.join(map(str, x)), v_fd.tolist()))
+        # else:
+        #     x_train = "null"
+        # pathisExists = os.path.exists(self.path_write)
+        # if not pathisExists:
+        #     os.makedirs(self.path_write)  # 不存在创建目录
+        #     pf.printf('文件夹[' + self.path_write + ']创建成功,正在写入文件...')
+        # # 步数和最小值，方差，输入值
+        # tfc.text_Create(self.path_write, stepAndMin,
+        #                 txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + x_train)
+        # # 索引文件
+        # tfc.text_Create(self.path_write, ele, txt_ele)
+        # # 总位移文件
+        # tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
+        # # 应力文件
+        # tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
+        # # # 坐标文件【坐标一般需要变换一下，就不直接输出了】
+        # tfc.text_Create(self.path_write, coord, txt_coord)

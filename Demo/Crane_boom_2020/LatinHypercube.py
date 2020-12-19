@@ -60,8 +60,8 @@ def LHSample(variables_type, variables_bounds, samples_number):
 
 if __name__ == '__main__':
     var_type = 2
-    sam_number = 64
-    bounds = [[0, 72], [50, 400]]
+    sam_number = 4  # 最后得到的样本个数
+    bounds = [[0, 72], [50, 500]]
     samples = LHSample(var_type, bounds, sam_number)
     XY = np.array(samples)
     X = XY[:, 0]

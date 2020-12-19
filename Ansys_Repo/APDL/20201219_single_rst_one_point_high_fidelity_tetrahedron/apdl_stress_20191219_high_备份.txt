@@ -1,0 +1,220 @@
+!直接通过结果文件导出equivalent stress
+FINISH
+/CLEAR
+/NOPR
+*DIM,path_write,STRING,128,1
+*DIM,path_read,STRING,128,1
+!样本点，节点编号，坐标系
+
+!新的结构换了网格，节点变了
+
+!第一阶段
+!1253	1.9305818
+!16275	5.5756887
+!18920	5.6575447
+!27683	1.9929403
+!第二阶段
+!11333	0.17415394
+!14378	0.12275964
+!22519	0.31159227
+!第三阶段
+!35278	2.5623501
+!33797	8.6678017
+!55992	8.5103379
+!53531	2.6958311
+!56808	4.0446661
+!58179	4.2635543
+!57390	0.34900421
+!第四阶段
+!15155	0.27962955
+!24041	0.35321172
+!第五阶段
+!32961	9.1170989
+!54368	9.4441721
+!1 49972
+!2 59751
+!3 57552
+!4 54362
+!5 50712
+!6 60596
+!7 52377
+!8 52378
+
+! 0 总坐标系，12开始自定义坐标
+
+*DIM,arr_nodes,ARRAY,18
+
+
+sys_num = 0
+arr_nodes(1)=1253
+arr_nodes(2)=16275
+arr_nodes(3)=18920
+arr_nodes(4)=27683
+
+arr_nodes(5)=35278
+arr_nodes(6)=33797
+arr_nodes(7)=55992
+arr_nodes(8)=53531
+arr_nodes(9)=56808
+
+arr_nodes(10)=58179
+arr_nodes(11)=57390
+
+arr_nodes(12)=11333
+arr_nodes(13)=14378
+arr_nodes(14)=22519
+
+arr_nodes(15)=15155
+arr_nodes(16)=24041
+
+arr_nodes(17)=32961
+arr_nodes(18)=54368
+
+point_1=1253
+point_2=16275
+point_3=18920
+point_4=27683
+
+point_5=35278
+point_6=33797
+point_7=55992
+point_8=53531
+point_9=56808
+point_10=58179
+point_11=57390
+
+point_12=11333
+point_13=14378
+point_14=22519
+
+point_15=15155
+point_16=24041
+
+point_17=32961
+point_18=54368
+
+
+
+path_write(1,1)='C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\pre_high_fidelity_truss_point\stress_point_less_points\'
+!有几个file.rst文件，就将path_read设为几维数组
+path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_high_fidelity_20201219_less_samples\20191220_files\dp0\SYS-3\MECH\file'
+
+!109 和 115 行是输出stress的节点的序号
+
+
+/POST1
+/MKDIR,path_write(1,1)
+/CWD,path_write(1,1)
+!最外层循环是对.rst结果文件的循环
+file_name_middle='_'
+
+*DO,s,1,1,1
+
+    FILE,path_read(1,s),'rst'
+    INRES,ALL
+    file_name_out=CHRVAL(s)
+
+    *DO,j,1,2,1
+        SET,j
+        RSYS,sys_num
+        !program control 187, linear 185
+        !ESEL,S,ENAME,,187
+        ESEL,S,ENAME,,185
+        NSLE,S,CORNER
+
+        *GET,n_count,NODE,0,COUNT
+
+        !CORNER取角节点
+
+        *IF,j,EQ,1,THEN
+            *DO,n,1,2,1
+               *IF,n,EQ,1,THEN
+                  file_name=CHRVAL(0)
+                  *CFOPEN,%file_name%,txt
+               *ELSE
+                  file_name=CHRVAL(1)
+                  *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
+               *ENDIF
+
+               !*GET,s_eqv_1,NODE,point_1,S,EQV
+               !*GET,s_eqv_2,NODE,point_2,S,EQV
+               !*GET,s_eqv_3,NODE,point_3,S,EQV
+               !*GET,s_eqv_4,NODE,point_4,S,EQV
+
+               !*GET,s_eqv_5,NODE,point_5,S,EQV
+               !*GET,s_eqv_6,NODE,point_6,S,EQV
+               !*GET,s_eqv_7,NODE,point_7,S,EQV
+               !*GET,s_eqv_8,NODE,point_8,S,EQV
+               !*GET,s_eqv_9,NODE,point_9,S,EQV
+               !*GET,s_eqv_10,NODE,point_10,S,EQV
+               !*GET,s_eqv_11,NODE,point_11,S,EQV
+
+               !*GET,s_eqv_12,NODE,point_12,S,EQV
+               !*GET,s_eqv_13,NODE,point_13,S,EQV
+               !*GET,s_eqv_14,NODE,point_14,S,EQV
+
+               !*GET,s_eqv_15,NODE,point_15,S,EQV
+               !*GET,s_eqv_16,NODE,point_16,S,EQV
+
+               !*GET,s_eqv_17,NODE,point_17,S,EQV
+               !*GET,s_eqv_18,NODE,point_18,S,EQV
+
+               *DO,count,1,18,1
+                  *GET,s_eqv,NODE,arr_nodes(count),S,EQV
+                  *VWRITE,CHRVAL(arr_nodes(count)),s_eqv
+                  (A9,E16.8)
+               *ENDDO
+
+               !*VWRITE,s_eqv_1,s_eqv_2,s_eqv_3,s_eqv_4,s_eqv_5,s_eqv_6,s_eqv_7,s_eqv_8,,s_eqv_9,s_eqv_10,s_eqv_11,s_eqv_12,s_eqv_13,s_eqv_14,s_eqv_15,s_eqv_16,s_eqv_17,s_eqv_18
+               !(E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8)
+               !*VWRITE,s_eqv_1,s_eqv_2,s_eqv_3,s_eqv_4,s_eqv_5,s_eqv_6,s_eqv_7,s_eqv_8
+               !(E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8)
+            *ENDDO
+        *ELSE
+            file_name=CHRVAL(j)
+            *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
+
+            !*GET,s_eqv_1,NODE,point_1,S,EQV
+            !*GET,s_eqv_2,NODE,point_2,S,EQV
+            !*GET,s_eqv_3,NODE,point_3,S,EQV
+            !*GET,s_eqv_4,NODE,point_4,S,EQV
+
+            !*GET,s_eqv_5,NODE,point_5,S,EQV
+            !*GET,s_eqv_6,NODE,point_6,S,EQV
+            !*GET,s_eqv_7,NODE,point_7,S,EQV
+            !*GET,s_eqv_8,NODE,point_8,S,EQV
+            !*GET,s_eqv_9,NODE,point_9,S,EQV
+            !*GET,s_eqv_10,NODE,point_10,S,EQV
+            !*GET,s_eqv_11,NODE,point_11,S,EQV
+
+            !*GET,s_eqv_12,NODE,point_12,S,EQV
+            !*GET,s_eqv_13,NODE,point_13,S,EQV
+            !*GET,s_eqv_14,NODE,point_14,S,EQV
+
+            !*GET,s_eqv_15,NODE,point_15,S,EQV
+            !*GET,s_eqv_16,NODE,point_16,S,EQV
+
+            !*GET,s_eqv_17,NODE,point_17,S,EQV
+            !*GET,s_eqv_18,NODE,point_18,S,EQV
+
+            !*VWRITE,s_eqv_1,s_eqv_2,s_eqv_3,s_eqv_4,s_eqv_5,s_eqv_6,s_eqv_7,s_eqv_8,,s_eqv_9,s_eqv_10,s_eqv_11,s_eqv_12,s_eqv_13,s_eqv_14,s_eqv_15,s_eqv_16,s_eqv_17,s_eqv_18
+            !(E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8)
+            !*VWRITE,s_eqv_1,s_eqv_2,s_eqv_3,s_eqv_4,s_eqv_5,s_eqv_6,s_eqv_7,s_eqv_8
+            !(E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8,E16.8)
+
+            *DO,count,1,18,1
+               *GET,s_eqv,NODE,arr_nodes(count),S,EQV
+               *VWRITE,CHRVAL(arr_nodes(count)),s_eqv
+               (A9,E16.8)
+            *ENDDO
+        *ENDIF
+        *CFCLOSE
+    *ENDDO
+*ENDDO
+/GOPR
+FINISH
+/CLEAR
+/DELETE,file,page
+/DELETE,RPCRequestTmp,out
+/DELETE,CHRVAL(0),txt
+!/EOF

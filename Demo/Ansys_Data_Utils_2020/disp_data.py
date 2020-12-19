@@ -20,16 +20,31 @@ class DispalcementData(object):
             return
         else:
             pf.printf('目录[' + self.path_displacement + ']存在,正在读取...')
+        """
+             2020.12.19 从其他程序移植两个功能：
+             1、自动删除"file0.page", "file1.page"
+             2、对中间加了横杠的文件进行排序
+        """
+        files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
+        abandon_files = ["file0.page", "file1.page"]
+        for file in files:
+            file_name = os.path.basename(file)
+            if file_name in abandon_files:
+                os.remove(self.path_displacement + file_name)
         files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
         # files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut, self.path_displacement, 'd')  # 获取step
+        # files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
+        # 先按照文件名的第二个数字排列
+        files_cut_sorted_1 = sorted(files[0:-1], key=lambda x: int(x[:-4].split('_')[1]))
+        # 再按照文件名的第一个数字排列
+        files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
+        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut_sorted_2, self.path_displacement, 'd')  # 获取step
 
         i_processing = 1  # 遍历到第i个文件
         str_displacementXYZ_allFile = ''  # 不带初始坐标信息
         str_Dcolor_allFile = ''
         str_displacementSum_allFile = ''
-        for file in files_cut:  # 遍历文件夹
+        for file in files_cut_sorted_2:  # 遍历文件夹
             list_sort = []  # 存放加上位移后的所有坐标值的list
             list_Dcolor = []
             if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
@@ -49,7 +64,7 @@ class DispalcementData(object):
 
             str_displacementSum_allFile += ','.join(list_Dcolor) + '\n'
             str_displacementXYZ_allFile += ','.join(list_sort) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
-            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut) * 100)) + '%', end="")
+            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut_sorted_2) * 100)) + '%', end="")
             i_processing += 1
         str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
         # print(str_coords_allFile.rstrip('\n'))
@@ -68,11 +83,24 @@ class DispalcementData(object):
             return
         else:
             pf.printf('目录[' + self.path_displacement + ']存在,正在读取...')
+        """
+             2020.12.19 从其他程序移植两个功能：
+             1、自动删除"file0.page", "file1.page"
+             2、对中间加了横杠的文件进行排序
+        """
         files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
-        # files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        # print(files_cut)
-        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut, self.path_displacement, 'd')  # 获取step
+        abandon_files = ["file0.page", "file1.page"]
+        for file in files:
+            file_name = os.path.basename(file)
+            if file_name in abandon_files:
+                os.remove(self.path_displacement + file_name)
+        files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
+        # 先按照文件名的第二个数字排列
+        files_cut_sorted_1 = sorted(files[0:-1], key=lambda x: int(x[:-4].split('_')[1]))
+        # 再按照文件名的第一个数字排列
+        files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
+
+        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut_sorted_2, self.path_displacement, 'd')  # 获取step
 
         list_coords = self.cd.surfaceCoord_To_List()  # 获取xyz坐标信息
         set_surface_ele = self.ed.set_SurfaceEle()
@@ -81,7 +109,7 @@ class DispalcementData(object):
         str_coords_allFile = ''  # 不带初始坐标信息
         str_Dcolor_allFile = ''
         str_displacementSum_allFile = ''
-        for file in files_cut:  # 遍历文件夹
+        for file in files_cut_sorted_2:  # 遍历文件夹
             list_sort = []  # 存放加上位移后的所有坐标值的list
             list_Dcolor = []
             if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
@@ -107,7 +135,7 @@ class DispalcementData(object):
             str_displacementSum_allFile += ','.join(list_Dcolor) + '\n'
 
             str_coords_allFile += ','.join(list_sort) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
-            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut) * 100)) + '%', end="")
+            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut_sorted_2) * 100)) + '%', end="")
             i_processing += 1
         str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
         # print(str_coords_allFile.rstrip('\n'))
@@ -122,10 +150,23 @@ class DispalcementData(object):
             return
         else:
             pf.printf('目录[' + self.path_displacement + ']存在,正在读取...')
+        """
+            2020.12.19 从其他程序移植两个功能：
+            1、自动删除"file0.page", "file1.page"
+            2、对中间加了横杠的文件进行排序
+        """
         files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
-        # files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut, self.path_displacement, 'd')  # 获取step
+        abandon_files = ["file0.page", "file1.page"]
+        for file in files:
+            file_name = os.path.basename(file)
+            if file_name in abandon_files:
+                os.remove(self.path_displacement + file_name)
+        files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
+        # 先按照文件名的第二个数字排列
+        files_cut_sorted_1 = sorted(files[0:-1], key=lambda x: int(x[:-4].split('_')[1]))
+        # 再按照文件名的第一个数字排列
+        files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
+        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut_sorted_2, self.path_displacement, 'd')  # 获取step
 
         set_surface_ele = self.ed.set_SurfaceEle()
 
@@ -133,7 +174,7 @@ class DispalcementData(object):
         str_displacementXYZ_allFile = ''  # 不带初始坐标信息
         str_Dcolor_allFile = ''
         str_displacementSum_allFile = ''
-        for file in files_cut:  # 遍历文件夹
+        for file in files_cut_sorted_2:  # 遍历文件夹
             list_sort = []  # 存放加上位移后的所有坐标值的list
             list_Dcolor = []
             if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
@@ -157,7 +198,7 @@ class DispalcementData(object):
 
             str_displacementSum_allFile += ','.join(list_Dcolor) + '\n'
             str_displacementXYZ_allFile += ','.join(list_sort) + '\n'  # 以逗号为分隔符来组成字符串,并在最后添加换行符,以换行符区分每个文件的信息
-            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut) * 100)) + '%', end="")
+            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut_sorted_2) * 100)) + '%', end="")
             i_processing += 1
         str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
         # print(str_coords_allFile.rstrip('\n'))
@@ -173,10 +214,23 @@ class DispalcementData(object):
             return
         else:
             pf.printf('目录[' + self.path_displacement + ']存在,正在读取...')
+        """
+                   2020.12.19 从其他程序移植两个功能：
+                   1、自动删除"file0.page", "file1.page"
+                   2、对中间加了横杠的文件进行排序
+               """
         files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
-        # files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        files_cut = sorted(files[0:-1], key=lambda x: int(x[:-4]))
-        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut, self.path_displacement, 'd')  # 获取step
+        abandon_files = ["file0.page", "file1.page"]
+        for file in files:
+            file_name = os.path.basename(file)
+            if file_name in abandon_files:
+                os.remove(self.path_displacement + file_name)
+        files = os.listdir(self.path_displacement)  # 获取当前文档下的文件
+        # 先按照文件名的第二个数字排列
+        files_cut_sorted_1 = sorted(files[0:-1], key=lambda x: int(x[:-4].split('_')[1]))
+        # 再按照文件名的第一个数字排列
+        files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
+        float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut_sorted_2, self.path_displacement, 'd')  # 获取step
 
         set_surface_ele = self.ed.set_SurfaceEle()
 
@@ -184,7 +238,7 @@ class DispalcementData(object):
         str_displacementXYZ_allFile = ''  # 不带初始坐标信息
         str_Dcolor_allFile = ''
         str_displacementSum_allFile = ''
-        for file in files_cut:  # 遍历文件夹
+        for file in files_cut_sorted_2:  # 遍历文件夹
             list_sort = []  # 存放加上位移后的所有坐标值的list
             list_Dcolor = []
             if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
@@ -218,7 +272,7 @@ class DispalcementData(object):
                                      itertools.repeat(float_Dcolor_min),
                                      itertools.repeat(float_Dcolor_step))
             str_Dcolor_allFile += ','.join(map(str, list_Dcolor_result)) + '\n'
-            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut) * 100)) + '%', end="")
+            print("\r位移信息读取程序当前已完成：" + str(round(i_processing / len(files_cut_sorted_2) * 100)) + '%', end="")
             i_processing += 1
         str_Dcolor_allFile += str(float_Dcolor_step * 21 / 9)
         # print(str_coords_allFile.rstrip('\n'))

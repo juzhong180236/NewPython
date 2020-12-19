@@ -34,6 +34,7 @@ SET,1
 ！31和36好像是一样的，不需要数组直接输出
 !*DIM,arr_stress_31,ARRAY,e_count!----定义ARR_STRAIN数组，数目为e_count
 !*DIM,arr_stress_36,ARRAY,e_count!----定义ARR_STRAIN数组，数目为e_count
+file_name_middle='_'
 
 *DO,s,1,10,1
 
@@ -72,7 +73,7 @@ SET,1
                   *CFOPEN,%file_name%,txt
                *ELSE
                   file_name=CHRVAL(1)
-                  *CFOPEN,%file_name_out%%file_name%,txt
+                  *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
                *ENDIF
                *DO,i,1,e_count,1
                   !最后直接使用这种方式导出的等效应力
@@ -86,7 +87,7 @@ SET,1
             *ENDDO
         *ELSE
             file_name=CHRVAL(j)
-            *CFOPEN,%file_name_out%%file_name%,txt
+            *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
 
             !建立表格，名称ETAB_STRAIN
             !ETABLE,etab_sdir_31,SMISC,36
