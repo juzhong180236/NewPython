@@ -10,7 +10,7 @@ class Read_Data(object):
     def __init__(self):
         pass
 
-    def read_stress(self, path):
+    def read_stress(self, path, mode="h"):
 
         """
         :param path: 多个static structural数据路径
@@ -37,10 +37,18 @@ class Read_Data(object):
 
         list_stress = []
         for file in files_cut_sorted_2:
-            # 根据文件名判断是不是训练数据
             file_content = open(path + os.path.basename(file), 'rt')
-            first_line = file_content.read()
-            each_point_stress = first_line.split()
-            list_stress.append(list(map(float, each_point_stress)))
+            if mode == 'h':
+                first_line = file_content.read()
+                each_point_stress = first_line.split()
+                list_stress.append(list(map(float, each_point_stress)))
+            elif mode == 'v':
+                list_everyfile = []
+                for line in file_content:
+                    list_everyline = line.split()
+                    list_everyfile.append(float(list_everyline[1]))
+                list_stress.append(list_everyfile)
+            else:
+                pass
             file_content.close()
         return list_stress

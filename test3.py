@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 # result0 = np.random.randn(10000, 10000)
 # result1 = np.random.randn(7000, 7000)
@@ -103,32 +105,25 @@ import numpy as np
 # rstride:行之间的跨度  cstride:列之间的跨度
 # rcount:设置间隔个数，默认50个，ccount:列的间隔个数  不能与上面两个参数同时出现
 
-
-# cmap是颜色映射表
-# from matplotlib import cm
-# ax.plot_surface(X, Y, Z, rstride = 1, cstride = 1, cmap = cm.coolwarm)
-# cmap = "rainbow" 亦可
-# 我的理解的 改变cmap参数可以控制三维曲面的颜色组合, 一般我们见到的三维曲面就是 rainbow 的
-# 你也可以修改 rainbow 为 coolwarm, 验证我的结论
-# ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=plt.get_cmap('rainbow'))
-# ax.plot_surface(X, Y, Z1, rstride=1, cstride=1, cmap=plt.get_cmap('rainbow'))
-
-# 绘制从3D曲面到底部的投影,zdir 可选 'z'|'x'|'y'| 分别表示投影到z,x,y平面
-# zdir = 'z', offset = -2 表示投影到z = -2上
-# ax.contour(X, Y, Z, zdir='z', offset=-2, cmap=plt.get_cmap('rainbow'))
-
-# 设置z轴的维度，x,y类似
-# ax.set_zlim(-2, 2)
-
+# train_samples_high = np.asarray([[50, 0], [50, 72], [200, 24], [350, 48], [500, 0], [500, 72]])
+# stress = np.array([1, 2, 3, 4, 5, 6])
+# fig = plt.figure()
+# ax = Axes3D(fig)
+# print(train_samples_high[:, 0])
+# ax.scatter(
+#     train_samples_high[:, 0],
+#     train_samples_high[:, 1],
+#     stress,
+#     c='k',
+# )
 # plt.show()
 
-from collections import OrderedDict
-
-""" 顔色 """
-cmaps = OrderedDict()
-cmaps['Miscellaneous'] = [
-            'flag', 'prism', 'ocean', 'gist_earth', 'terrain', 'gist_stern',
-            'gnuplot', 'gnuplot2', 'CMRmap', 'cubehelix', 'brg',
-            'gist_rainbow', 'rainbow', 'jet', 'turbo', 'nipy_spectral',
-            'gist_ncar']
-print(cmaps.items())
+# print(np.finfo(np.double).eps)
+_degreeArr = np.linspace(0, 72, 37)
+_forceArr = np.linspace(50, 500, 19)
+degree_arr_verification = np.arange(0, 74, 2)
+force_arr_verification = np.arange(50, 525, 25)
+print(_forceArr)
+print(_degreeArr)
+print(degree_arr_verification)
+print(force_arr_verification)

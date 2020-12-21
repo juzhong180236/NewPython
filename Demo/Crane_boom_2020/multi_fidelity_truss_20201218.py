@@ -47,15 +47,16 @@ def r2(data_real, data_predict):
 
 def create_kriging(force_arr, degree_arr, dependent_variables):
     kriging_stress_list = []
+    combine = []
+    for iForce in range(len(force_arr)):
+        for iDegree in range(len(degree_arr)):
+            combine.append((force_arr[iForce], degree_arr[iDegree]))
+    independent_variables = np.array(combine)
     for _dependent_var in dependent_variables:
 
         kriging_stress = KrigingSurrogate()
 
-        combine = []
-        for iForce in range(len(force_arr)):
-            for iDegree in range(len(degree_arr)):
-                combine.append((force_arr[iForce], degree_arr[iDegree]))
-        independent_variables = np.array(combine)
+
         # print(independent_variables)
         # print(_dependent_var.shape)
         kriging_stress.train(independent_variables, _dependent_var.reshape(-1, 1))
@@ -68,20 +69,21 @@ def create_kriging(force_arr, degree_arr, dependent_variables):
 def create_co_kriging(_force_arr_low, _degree_arr_low, _force_arr_high, _degree_arr_high,
                       dependent_variables_low, dependent_variables_high):
     co_kriging_stress_list = []
+    combine = []
+    for iForce in range(len(_force_arr_low)):
+        for iDegree in range(len(_degree_arr_low)):
+            combine.append((_force_arr_low[iForce], _degree_arr_low[iDegree]))
+    independent_variables_low = np.array(combine)
+    combine = []
+    for iForce in range(len(_force_arr_high)):
+        for iDegree in range(len(_degree_arr_high)):
+            combine.append((_force_arr_high[iForce], _degree_arr_high[iDegree]))
+    independent_variables_high = np.array(combine)
     for _i_point in range(len(dependent_variables_low)):
 
         co_kriging_stress = MultiFiCoKriging(theta0=5, thetaL=1e-5, thetaU=50.)
 
-        combine = []
-        for iForce in range(len(_force_arr_low)):
-            for iDegree in range(len(_degree_arr_low)):
-                combine.append((_force_arr_low[iForce], _degree_arr_low[iDegree]))
-        independent_variables_low = np.array(combine)
-        combine = []
-        for iForce in range(len(_force_arr_high)):
-            for iDegree in range(len(_degree_arr_high)):
-                combine.append((_force_arr_high[iForce], _degree_arr_high[iDegree]))
-        independent_variables_high = np.array(combine)
+
         # print(dependent_variables_low[_i_point].reshape(-1, 1))
         # print(independent_variables_high)
         co_kriging_stress.fit([independent_variables_low, independent_variables_high],
@@ -94,18 +96,19 @@ def create_co_kriging(_force_arr_low, _degree_arr_low, _force_arr_high, _degree_
 def create_smt_co_kriging(_force_arr_low, _degree_arr_low, _force_arr_high, _degree_arr_high,
                           dependent_variables_low, dependent_variables_high):
     multi_kriging_stress_list = []
+    combine = []
+    for iForce in range(len(_force_arr_low)):
+        for iDegree in range(len(_degree_arr_low)):
+            combine.append((_force_arr_low[iForce], _degree_arr_low[iDegree]))
+    independent_variables_low = np.array(combine)
+    combine = []
+    for iForce in range(len(_force_arr_high)):
+        for iDegree in range(len(_degree_arr_high)):
+            combine.append((_force_arr_high[iForce], _degree_arr_high[iDegree]))
+    independent_variables_high = np.array(combine)
     for _i_point in range(len(dependent_variables_low)):
 
-        combine = []
-        for iForce in range(len(_force_arr_low)):
-            for iDegree in range(len(_degree_arr_low)):
-                combine.append((_force_arr_low[iForce], _degree_arr_low[iDegree]))
-        independent_variables_low = np.array(combine)
-        combine = []
-        for iForce in range(len(_force_arr_high)):
-            for iDegree in range(len(_degree_arr_high)):
-                combine.append((_force_arr_high[iForce], _degree_arr_high[iDegree]))
-        independent_variables_high = np.array(combine)
+
         multi_kriging_stress = MFK(
             theta0=independent_variables_high.shape[-1] * [1.0],
             print_global=False,

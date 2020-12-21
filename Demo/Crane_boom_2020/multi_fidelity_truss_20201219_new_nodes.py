@@ -13,7 +13,13 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from collections import OrderedDict
 
-""" 原来的点曲线太简单，使用新的点来做 """
+""" 
+2020.12.19
+20201218的程序选择的节点说画出来的曲面太简单，使用新的点来做 
+2020.12.20
+20201219的程序写的比较繁琐，特别是训练变量的输入写了很多重复代码，
+还有就是散点图的绘制不太简洁。都做了改进。
+"""
 """ 顔色 """
 # cmaps = OrderedDict()
 
@@ -46,78 +52,65 @@ def r2(data_real, data_predict):
     return 1 - RSS / TSS
 
 
-def create_kriging(force_arr, degree_arr, dependent_variables):
+def create_kriging(_independent_variables, _dependent_variables):
     kriging_stress_list = []
-    for _dependent_var in dependent_variables:
-
+    # combine = []
+    # for iForce in range(len(force_arr)):
+    #     for iDegree in range(len(degree_arr)):
+    #         combine.append((force_arr[iForce], degree_arr[iDegree]))
+    # independent_variables = np.array(combine)
+    for _dependent_var in _dependent_variables:
         kriging_stress = KrigingSurrogate()
 
-        combine = []
-        for iForce in range(len(force_arr)):
-            for iDegree in range(len(degree_arr)):
-                combine.append((force_arr[iForce], degree_arr[iDegree]))
-        independent_variables = np.array(combine)
         # print(independent_variables)
         # print(_dependent_var.shape)
-        kriging_stress.train(independent_variables, _dependent_var.reshape(-1, 1))
+        kriging_stress.train(_independent_variables, _dependent_var.reshape(-1, 1))
 
         kriging_stress_list.append(kriging_stress)
 
     return kriging_stress_list
 
 
-def create_co_kriging(_force_arr_low, _degree_arr_low, _force_arr_high, _degree_arr_high,
-                      dependent_variables_low, dependent_variables_high):
+def create_co_kriging(_independent_variables_low, _independent_variables_high,
+                      _dependent_variables_low, _dependent_variables_high):
     co_kriging_stress_list = []
-    for _i_point in range(len(dependent_variables_low)):
-
+    # combine = []
+    # for iForce in range(len(_force_arr_low)):
+    #     for iDegree in range(len(_degree_arr_low)):
+    #         combine.append((_force_arr_low[iForce], _degree_arr_low[iDegree]))
+    # independent_variables_low = np.array(combine)
+    # combine = []
+    # for iForce in range(len(_force_arr_high)):
+    #     for iDegree in range(len(_degree_arr_high)):
+    #         combine.append((_force_arr_high[iForce], _degree_arr_high[iDegree]))
+    # independent_variables_high = np.array(combine)
+    for _i_point in range(len(_dependent_variables_low)):
         co_kriging_stress = MultiFiCoKriging(theta0=5, thetaL=1e-5, thetaU=50.)
 
-        combine = []
-        for iForce in range(len(_force_arr_low)):
-            for iDegree in range(len(_degree_arr_low)):
-                combine.append((_force_arr_low[iForce], _degree_arr_low[iDegree]))
-        independent_variables_low = np.array(combine)
-        combine = []
-        for iForce in range(len(_force_arr_high)):
-            for iDegree in range(len(_degree_arr_high)):
-                combine.append((_force_arr_high[iForce], _degree_arr_high[iDegree]))
-        independent_variables_high = np.array(combine)
         # print(dependent_variables_low[_i_point].reshape(-1, 1))
         # print(independent_variables_high)
-        co_kriging_stress.fit([independent_variables_low, independent_variables_high],
-                              [dependent_variables_low[_i_point].reshape(-1, 1),
-                               dependent_variables_high[_i_point].reshape(-1, 1)])
+        co_kriging_stress.fit([_independent_variables_low, _independent_variables_high],
+                              [_dependent_variables_low[_i_point].reshape(-1, 1),
+                               _dependent_variables_high[_i_point].reshape(-1, 1)])
         co_kriging_stress_list.append(co_kriging_stress)
     return co_kriging_stress_list
 
 
-def create_smt_co_kriging(_force_arr_low, _degree_arr_low, _force_arr_high, _degree_arr_high,
-                          dependent_variables_low, dependent_variables_high):
+def create_smt_co_kriging(_independent_variables_low, _independent_variables_high,
+                          _dependent_variables_low, _dependent_variables_high):
     multi_kriging_stress_list = []
-    for _i_point in range(len(dependent_variables_low)):
-
-        combine = []
-        for iForce in range(len(_force_arr_low)):
-            for iDegree in range(len(_degree_arr_low)):
-                combine.append((_force_arr_low[iForce], _degree_arr_low[iDegree]))
-        independent_variables_low = np.array(combine)
-        combine = []
-        for iForce in range(len(_force_arr_high)):
-            for iDegree in range(len(_degree_arr_high)):
-                combine.append((_force_arr_high[iForce], _degree_arr_high[iDegree]))
-        independent_variables_high = np.array(combine)
+    for _i_point in range(len(_dependent_variables_low)):
         multi_kriging_stress = MFK(
-            theta0=independent_variables_high.shape[-1] * [1.0],
+            theta0=_independent_variables_high.shape[-1] * [1.0],
             print_global=False,
             # optim_var=True,
         )
 
-        multi_kriging_stress.set_training_values(independent_variables_low,
-                                                 dependent_variables_low[_i_point].reshape(-1, 1), name=0)
+        multi_kriging_stress.set_training_values(_independent_variables_low,
+                                                 _dependent_variables_low[_i_point].reshape(-1, 1), name=0)
 
-        multi_kriging_stress.set_training_values(independent_variables_high,
-                                                 dependent_variables_high[_i_point].reshape(-1, 1))
+        multi_kriging_stress.set_training_values(_independent_variables_high,
+                                                 _dependent_variables_high[_i_point].reshape(-1, 1))
         multi_kriging_stress.train()
         multi_kriging_stress_list.append(multi_kriging_stress)
     return multi_kriging_stress_list
@@ -133,6 +126,15 @@ def create_test_independent_variables(_force_arr, _degree_arr):
     return _test_independent_variables, _X, _Y
 
 
+def create_train_independent_variables(_force_arr, _degree_arr):
+    _combine = []
+    for _iForce in range(len(_force_arr)):
+        for _iDegree in range(len(_degree_arr)):
+            _combine.append((_force_arr[_iForce], _degree_arr[_iDegree]))
+    _independent_variables = np.array(_combine)
+    return _independent_variables
+
+
 """ 训练集数据：自变量 """
 # low
 force_arr_low = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]  # 50 100 150 200 250 300 350 400 450 500
@@ -141,14 +143,14 @@ degree_arr_low = [0, 8, 16, 24, 32, 40, 48, 56, 64, 72]  # 0 8 16 24 32 40 48 56
 force_arr_high = [50, 200, 350, 500]
 degree_arr_high = [0, 24, 48, 72]
 
-__test_temp_1, train_X_low, train_Y_low = create_test_independent_variables(force_arr_low, degree_arr_low)
-__test_temp_2, train_X_high, train_Y_high = create_test_independent_variables(force_arr_high, degree_arr_high)
+train_low = create_train_independent_variables(force_arr_low, degree_arr_low)
+train_high = create_train_independent_variables(force_arr_high, degree_arr_high)
 """ 训练得到kriging模型 """
-kriging_low_list = create_kriging(force_arr_low, degree_arr_low, array_real_stress_low)
-kriging_high_list = create_kriging(force_arr_high, degree_arr_high, array_real_stress_high)
-# cokriging_list = create_co_kriging(force_arr_low, degree_arr_low, force_arr_high, degree_arr_high,
+kriging_low_list = create_kriging(train_low, array_real_stress_low)
+kriging_high_list = create_kriging(train_high, array_real_stress_high)
+# cokriging_list = create_co_kriging(train_low, train_high,
 #                                    array_real_stress_low, array_real_stress_high)
-multikriging_list = create_smt_co_kriging(force_arr_low, degree_arr_low, force_arr_high, degree_arr_high,
+multikriging_list = create_smt_co_kriging(train_low, train_high,
                                           array_real_stress_low, array_real_stress_high)
 """ 测试集数据：自变量 """
 _forceArr = np.linspace(50, 500, 20)
@@ -185,10 +187,13 @@ def create_figure(_ax, _test_X, _test_Y, _predict_stress_results, _train_X, _tra
         cstride=1,
         cmap=plt.get_cmap(color_map)  # coolwarm
     )
+    """
+    2020.12.20 散点图不用meshgrid，直接输出就是一维变量，输入将每一个点的xy分开写，注意是每一个点的都要有。
+    """
     _ax.scatter(
         _train_X,
         _train_Y,
-        _real_stress.reshape(_train_X.shape).T,
+        _real_stress,
         c=point_color,
     )
 
@@ -236,11 +241,11 @@ for i_point in [1]:
     """
     create_figure(ax,
                   test_X, test_Y, list_test_predict_stress_high[i_point],
-                  train_X_high, train_Y_high, array_real_stress_high[i_point].reshape(train_X_high.shape),
+                  train_high[:, 0], train_high[:, 1], array_real_stress_high[i_point],
                   'coolwarm', 'r')
     create_figure(ax,
                   test_X, test_Y, list_test_predict_stress_low[i_point],
-                  train_X_low, train_Y_low, array_real_stress_low[i_point].reshape(train_X_low.shape))
+                  train_low[:, 0], train_low[:, 1], array_real_stress_low[i_point])
     # create_figure_co(ax, test_X, test_Y, list_test_predict_stress_co[i_point], 'inferno')
     create_figure_co(ax, test_X, test_Y, list_test_predict_stress_multi[i_point], 'viridis')
 

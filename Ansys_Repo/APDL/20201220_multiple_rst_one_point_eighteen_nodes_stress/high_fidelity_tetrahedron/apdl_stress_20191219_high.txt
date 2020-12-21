@@ -41,11 +41,9 @@ FINISH
 !8 52378
 
 ! 0 总坐标系，12开始自定义坐标
+sys_num = 0
 
 *DIM,arr_nodes,ARRAY,18
-
-
-sys_num = 0
 arr_nodes(1)=1253
 arr_nodes(2)=16275
 arr_nodes(3)=18920
@@ -56,7 +54,6 @@ arr_nodes(6)=33797
 arr_nodes(7)=55992
 arr_nodes(8)=53531
 arr_nodes(9)=56808
-
 arr_nodes(10)=58179
 arr_nodes(11)=57390
 
@@ -70,7 +67,7 @@ arr_nodes(16)=24041
 arr_nodes(17)=32961
 arr_nodes(18)=54368
 
-path_write(1,1)='C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\pre_high_fidelity_truss_point\stress_point_less_points\'
+path_write(1,1)='C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\pre_high_fidelity_truss_point\stress_point_less_samples\'
 !有几个file.rst文件，就将path_read设为几维数组
 path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_high_fidelity_20201219_less_samples\20191220_files\dp0\SYS-3\MECH\file'
 path_read(1,2)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_high_fidelity_20201219_less_samples\20191220_files\dp0\SYS-4\MECH\file'
