@@ -46,7 +46,23 @@ list_stress_verification = rd.read_stress(path_prefix + path_arr["verification"]
 """
 array_real_stress_low = np.asarray(list_stress_low).T
 array_real_stress_high = np.asarray(list_stress_high).T
-array_real_stress_verification = np.asarray(list_stress_verification).T
+_array_real_stress_verification = np.asarray(list_stress_verification).T
+
+"""
+2020.12.25
+将array作为索引，需要是整数或者布尔值
+"""
+indices_degree = np.delete(np.arange(0, 37), np.arange(4, 36, 4))
+indices_force = np.delete(np.arange(0, 19), np.arange(2, 18, 2))
+list_real_stress_verification = []
+for _d in _array_real_stress_verification:
+    d = _d.reshape(19, 37)[indices_force, :]
+    d1 = d[:, indices_degree]
+    list_real_stress_verification.append(d1)
+array_real_stress_verification = np.asarray(list_real_stress_verification)
+
+
+# print(array_real_stress_verification.shape)
 
 
 # print(array_real_stress_verification)
@@ -138,10 +154,14 @@ train_high = np.asarray([[50, 0], [50, 72], [200, 24], [350, 48], [500, 0], [500
 这里一定要注意使用float，不然用整数的话kriging工作会出问题
 '''
 degree_arr_verification = np.arange(0, 74, 2, dtype=float)
+degree_arr_verification = np.delete(degree_arr_verification, np.arange(4, 36, 4))
+# print(degree_arr_verification.shape)
 force_arr_verification = np.arange(50, 525, 25, dtype=float)
+force_arr_verification = np.delete(force_arr_verification, np.arange(2, 18, 2))
+# print(force_arr_verification.shape)
+
 verification_independent_variables, verification_X, verification_Y = create_test_independent_variables(
     force_arr_verification, degree_arr_verification)
-
 train_low = create_train_independent_variables(force_arr_low, degree_arr_low)
 # train_high = create_train_independent_variables(force_arr_high, degree_arr_high)
 """ 训练得到kriging模型 """
@@ -183,14 +203,15 @@ for i in range(len(kriging_low_list)):
 
 
 def create_figure(_ax, _test_X, _test_Y, _predict_stress_results, _train_X, _train_Y, _real_stress,
-                  color_map='rainbow', point_color='k'):
+                  color_map='rainbow', point_color='k', _alpha=0.6):
     _ax.plot_surface(
         _test_X,
         _test_Y,
         _predict_stress_results,
         rstride=1,
         cstride=1,
-        cmap=plt.get_cmap(color_map)  # coolwarm
+        cmap=plt.get_cmap(color_map),  # coolwarm
+        alpha=_alpha,
     )
     # print(_train_X)
     # print(_train_Y)
@@ -202,14 +223,15 @@ def create_figure(_ax, _test_X, _test_Y, _predict_stress_results, _train_X, _tra
     )
 
 
-def create_figure_co(_ax, _test_X, _test_Y, _predict_stress_results, color_map='rainbow'):
+def create_figure_co(_ax, _test_X, _test_Y, _predict_stress_results, color_map='rainbow', _alpha=0.6):
     _ax.plot_surface(
         _test_X,
         _test_Y,
         _predict_stress_results,
         rstride=1,
         cstride=1,
-        cmap=plt.get_cmap(color_map)  # coolwarm
+        cmap=plt.get_cmap(color_map),  # coolwarm
+        alpha=_alpha,
     )
 
 
@@ -217,7 +239,7 @@ def save_to_excel():
     pd_results_excel = pd.DataFrame(list_results_excel)
     pd_results_excel.columns = ['verification_high', 'verification_low', 'verification_co']
     pd_results_excel.index = range(1, 19)
-    writer = pd.ExcelWriter('r2_results.xlsx')  # 创建名称为hhh的excel表格
+    writer = pd.ExcelWriter('r2_results_new.xlsx')  # 创建名称为hhh的excel表格
     pd_results_excel.to_excel(writer, 'page_1',
                               float_format='%.10f')  # float_format 控制精度，将data_df写到hhh表格的第一页中。若多个文件，可以在page_2中写入
     writer.save()  #
@@ -250,42 +272,59 @@ cmaps = [
     'gist_ncar']
 '''
 list_results_excel = []
-for i_point in range(1):
-# for i_point in [10]:
+list_r2_verification_high = []
+list_r2_verification_low = []
+list_r2_verification_co = []
+# for i_point in range(18):
+for i_point in [10]:
     """
     2020.12.19 颜色中比较常用的是:viridis, rainbow, coolwarm, inferno, ocean
     """
-    fig = plt.figure()
+    fig = plt.figure(figsize=(10, 8))
     ax = Axes3D(fig)
     create_figure(ax,
                   verification_X, verification_Y, list_test_predict_stress_high[i_point],
                   train_high[:, 0], train_high[:, 1],
                   array_real_stress_high[i_point],
-                  'coolwarm', 'r')
+                  'coolwarm', 'r', _alpha=1)
     create_figure(ax,
                   verification_X, verification_Y, list_test_predict_stress_low[i_point],
-                  train_low[:, 0], train_low[:, 1], array_real_stress_low[i_point])
+                  train_low[:, 0], train_low[:, 1], array_real_stress_low[i_point],
+                  _alpha=1)
     # create_figure_co(ax, verification_X, verification_Y, list_test_predict_stress_co[i_point], 'inferno')
-    create_figure_co(ax, verification_X, verification_Y, list_test_predict_stress_multi[i_point], 'viridis')
     create_figure_co(ax, verification_X, verification_Y,
-                     array_real_stress_verification[i_point].reshape(verification_X.T.shape).T, 'inferno')
+                     list_test_predict_stress_multi[i_point], 'viridis', _alpha=1)
+    create_figure_co(ax, verification_X, verification_Y,
+                     array_real_stress_verification[i_point].T, 'inferno', _alpha=1)
+
     # plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i_point) + '.png')
     """
     2020.12.19 避免画图内存泄露
     """
     # plt.close('all')  # 避免内存泄漏
 
-    verification_high = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
+    verification_high = r2(array_real_stress_verification[i_point].T,
                            list_test_predict_stress_high[i_point])
-    verification_low = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
+    verification_low = r2(array_real_stress_verification[i_point].T,
                           list_test_predict_stress_low[i_point])
-    verification_co = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
+    verification_co = r2(array_real_stress_verification[i_point].T,
                          list_test_predict_stress_multi[i_point])
+    list_r2_verification_high.append(verification_high)
+    list_r2_verification_low.append(verification_low)
+    list_r2_verification_co.append(verification_co)
     list_results_excel.append(np.asarray([verification_high, verification_low, verification_co]))
     print(
         'verification_high', str(verification_high) + '\n',
         'verification_low', str(verification_low) + '\n',
         'verification_co', str(verification_co) + '\n',
     )
-# plt.show()
+fig = plt.figure(figsize=(10, 8))
+x_14 = list(np.arange(1, 19))
+x_15 = [i + 0.2 for i in x_14]
+x_16 = [i + 0.4 for i in x_14]
+plt.bar(np.arange(1, 19), list_r2_verification_high)
+plt.bar(x_15, list_r2_verification_low)
+plt.bar(x_16, list_r2_verification_co)
+
+plt.show()
 # save_to_excel()
