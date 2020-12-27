@@ -60,7 +60,7 @@ def LHSample(variables_type, variables_bounds, samples_number):
 
 if __name__ == '__main__':
     var_type = 2
-    sam_number = 94  # 最后得到的样本个数
+    sam_number = 96  # 最后得到的样本个数
     bounds = [[0, 72], [5, 50]]
     samples = LHSample(var_type, bounds, sam_number)
     XY = np.array(samples)
@@ -83,16 +83,16 @@ if __name__ == '__main__':
     pl.grid()
     pl.xlabel("The degree of luffing angle (deg)", fontsize=16)
     pl.ylabel("The mass of lifting load (Kg)", fontsize=16)
-    # ax.xaxis.set_major_locator(MultipleLocator(xs))
-    # ax.yaxis.set_major_locator(MultipleLocator(ys))
+    ax.xaxis.set_major_locator(MultipleLocator(xs))
+    ax.yaxis.set_major_locator(MultipleLocator(ys))
+    print(len(samples))
     """2020.12.27
     手动添加边缘点
     """
-    X = np.append(X, [0, 0, 72, 72, 24, 48])
-    Y = np.append(Y, [5, 50, 5, 50, 20, 35])
-    pl.scatter(X, Y, clip_on=False)  # 边缘点显示
+    # X = np.append(X, [0, 0, 72, 72])
+    # Y = np.append(Y, [5, 50, 5, 50])
     # pl.savefig(r"C:\Users\asus\Desktop\pics\samples.png", bbox_inches='tight')
-    pl.savefig(r"C:\Users\asus\Desktop\pics\samples.png")
+    # pl.savefig(r"C:\Users\asus\Desktop\pics\samples.png")
 
     """2020.12.27
     高保真手动画图
@@ -103,4 +103,4 @@ if __name__ == '__main__':
     # Y1 = np.append(Y1, [5, 50, 5, 50])
     # pl.scatter(X1, Y1, clip_on=False, c='r', s=50)  # 边缘点显示
     # pl.savefig(r"C:\Users\asus\Desktop\pics\samples_high.png")
-    # pl.show()
+    pl.show()

@@ -215,12 +215,12 @@ def create_figure(_ax, _test_X, _test_Y, _predict_stress_results, _train_X, _tra
     )
     # print(_train_X)
     # print(_train_Y)
-    _ax.scatter(
-        _train_X,
-        _train_Y,
-        _real_stress,
-        c=point_color,
-    )
+    # _ax.scatter(
+    #     _train_X,
+    #     _train_Y,
+    #     _real_stress,
+    #     c=point_color,
+    # )
 
 
 def create_figure_co(_ax, _test_X, _test_Y, _predict_stress_results, color_map='rainbow', _alpha=0.6):
@@ -237,7 +237,7 @@ def create_figure_co(_ax, _test_X, _test_Y, _predict_stress_results, color_map='
 
 def save_to_excel():
     pd_results_excel = pd.DataFrame(list_results_excel)
-    pd_results_excel.columns = ['verification_high', 'verification_low', 'verification_co']
+    pd_results_excel.columns = ['verification_high', 'verification_low', 'verification_co', 'improvement']
     pd_results_excel.index = range(1, 19)
     writer = pd.ExcelWriter('r2_results_new.xlsx')  # 创建名称为hhh的excel表格
     pd_results_excel.to_excel(writer, 'page_1',
@@ -275,8 +275,9 @@ list_results_excel = []
 list_r2_verification_high = []
 list_r2_verification_low = []
 list_r2_verification_co = []
+list_r2_verification_improvement = []
 # for i_point in range(18):
-for i_point in [10]:
+for i_point in [0]:
     """
     2020.12.19 颜色中比较常用的是:viridis, rainbow, coolwarm, inferno, ocean
     """
@@ -286,14 +287,14 @@ for i_point in [10]:
                   verification_X, verification_Y, list_test_predict_stress_high[i_point],
                   train_high[:, 0], train_high[:, 1],
                   array_real_stress_high[i_point],
-                  'coolwarm', 'r', _alpha=1)
+                  'coolwarm', 'r', _alpha=0.6)
     create_figure(ax,
                   verification_X, verification_Y, list_test_predict_stress_low[i_point],
                   train_low[:, 0], train_low[:, 1], array_real_stress_low[i_point],
-                  _alpha=1)
+                  _alpha=0.6)
     # create_figure_co(ax, verification_X, verification_Y, list_test_predict_stress_co[i_point], 'inferno')
     create_figure_co(ax, verification_X, verification_Y,
-                     list_test_predict_stress_multi[i_point], 'viridis', _alpha=1)
+                     list_test_predict_stress_multi[i_point], 'viridis', _alpha=0.6)
     create_figure_co(ax, verification_X, verification_Y,
                      array_real_stress_verification[i_point].T, 'inferno', _alpha=1)
 
@@ -309,22 +310,28 @@ for i_point in [10]:
                           list_test_predict_stress_low[i_point])
     verification_co = r2(array_real_stress_verification[i_point].T,
                          list_test_predict_stress_multi[i_point])
+
+    temp_max = max(verification_high, verification_low)
+    improvement = (verification_co - temp_max) / temp_max * 100
+    print(improvement)
+    list_r2_verification_improvement.append(improvement)
+
     list_r2_verification_high.append(verification_high)
     list_r2_verification_low.append(verification_low)
     list_r2_verification_co.append(verification_co)
-    list_results_excel.append(np.asarray([verification_high, verification_low, verification_co]))
-    print(
-        'verification_high', str(verification_high) + '\n',
-        'verification_low', str(verification_low) + '\n',
-        'verification_co', str(verification_co) + '\n',
-    )
-fig = plt.figure(figsize=(10, 8))
-x_14 = list(np.arange(1, 19))
-x_15 = [i + 0.2 for i in x_14]
-x_16 = [i + 0.4 for i in x_14]
-plt.bar(np.arange(1, 19), list_r2_verification_high)
-plt.bar(x_15, list_r2_verification_low)
-plt.bar(x_16, list_r2_verification_co)
+    list_results_excel.append(np.asarray([verification_high, verification_low, verification_co, improvement]))
+    # print(
+    #     'verification_high', str(verification_high) + '\n',
+    #     'verification_low', str(verification_low) + '\n',
+    #     'verification_co', str(verification_co) + '\n',
+    # )
+# fig = plt.figure(figsize=(10, 8))
+# x_14 = list(np.arange(1, 19))
+# x_15 = [i + 0.2 for i in x_14]
+# x_16 = [i + 0.4 for i in x_14]
+# plt.bar(np.arange(1, 19), list_r2_verification_high)
+# plt.bar(x_15, list_r2_verification_low)
+# plt.bar(x_16, list_r2_verification_co)
 
 plt.show()
 # save_to_excel()

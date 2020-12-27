@@ -190,8 +190,7 @@ def create_figure(_ax, _test_X, _test_Y, _predict_stress_results, _train_X, _tra
         _predict_stress_results,
         rstride=1,
         cstride=1,
-        cmap=plt.get_cmap(color_map),  # coolwarm
-        alpha=0.5,
+        cmap=plt.get_cmap(color_map)  # coolwarm
     )
     # print(_train_X)
     # print(_train_Y)
@@ -210,8 +209,7 @@ def create_figure_co(_ax, _test_X, _test_Y, _predict_stress_results, color_map='
         _predict_stress_results,
         rstride=1,
         cstride=1,
-        cmap=plt.get_cmap(color_map),  # coolwarm
-        alpha=0.5,
+        cmap=plt.get_cmap(color_map)  # coolwarm
     )
 
 
@@ -251,12 +249,27 @@ cmaps = [
     'gist_rainbow', 'rainbow', 'jet', 'turbo', 'nipy_spectral',
     'gist_ncar']
 '''
+
+
+def ax_fun(_ax, _str):
+    BIGGER_SIZE = 16
+    MIDDLE_SIZE = 12
+    _ax.set_xlabel("The mass of lifting load (Kg)", fontsize=BIGGER_SIZE)
+    _ax.set_ylabel("The degree of luffing angle (deg)", fontsize=BIGGER_SIZE)
+    _ax.set_zlabel('Stress (Mpa)', fontsize=BIGGER_SIZE)
+
+    plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
+    _ax.view_init(elev=30., azim=-135)  # 调整视角
+    plt.savefig(r"C:\Users\asus\Desktop\pics\\" + _str + ".png", bbox_inches='tight')
+
+
 list_results_excel = []
-# for i_point in range(1):
+# for i_point in range(18):
 for i_point in [0]:
     """
     2020.12.19 颜色中比较常用的是:viridis, rainbow, coolwarm, inferno, ocean
     """
+
     fig = plt.figure(figsize=(10, 8))
     ax = Axes3D(fig)
     create_figure(ax,
@@ -266,31 +279,45 @@ for i_point in [0]:
                   'ocean',
                   'r',
                   )
+    ax_fun(ax, str(i_point) + "high")
+
+    fig = plt.figure(figsize=(10, 8))
+    ax = Axes3D(fig)
     create_figure(ax,
                   verification_X, verification_Y, list_test_predict_stress_low[i_point],
                   train_low[:, 0], train_low[:, 1], array_real_stress_low[i_point]
                   )
+    ax_fun(ax, str(i_point) + "low")
+
+    fig = plt.figure(figsize=(10, 8))
+    ax = Axes3D(fig)
     # create_figure_co(ax, verification_X, verification_Y, list_test_predict_stress_co[i_point], 'inferno')
     create_figure_co(ax, verification_X, verification_Y, list_test_predict_stress_multi[i_point],
                      'viridis',
                      )
+    ax_fun(ax, str(i_point) + "co")
+
+    fig = plt.figure(figsize=(10, 8))
+    ax = Axes3D(fig)
     create_figure_co(ax, verification_X, verification_Y,
                      array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
                      'inferno',
                      )
-    BIGGER_SIZE = 16
-    MIDDLE_SIZE = 12
-    ax.set_xlabel("The mass of lifting load (Kg)", fontsize=BIGGER_SIZE)
-    ax.set_ylabel("The degree of luffing angle (deg)", fontsize=BIGGER_SIZE)
-    ax.set_zlabel('Stress (Mpa)', fontsize=BIGGER_SIZE)
 
-    plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
-    ax.view_init(elev=30., azim=-135)  # 调整视角
-    # plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i_point) + '.png', bbox_inches='tight')
+    ax_fun(ax, str(i_point) + "real")
+    # BIGGER_SIZE = 16
+    # MIDDLE_SIZE = 12
+    # ax.set_xlabel("The mass of lifting load (Kg)", fontsize=BIGGER_SIZE)
+    # ax.set_ylabel("The degree of luffing angle (deg)", fontsize=BIGGER_SIZE)
+    # ax.set_zlabel('Stress (Mpa)', fontsize=BIGGER_SIZE)
+    #
+    # plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
+    # ax.view_init(elev=30., azim=-135)  # 调整视角
+    # # plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i_point) + '.png', bbox_inches='tight')
     """
     2020.12.19 避免画图内存泄露
     """
-    # plt.close('all')  # 避免内存泄漏
+    plt.close('all')  # 避免内存泄漏
     verification_high = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
                            list_test_predict_stress_high[i_point])
     verification_low = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
@@ -298,11 +325,11 @@ for i_point in [0]:
     verification_co = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
                          list_test_predict_stress_multi[i_point])
     list_results_excel.append(np.asarray([verification_high, verification_low, verification_co]))
-    print(
-        'verification_high', str(verification_high) + '\n',
-        'verification_low', str(verification_low) + '\n',
-        'verification_co', str(verification_co) + '\n',
-    )
+    # print(
+    #     'verification_high', str(verification_high) + '\n',
+    #     'verification_low', str(verification_low) + '\n',
+    #     'verification_co', str(verification_co) + '\n',
+    # )
 
-plt.show()
+# plt.show()
 # save_to_excel()

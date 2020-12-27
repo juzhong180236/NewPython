@@ -135,4 +135,6 @@ force_arr_verification = np.delete(force_arr_verification, np.arange(2, 18, 2))
 # print(force_arr_verification)
 arr1 = np.arange(36).reshape(9, 4)
 print(arr1)
-print(arr1[np.array([1, 2, 6]),:])
+print(arr1[np.array([1, 2, 6]), :])
+
+print(max(3, 4))
