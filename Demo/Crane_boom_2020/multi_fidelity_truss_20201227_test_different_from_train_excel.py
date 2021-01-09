@@ -147,7 +147,7 @@ def create_train_independent_variables(_force_arr, _degree_arr):
 
 """ 训练集数据：自变量 """
 # low_samples
-force_arr_low = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]  # 50 100 150 200 250 300 350 400 450 500
+force_arr_low = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]  # 5 10 15 20 25 30 35 40 45 50
 degree_arr_low = [0, 8, 16, 24, 32, 40, 48, 56, 64, 72]  # 0 8 16 24 32 40 48 56 64 72
 # high_samples
 train_high = np.asarray([[5, 0], [5, 72], [20, 24], [35, 48], [50, 0], [50, 72]])
@@ -272,7 +272,7 @@ def ax_fun(_ax, _str):
 
     plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
     _ax.view_init(elev=30., azim=-135)  # 调整视角
-    plt.savefig(r"C:\Users\asus\Desktop\pics_train_test_different\\" + _str + ".png", bbox_inches='tight')
+    # plt.savefig(r"C:\Users\asus\Desktop\pics_train_test_different\\" + _str + ".png", bbox_inches='tight')
 
 
 __alpha = 1
@@ -381,4 +381,4 @@ for i_point in range(1):
 # col2_patch = mpatches.Patch(color='g', label='very red')
 # plt.legend(handles=[col1_patch, col2_patch])
 # plt.show()
-# save_to_excel()
+save_to_excel()

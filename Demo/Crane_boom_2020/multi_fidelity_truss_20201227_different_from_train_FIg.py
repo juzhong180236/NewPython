@@ -129,7 +129,7 @@ def create_train_independent_variables(_force_arr, _degree_arr):
 
 """ 训练集数据：自变量 """
 # low_samples
-force_arr_low = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]  # 50 100 150 200 250 300 350 400 450 500
+force_arr_low = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]  # 5 10 15 20 25 30 35 40 45 50
 degree_arr_low = [0, 8, 16, 24, 32, 40, 48, 56, 64, 72]  # 0 8 16 24 32 40 48 56 64 72
 # high_samples
 train_high = np.asarray([[5, 0], [5, 72], [20, 24], [35, 48], [50, 0], [50, 72]])
@@ -260,7 +260,7 @@ def ax_fun(_ax, _str):
 
     plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
     _ax.view_init(elev=30., azim=-135)  # 调整视角
-    plt.savefig(r"C:\Users\asus\Desktop\pics\\" + _str + ".png", bbox_inches='tight')
+    # plt.savefig(r"C:\Users\asus\Desktop\pics\\" + _str + ".png", bbox_inches='tight')
 
 
 list_results_excel = []
@@ -317,7 +317,7 @@ for i_point in [0]:
     """
     2020.12.19 避免画图内存泄露
     """
-    plt.close('all')  # 避免内存泄漏
+    # plt.close('all')  # 避免内存泄漏
     verification_high = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
                            list_test_predict_stress_high[i_point])
     verification_low = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,

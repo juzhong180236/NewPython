@@ -503,7 +503,7 @@ class DataToFile(object):
         list_w_dSum = []
         cycle_index = len(list_stress)
         for i in range(cycle_index):
-        # for i in [19137]:
+            # for i in [19137]:
             stress_real = np.asarray(list_stress[i]).reshape(-1, 1)
             # dSum_real = np.asarray(list_disp_sum[i]).reshape(-1, 1)
             kriging_stress = KrigingSurrogate()
@@ -611,3 +611,84 @@ class DataToFile(object):
         # tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
         # # # 坐标文件【坐标一般需要变换一下，就不直接输出了】
         # tfc.text_Create(self.path_write, coord, txt_coord)
+
+    def dataSaveToJson_RBF(self, v_fd, rbf_type='lin_a', which_part='truss'):
+        """
+        和上一版本的区别是，位移数据和坐标数据分开导出
+        :param v_fd: 输入的训练自变量
+        :param rbf_type: 使用的rbf类型
+        :param which_part: 存储的数据是哪个零件的
+        :return:
+        """
+        surfaced = SurfaceData(self.path_read, self.geometry_type)
+        """以下为节点数据"""
+        # 索引
+        txt_ele = surfaced.get_Ele_Data()
+        # print(len(set(sorted(map(int, txt_ele.split(',')), key=lambda x: x))))
+        txt_coord = surfaced.get_Coord_Data()
+        # 位移
+        txt_displacement, txt_dopSum, txt_DstepandMin = surfaced.get_Displacement_DopSum_Dcolor_Bysorted()
+        # 应力
+        txt_stress, txt_SstepandMin = surfaced.get_Stress_SStepandMin_Bysorted()
+        # print(len(txt_coord.split('\n')[0].split(',')))
+        stds = ''
+        list_stress, len_data_stress = _getData(txt_stress, 'stressOrdSum')
+        list_dopSum, len_data_dopSum = _getData(txt_dopSum, 'stressOrdSum')
+        if len_data_stress != len_data_dopSum:
+            print('displacement数据与stress数据数目不同!\n'
+                  'displacemen数据个数：' + str(len_data_dopSum)
+                  + '      stress数据个数:' + str(len_data_stress))
+            return
+        list_w_stress = []
+        list_w_dSum = []
+        cycle_index = len(list_stress)
+        for i in range(cycle_index):
+            stress_real = list_stress[i]
+            dSum_real = list_dopSum[i]
+            rbfnet_stress = RBF(rbf_type)
+            rbfnet_dSum = RBF(rbf_type)
+            w_stress = rbfnet_stress.fit(v_fd, stress_real)
+            w_dSum = rbfnet_dSum.fit(v_fd, dSum_real)
+            stds = str(rbfnet_stress.std)
+            list_w_stress.append(w_stress)
+            list_w_dSum.append(w_dSum)
+            print("\r" + rbfnet_stress.__class__.__name__ + "程序当前已完成：" + str(
+                round(i / len(list_stress) * 10000) / 100) + '%', end="")
+        stepAndMin = which_part + '_others'
+        ele = which_part + '_ele'
+        dSum_w = which_part + '_dSum_w'
+        stress_w = which_part + '_stress_w'
+        coord = which_part + '_coord'
+
+        if v_fd.ndim == 1:
+            x_train = ','.join(map(str, v_fd.tolist()))
+        elif v_fd.ndim == 2:
+            x_train = ','.join(map(lambda x: ','.join(map(str, x)), v_fd.tolist()))
+        else:
+            x_train = "null"
+        pathisExists = os.path.exists(self.path_write)
+        if not pathisExists:
+            os.makedirs(self.path_write)  # 不存在创建目录
+            pf.printf('文件夹[' + self.path_write + ']创建成功,正在写入文件...')
+
+        dict_rbf_model = {}
+        dict_rbf_model["D_step_Min"] = txt_DstepandMin
+        dict_rbf_model["S_step_Min"] = txt_SstepandMin
+        dict_rbf_model["stds"] = stds
+        dict_rbf_model["x_train"] = x_train
+        dict_rbf_model["D_step_Min"] = txt_DstepandMin
+        dict_rbf_model["S_step_Min"] = txt_SstepandMin
+        dict_rbf_model["stds"] = stds
+        dict_rbf_model["ele"] = txt_ele
+        dict_rbf_model["dSum_w"] = dSum_w
+        # 步数和最小值，方差，输入值
+        tfc.text_Create(self.path_write, stepAndMin,
+                        txt_DstepandMin + ',' + txt_SstepandMin + '\n' + stds + '\n' + x_train)
+        # 索引文件
+        tfc.text_Create(self.path_write, ele, txt_ele)
+        # 总位移文件
+        tfc.text_Create(self.path_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
+        # 应力文件
+        tfc.text_Create(self.path_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
+        # # 坐标文件【坐标一般需要变换一下，就不直接输出了】
+        tfc.text_Create(self.path_write, coord, txt_coord)
