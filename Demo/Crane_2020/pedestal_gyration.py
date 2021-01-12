@@ -25,4 +25,4 @@ for iDegree in range(len(degreeArr)):
 fd = np.array(combine)
 # print(fd)
 dtf = DataToFile(path_four_read, path_four_write, geometry_type)
-dtf.dataToPostFile_v2_Bysorted(v_fd=fd, rbf_type='lin_a', which_part=name[4:-2])
+dtf.dataSaveToTXT_RBF(v_fd=fd, rbf_type='lin_a', which_part=name[4:-2])

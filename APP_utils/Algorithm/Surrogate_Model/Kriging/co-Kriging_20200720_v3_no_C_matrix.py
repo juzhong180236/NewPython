@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import matplotlib.pyplot as plt
-from Kriging_20200720_no_C_matrix import Kriging
+from .Kriging_20200720 import Kriging
 
 
 class coKriging(object):

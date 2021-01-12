@@ -1,4 +1,4 @@
-from element_data import ElementData
+from .element_data import ElementData
 from coordinate_data import CoordinateData
 from displacement_data import DispalcementData
 from stress_data import StressData

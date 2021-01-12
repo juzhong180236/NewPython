@@ -1,7 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from openpyxl import load_workbook
-from ReadExcel import readExcel
 
 
 class PRS(object):
@@ -36,33 +33,4 @@ class PRS(object):
 
 
 if __name__ == "__main__":
-    path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\test7fun.xlsx"
-    data_real = readExcel(path_excel, "Sheet1", 1, 20, 2)
-    data_pre = readExcel(path_excel, "Sheet2", 1, 30, 2)
-    d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
-    y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
-    d_pred = np.arange(-17, 18)
-    # Y_pre = PRS(d_duo, 3, y_duo, d_pred_duo)
-    # prs1 = PRS(m=4)
-    # prs1.fit(data_real[0], data_real[1])
-    # Y_pre = prs1.predict(data_pre[0])
-
-    prs2 = PRS(m=7)
-    prs2.fit(d, y)
-    Y_pre1 = prs2.predict(d_pred)
-
-    # RR = 1 - (np.sum(np.square(d_pred[1] - Y_pre)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
-    # print(RR)
-
-    plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
-             label='z-real')
-    plt.plot(d_pred, Y_pre1, color='#0000ff', marker='+', linestyle='-.',
-             label='z-predict')
-
-    # plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
-    #          label='z-real')
-    # plt.plot(data_pre[0], Y_pre, color='#0000ff', marker='+', linestyle='-.',
-    #          label='z-predict')
-
-    plt.legend()
-    plt.show()
+    pass

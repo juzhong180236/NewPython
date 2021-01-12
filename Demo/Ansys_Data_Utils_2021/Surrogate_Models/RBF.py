@@ -6,14 +6,16 @@ import time
 
 def gaussian(x, c, s):
     if c.ndim != 1:
-        return np.sum(np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2)), axis=-1)
+        # return np.exp(-np.sum((x - c) ** 2, axis=-1) / (2 * s ** 2))  # gs多维正确公式
+        return np.sum(np.exp(-(x - c) ** 2 / (2 * s ** 2)), axis=-1)  # gs多维正确公式
     else:
         return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 
 
 def multiquadric(x, c, s):
     if c.ndim != 1:
-        return np.sqrt(np.sqrt(np.sum((x - c) ** 2, axis=-1)) + s ** 2)
+        return np.sqrt(np.sum((x - c) ** 2, axis=-1) + s ** 2)  # mq多维正确公式
+        # return np.sum(np.sqrt((x - c) ** 2 + s ** 2), axis=-1) # lin_a多维，先求基函数，再相加
     else:
         return np.sqrt((x - c) ** 2 + s ** 2)
 
@@ -24,7 +26,8 @@ def linear(x, c):
 
 def linear_abs(x, c):
     if c.ndim != 1:
-        return np.sum(np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1))), axis=-1)
+        return np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1)))  # lin_a多维正确公式
+        # return np.sum(np.abs(x - c), axis=-1)  # lin_a多维，先求基函数，再相加
     else:
         return np.abs(x - c)
 
@@ -54,32 +57,28 @@ str_no_s = ['linear', 'cubic', 'square', 'linear_abs']
 
 class RBF(object):
     # def RBF(X, Y, X_Pre):
-    def __init__(self, rbf="mq", std=0, w=0, x=np.array([])):
-        self.rbf = func[rbf]  # rbf的基函数
+    def __init__(self, rbf="lin_a", std=0, w=None, x=np.array([])):
+        self.rbf = func[rbf]  # rbf名称
         self.std = std
         self.w = w
         self.x = x
 
     def fit(self, X, Y):
+        list_result = []
         self.x = X
         # self.std = (max(X) - min(X)) / len(X)
         max_distance_list = []
         for i in range(X.shape[0]):
             max_distance_list.append(max([np.linalg.norm(m) for m in X - X[i]]))
         self.std = max(max_distance_list) / X.shape[0]
-        list_result = []
         for i in range(X.shape[0]):
-            # list_temp = []
-            # for j in range(X.shape[0]):
             if self.rbf.__name__ in str_no_s:
                 list_result.append(self.rbf(X[i], X).ravel())
             else:
                 list_result.append(self.rbf(X[i], X, self.std).ravel())
-                # print(self.rbf(X[i], X,self.std).shape)
-            # list_result.append(np.array(list_temp).ravel())
         Gaussian_result = np.array(list_result)
         self.w = np.linalg.pinv(Gaussian_result).dot(Y)
-        return ','.join(map(str, self.w))
+        return self.w.tolist()
 
     def predict(self, X_Pre):
         list_pre_x = []
@@ -88,6 +87,7 @@ class RBF(object):
                 list_pre_x.append(self.rbf(X_Pre[i], self.x).ravel())
             else:
                 list_pre_x.append(self.rbf(X_Pre[i], self.x, self.std).ravel())
+        # print(list_pre_x)
         Y_Pre = np.array(list_pre_x).dot(self.w)
         return Y_Pre
 

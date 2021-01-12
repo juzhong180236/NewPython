@@ -1,8 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from openpyxl import load_workbook
-from mpl_toolkits.mplot3d import Axes3D
-from ReadExcel import readExcel
 
 
 class PRS(object):
@@ -121,68 +117,4 @@ class PRS(object):
 
 
 if __name__ == "__main__":
-    path_excel = r"C:\Users\asus\Desktop\History\History_codes\NewPython\APP_utils\Algorithm\data\test7fun.xlsx"
-    data_real = readExcel(path_excel, "Sheet2", 1, 20, 2)
-    data_pre = readExcel(path_excel, "Sheet2", 30, 60, 2)
-    d = np.array([-17, -13, -9, -5, -1, 0, 1, 5, 9, 13, 17])
-    y = np.array([22.3, 16.85, 11.4, 5.9501, 0.95417, 0.5, 0.95417, 5.9501, 11.4, 16.85, 22.3])
-    d_pred = np.arange(-17, 18)
-    # dd = np.array(
-    #     [[2, 3], [-5, -1], [1, 5], [9, 13], [9, 13], [9, 13], [9, 13], [9, 13], [9, 13], [9, 13], [9, 13], [9, 13],
-    #      [9, 13], [9, 13], [9, 13], [9, 13]])
-    # dy = np.array([55, 44, 88, 66, 88, 88, 88, 88, 88, 88, 88, 88, 88, 88, 88, 88])
-    # prs1 = PRS(m=3)
-    # w = prs1.fit(dd, dy, 1)
-    # test_first = dy.dot(dy) - (w[0].T.dot(w[1].T)).dot(dy)
-    # test_second = dy.shape[0] - w[0].shape[0]
-    # third = np.diag(np.linalg.inv(w[1].T.dot(w[1])))
-    #
-    # limian = test_first / test_second * third
-    # # 大于0的元素，防止除数为0报错
-    # d = np.where(limian > 0)
-    #
-    # ff = np.maximum(limian, min(limian[limian > 0])) ** 0.5
-    # final = w[0] / ff
-    # remove_index = d[0][np.where(final[d] == min(final[d]))[0][0]]
-    #
-    # new_Gramian = np.delete(w[1], remove_index, axis=1)
-    # print(w[1])
-    # print(new_Gramian)
-
-    prs1 = PRS(m=3)
-    # prs1.fit(data_real[0], data_real[1], 100)
-    # 普通交叉形式 第三个参数为-np.Inf
-    # aa = prs1.fit(data_real[0], data_real[1], -np.Inf)
-    # bp
-    print(type(data_real[0]))
-    prs1.fit(data_real[0], data_real[1])
-    Y_pre = prs1.predict(data_pre[0])
-
-    # prs2 = PRS()
-    # prs2.fit(d, y)
-    # Y_pre1 = prs2.predict(d_pred)
-
-    RR = 1 - (np.sum(np.square(data_pre[1] - Y_pre)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
-    print(RR)
-
-    plt.plot(data_pre[0], data_pre[1], color='#ff0000', marker='+', linestyle='-',
-             label='z-real')
-    plt.plot(data_pre[0], Y_pre, color='#0000ff', marker='+', linestyle='-.',
-             label='z-predict')
-
-    # plt.plot(d, y, color='#ff0000', marker='+', linestyle='-',
-    #          label='z-real')
-    # plt.plot(d_pred, Y_pre1, color='#0000ff', marker='+', linestyle='-.',
-    #          label='z-predict')
-    plt.legend()
-    plt.show()
-
-    # data = np.random.randint(0, 255, size=[40, 40, 40])
-    # fig = plt.figure()
-    # x, y, z = data[0], data[1], data[2]
-    # ax = fig.add_subplot(111, projection='3d')  # 创建一个三维的绘图工程
-    #  将数据点分成三部分画，在颜色上有区分度
-    # ax.scatter(dd[:, 0], dd[:, 1], dy, c='r')  # 绘制数据点
-
-    # ax.set_xlabel('X')
-    # plt.show()
+    pass

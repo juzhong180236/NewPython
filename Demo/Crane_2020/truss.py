@@ -22,5 +22,5 @@ fd_flat = fd.flatten()
 # 训练模型
 dtf = DataToFile(path_four_read, path_four_write, geometry_type)
 # dtf.dataToPostFile_v2_Bysorted(v_fd=fd, rbf_type='lin_a', which_part=path_switch[4:-2])
-dtf.dataToPostFile_v2_Bysorted(v_fd=fd, rbf_type='lin_a', which_part=path_switch[4:-2])
+dtf.dataSaveToTXT_RBF(v_fd=fd, rbf_type='lin_a', which_part=path_switch[4:-2])
 # dtf.dataToMidFile()
