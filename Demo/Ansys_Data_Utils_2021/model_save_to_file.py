@@ -6,6 +6,7 @@ from Demo.Ansys_Data_Utils_2021.Surrogate_Models.PRS import PRS
 import Demo.Ansys_Data_Utils_2021.txt_file_create as tfc
 import Demo.Ansys_Data_Utils_2021.print_f as pf
 from openmdao.surrogate_models.kriging import KrigingSurrogate
+from Demo.Ansys_Data_Utils_2021.Surrogate_Models.GPR import GPR
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import json
@@ -180,8 +181,8 @@ class ModelSaveToFile(object):
         list_w_stress = []
         list_w_dSum = []
         cycle_index = len(list_stress)
-        for i in range(cycle_index):
-            # for i in [19137]:
+        # for i in range(cycle_index):
+        for i in range(2):
             stress_real = np.asarray(list_stress[i]).reshape(-1, 1)
             dSum_real = np.asarray(list_dopSum[i]).reshape(-1, 1)
             kriging_stress = KrigingSurrogate()
@@ -189,30 +190,27 @@ class ModelSaveToFile(object):
             kriging_stress.train(fd, stress_real)
             kriging_dSum.train(fd, dSum_real)
 
-            dict_kriging_model = {}
-            dict_kriging_model["thetas"] = kriging_stress.thetas.tolist()
-            dict_kriging_model["X_mean"] = kriging_stress.X_mean.tolist()
-            dict_kriging_model["X_std"] = kriging_stress.X_std.tolist()
-            dict_kriging_model["n_samples"] = kriging_stress.n_samples
-            dict_kriging_model["X"] = kriging_stress.X.tolist()
-            dict_kriging_model["alpha"] = kriging_stress.alpha.tolist()
-            dict_kriging_model["Y_mean"] = kriging_stress.Y_mean.tolist()
-            dict_kriging_model["Y_std"] = kriging_stress.Y_std.tolist()
-
+            dict_kriging_model = {
+                "thetas": kriging_stress.thetas.tolist(),
+                "X_mean": kriging_stress.X_mean.tolist(),
+                "X_std": kriging_stress.X_std.tolist(),
+                "n_samples": kriging_stress.n_samples,
+                "X": kriging_stress.X.tolist(),
+                "alpha": kriging_stress.alpha.tolist(),
+                "Y_mean": kriging_stress.Y_mean.tolist(),
+                "Y_std": kriging_stress.Y_std.tolist(),
+            }
+            print(dict_kriging_model)
             print("\r" + kriging_stress.__class__.__name__ + "程序当前已完成：" + str(
                 round(i / len(list_stress) * 10000) / 100) + '%', end="")
 
-        #
-        # if v_fd.ndim == 1:
-        #     x_train = ','.join(map(str, v_fd.tolist()))
-        # elif v_fd.ndim == 2:
-        #     x_train = ','.join(map(lambda x: ','.join(map(str, x)), v_fd.tolist()))
-        # else:
-        #     x_train = "null"
         # pathisExists = os.path.exists(self.path_write)
         # if not pathisExists:
         #     os.makedirs(self.path_write)  # 不存在创建目录
         #     pf.printf('文件夹[' + self.path_write + ']创建成功,正在写入文件...')
+        # json_rbf_model = json.dumps(dict_kriging_model)
+        # with open("C:/Users/asus/Desktop/" + which_part + ".json", "w") as f:
+        #     json.dump(json_rbf_model, f)
 
     def dataSaveToJSON_RBF(self, v_fd, rbf_type='lin_a', which_part='truss'):
         """
@@ -297,3 +295,96 @@ class ModelSaveToFile(object):
         json_rbf_model = json.dumps(dict_rbf_model)
         with open("C:/Users/asus/Desktop/" + which_part + ".json", "w") as f:
             json.dump(json_rbf_model, f)
+
+    def dataSaveToJSON_GPR(self, v_fd, which_part='truss'):
+        """
+
+        :param v_fd: 输入的训练自变量
+        :param rbf_type: 使用的rbf类型
+        :param which_part: 存储的数据是哪个零件的
+        :return:
+        """
+        surfaced = SurfaceData(self.path_read, self.geometry_type)
+        """以下为节点数据"""
+        # 索引
+        list_ele = surfaced.get_Ele_Data()
+        # print(len(set(sorted(map(int, list_ele.split(',')), key=lambda x: x))))
+        list_coords = surfaced.get_Coord_Data()
+        # 位移
+        txt_displacement, txt_dopSum, d_step, d_min = surfaced.get_Displacement_DopSum_Dcolor_Bysorted()
+        # 应力
+        txt_stress, s_step, s_min = surfaced.get_Stress_SStepandMin_Bysorted()
+        list_stress, len_data_stress = _getData(txt_stress, 'stressOrdSum')
+        list_dopSum, len_data_dopSum = _getData(txt_dopSum, 'stressOrdSum')
+        if len_data_stress != len_data_dopSum:
+            print('displacement数据与stress数据数目不同!\n'
+                  'displacemen数据个数：' + str(len_data_dopSum)
+                  + '      stress数据个数:' + str(len_data_stress))
+            return
+        list_y_stress = []
+        list_Kff_inv_stress = []
+        list_s_stress = []
+        list_sigma_stress = []
+
+        list_y_deformation = []
+        list_Kff_inv_deformation = []
+        list_s_deformation = []
+        list_sigma_deformation = []
+
+        list_x = []
+        cycle_index = len(list_stress)
+        for i in range(cycle_index):
+            stress_real = np.asarray(list_stress[i]).reshape(-1, 1)
+            dSum_real = np.asarray(list_dopSum[i]).reshape(-1, 1)
+            gpr_stress = GPR(optimize=True)
+            gpr_deformation = GPR(optimize=True)
+            gpr_stress.fit(v_fd, stress_real)
+            gpr_deformation.fit(v_fd, dSum_real)
+            # stress模型存储
+            list_y_stress.append(gpr_stress.y.tolist())
+            list_Kff_inv_stress.append(gpr_stress.Kff_inv.tolist())
+            list_s_stress.append(gpr_stress.params['s'])
+            list_sigma_stress.append(gpr_stress.params['sigma'])
+
+            # deformation模型存储
+            list_y_deformation.append(gpr_deformation.y.tolist())
+            list_Kff_inv_deformation.append(gpr_deformation.Kff_inv.tolist())
+            list_s_deformation.append(gpr_deformation.params['s'])
+            list_sigma_deformation.append(gpr_deformation.params['sigma'])
+
+            if i == 0:
+                list_x = gpr_stress.x.tolist()
+
+            print("\r" + gpr_stress.__class__.__name__ + "程序当前已完成：" + str(
+                round(i / len(list_stress) * 10000) / 100) + '%', end="")
+
+        dict_gpr_model = {
+            "coordinates": list_coords,
+            "elements_index": list_ele,
+            "y":
+                {
+                    "deformation": list_y_deformation,
+                    "stress": list_y_stress,
+                },
+            "Kff_inv":
+                {
+                    "deformation": list_Kff_inv_deformation,
+                    "stress": list_Kff_inv_stress,
+                },
+            "s":
+                {
+                    "deformation": list_s_deformation,
+                    "stress": list_s_stress,
+                },
+            "sigma":
+                {
+                    "deformation": list_sigma_deformation,
+                    "stress": list_sigma_stress,
+                },
+            # 以下的参数stress和deformation的相同
+            "x": list_x,
+        }
+
+        # json_gpr_model = json.dumps(dict_gpr_model)
+        # with open("C:/Users/laisir/Desktop/" + which_part + "_gpr.json", "w") as f:
+        #     json.dump(json_gpr_model, f)

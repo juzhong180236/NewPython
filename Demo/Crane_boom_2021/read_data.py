@@ -1,8 +1,8 @@
 import os
 import sklearn.gaussian_process.kernels as kns
 from sklearn.gaussian_process.kernels import ConstantKernel
-import txt_file_create as tfc
-import print_f as pf
+import Demo.Ansys_Data_Utils_2021.txt_file_create as tfc
+import Demo.Ansys_Data_Utils_2021.print_f as pf
 import numpy as np
 
 

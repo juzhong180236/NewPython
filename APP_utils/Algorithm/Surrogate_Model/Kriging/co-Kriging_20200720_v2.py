@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import matplotlib.pyplot as plt
-from .Kriging_20200720 import Kriging
+from .Kriging import Kriging
 
 
 class coKriging(object):
@@ -58,7 +58,7 @@ class coKriging(object):
         # 得到高保真点的均值、方差、para_1、para_2(=2)，ρ，需要训练Xe和d=Ye-ρ*Yc(Xe)
         self.D_krig = Kriging(parameters=self.Dpara_arr)
         self.Yc_Xe = self.C_krig.predict(Xe)
-        self.D_krig.fit(self.Xe, Ye, Yc_Xe=self.Yc_Xe, C_matrix=C_matrix_cc)
+        self.D_krig.fit(self.Xe, Ye, yc_xe=self.Yc_Xe, c_matrix=C_matrix_cc)
         self.D_parameters = self.D_krig.parameters[1]
 
         D_matrix_ee = self.corelation(self.D_krig.gaussian, self.Xe, self.Xe, self.D_krig.parameters)  # D的ee矩阵

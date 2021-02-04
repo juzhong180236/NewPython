@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import matplotlib.pyplot as plt
-from .Kriging_20200720 import Kriging
+from .Kriging import Kriging
 
 
 class coKriging(object):
@@ -51,7 +51,7 @@ class coKriging(object):
         self.D_krig = Kriging(parameters=self.Dpara_arr)
         self.Yc_Xe = self.C_krig.predict(Xe)
         print(self.Yc_Xe)
-        self.D_krig.fit(self.Xe, Ye, Yc_Xe=self.Yc_Xe)
+        self.D_krig.fit(self.Xe, Ye, yc_xe=self.Yc_Xe)
         self.D_parameters = self.D_krig.parameters[1]
 
         D_matrix_ee = self.corelation(self.D_krig.gaussian, self.Xe, self.Xe, self.D_krig.parameters)  # D的ee矩阵

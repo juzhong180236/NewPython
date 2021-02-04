@@ -5,8 +5,11 @@ from Demo.Ansys_Data_Utils_2021.coordinate_data import CoordinateData
 from Demo.Ansys_Data_Utils_2021.displacement_data import DispalcementData
 from Demo.Ansys_Data_Utils_2021.stress_data import StressData
 from openmdao.surrogate_models.kriging import KrigingSurrogate
+from smt.surrogate_models import KRG
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import json
+
 
 # R^2
 def r2(data_real, data_predict):
@@ -29,7 +32,7 @@ def list_results_data(list_ele, list_input):
 """
 所谓low_fidelity，其实就是Beam188单元
 """
-path_prefix = r"C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\\"
+path_prefix = r"H:\Code\DT_Crane_Boom_v1.0\APP_models\\"
 # path_switch = 'rbf_correct_model'
 path_switch = r'pre_low_fidelity_truss\\'
 # 读取路径(读pre)
@@ -84,32 +87,17 @@ list_coord_results = list_results_data(list_ele_data, list_coord_data)
 与上述的代码一样，同样将位移数据按照ele排列，从336个扩充为748个。位移状态总共有100个。
 """
 # 首先将读取到的每个节点（共336个节点，100个文件）的位移数据从str变为list
-list_disp_sum = []
+# 与坐标节点的转换一样，将位移数据按照ele排列，从336个扩充为748个
+list_disp_sum_temp = []
 list_separateByNewline = str_disp_sum.split('\n')
 for separateByNewline in list_separateByNewline:
     list_temp = separateByNewline.split(',')
-    list_disp_sum.append(list_temp)
-# 与坐标节点的转换一样，将位移数据按照ele排列，从336个扩充为748个
-list_disp_sum_results = []
-for disp_sum in list_disp_sum:
     _disp_sum = []
-    for i in list_ele_data:  # 单元中每个节点的编号
-        _disp_sum.append(disp_sum[i])
-    list_disp_sum_results.append(_disp_sum)
-# 将扩充完成后的数据从list转为str
-str_disp_sum_results = ''
-for disp_sum_results in list_disp_sum_results:
-    str_disp_sum_results += ','.join(disp_sum_results) + '\n'
-# 输入到_getData函数中，输入为100*748，输出为748*100
-"""
-这个函数的用处是将应力或者位移数据从一个第一维为M个状态，第二维为N个节点的列表
-转换为一个第一维为N个节点，第二维为M个状态的列表。
-例如，100个状态，力10个，角度10个，总共100个。节点数为336个。
-则输入100*336的列表，输出336*100的列表。
-"""
-list_disp_sum, len_data_dopSum = mstf._getData(str_disp_sum_results.rstrip('\n'), 'stressOrdSum')
-
-# print(len(list_disp_sum[0]))
+    for i in list_ele_data:  # 一个单元两个节点，总共748个节点的编号，按照顺序找到变形数据
+        _disp_sum.append(float(list_temp[i]))  # 所以_disp_sum是一个748长度列表
+    list_disp_sum_temp.append(_disp_sum)  # 100*748
+# 转置一下 748*100
+list_disp_sum = np.asarray(list_disp_sum_temp).T.tolist()
 
 """ 
 -------------------------------【应力】-------------------------------------------
@@ -155,20 +143,51 @@ def create_figure(_ax, _test_X, _test_Y, _predict_results, _train_X, _train_Y, _
 
 
 def Surrogate_Model():
-    list_w_stress = []
-    list_w_dSum = []
+    list_thetas_stress = []
+    list_alpha_stress = []
+    list_Y_mean_stress = []
+    list_Y_std_stress = []
+
+    list_thetas_deformation = []
+    list_alpha_deformation = []
+    list_Y_mean_deformation = []
+    list_Y_std_deformation = []
+
+    list_X_mean = []
+    list_X_std = []
+    n_samples = 0
+    list_X = []
+    print(list_disp_sum[75])
+    print(list_disp_sum[74])
+
     cycle_index = len(list_stress)
-    list_r2 = []
     for i in range(cycle_index):
-    # for i in [63, 217]:
+        # for i in [63, 217]:
         fig = plt.figure()
         ax = Axes3D(fig)
         stress_real = np.asarray(list_stress[i]).reshape(-1, 1)
         dSum_real = np.asarray(list_disp_sum[i]).reshape(-1, 1)
         kriging_stress = KrigingSurrogate()
-        kriging_dSum = KrigingSurrogate()
+        kriging_deformation = KrigingSurrogate()
         kriging_stress.train(fd, stress_real)
-        kriging_dSum.train(fd, dSum_real)
+        kriging_deformation.train(fd, dSum_real)
+        # stress模型存储
+        list_thetas_stress.append(kriging_stress.thetas.tolist())
+        list_alpha_stress.append(kriging_stress.alpha.tolist())
+        list_Y_mean_stress.append(kriging_stress.Y_mean.tolist())
+        list_Y_std_stress.append(kriging_stress.Y_std.tolist())
+        # deformation模型存储
+        list_thetas_deformation.append(kriging_deformation.thetas.tolist())
+        list_alpha_deformation.append(kriging_deformation.alpha.tolist())
+        list_Y_mean_deformation.append(kriging_deformation.Y_mean.tolist())
+        list_Y_std_deformation.append(kriging_deformation.Y_std.tolist())
+
+        if i == 0:
+            list_X_mean = kriging_stress.X_mean.tolist()
+            list_X_std = kriging_stress.X_std.tolist()
+            n_samples = kriging_stress.n_samples
+            list_X = kriging_stress.X.tolist()
+
         _forceArr = np.linspace(50, 500, 50)
         _degreeArr = np.linspace(0, 72, 50)
         """
@@ -179,9 +198,7 @@ def Surrogate_Model():
         2018.12.18 训练点的X,Y，可以通过打印X,Y得到X的排布，在根据这个排布去决定Z轴的排布。
         """
         X, Y = np.meshgrid(forceArr, degreeArr)
-        # print(_X.shape, _Y.shape)
-        # print(_X)
-        # print(X)
+
         """
         2020.12.17 两个combine最终组成的数据因为顺序不一样，导致预测出来的stress顺序不同，
         而最终的三维图像只是简单地进行了一个reshape，很容易因为没有对应上而出错
@@ -211,14 +228,14 @@ def Surrogate_Model():
         """
         2020.12.19 加入变形结果数据
         """
-        _y_dsum = kriging_dSum.predict(_fd1).reshape(_X.shape)
+        _y_dsum = kriging_deformation.predict(_fd1).reshape(_X.shape)
         # print(kriging_stress.predict(np.asarray([[500., 0.], [480, 10], [500, 72], [50, 0], [50, 72]])))
 
         """
         标准化输出
         """
         # _y_stress = (_y_stress - kriging_stress.Y_mean) / kriging_stress.Y_std
-        # _y_d = (_y_d - kriging_dSum.Y_mean) / kriging_dSum.Y_std
+        # _y_d = (_y_d - kriging_deformation.Y_mean) / kriging_deformation.Y_std
 
         # ax = fig.add_subplot(111, projection='3d')
         # rstride:行之间的跨度  cstride:列之间的跨度，只能为正整数，默认是1，
@@ -251,26 +268,6 @@ def Surrogate_Model():
         # 设置z轴的维度，x,y类似
         # ax.set_zlim(-2, 2)
 
-        # list_w_stress.append([
-        #     kriging_stress.X,
-        #     kriging_stress.X_mean,
-        #     kriging_stress.X_std,
-        #     kriging_stress.Y_mean,
-        #     kriging_stress.Y_std,
-        #     kriging_stress.thetas,
-        #     kriging_stress.n_samples,
-        #     kriging_stress.alpha
-        # ])
-        # list_w_dSum.append([
-        #     kriging_dSum._X,
-        #     kriging_dSum.X_mean,
-        #     kriging_dSum.X_std,
-        #     kriging_dSum.Y_mean,
-        #     kriging_dSum.Y_std,
-        #     kriging_dSum.thetas,
-        #     kriging_dSum.n_samples,
-        #     kriging_dSum.alpha
-        # ])
         # plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i) + '.png')
         """
         2020.12.19 避免画图内存泄露
@@ -279,27 +276,49 @@ def Surrogate_Model():
         print("\r" + kriging_stress.__class__.__name__ + "程序当前已完成：" + str(
             round(i / len(list_stress) * 10000) / 100) + '%',
               end="")
-    #
-    # stepAndMin = path_switch[4:-2] + '_others'
-    # ele = path_switch[4:-2] + '_ele'
-    # dSum_w = path_switch[4:-2] + '_dSum_w'
-    # stress_w = path_switch[4:-2] + '_stress_w'
-    # coord = path_switch[4:-2] + '_coord'
-    # x_train = ','.join(map(lambda x: ','.join(map(str, x)), fd.tolist()))
-    #
-    # # 步数和最小值，方差，输入值
-    # text_Create(path_four_write, stepAndMin,
-    #             str_disp_step_min + ',' + str_stress_step_min + '\n' + stds + '\n' + x_train)
-    # # 索引文件
-    # text_Create(path_four_write, ele, ','.join(map(str, list_ele_data)))
-    # # 坐标文件
-    # text_Create(path_four_write, coord, ','.join(list_coord_results))
-    # # 总位移文件
-    # text_Create(path_four_write, dSum_w, '\n'.join(list_w_dSum) + '\n' + rbf_type)
-    # # 应力文件
-    # text_Create(path_four_write, stress_w, '\n'.join(list_w_stress) + '\n' + rbf_type)
-    # print(r2(list_r2[0], list_r2[1]))
+    dict_kriging_model = {
+        "thetas":
+            {
+                "deformation": list_thetas_deformation,
+                "stress": list_thetas_stress,
+            },
+        "alpha":
+            {
+                "deformation": list_alpha_deformation,
+                "stress": list_alpha_stress,
+            },
+        "Y_mean":
+            {
+                "deformation": list_Y_mean_deformation,
+                "stress": list_Y_mean_stress,
+            },
+        "Y_std":
+            {
+                "deformation": list_Y_std_deformation,
+                "stress": list_Y_std_stress,
+            },
+        # 以下的四个参数stress和deformation的相同
+        "X_mean": list_X_mean,
+        "X_std": list_X_std,
+        "n_samples": n_samples,
+        "X": list_X,
+    }
+    # dict_kriging_dSum_model = {
+    #     "thetas": kriging_deformation.thetas.tolist(),  # x
+    #     "X_mean": kriging_deformation.X_mean.tolist(),  #
+    #     "X_std": kriging_deformation.X_std.tolist(),  #
+    #     "n_samples": kriging_deformation.n_samples,  #
+    #     "X": kriging_deformation.X.tolist(),  #
+    #     "alpha": kriging_deformation.alpha.tolist(),  # x
+    #     "Y_mean": kriging_deformation.Y_mean.tolist(),  # x
+    #     "Y_std": kriging_deformation.Y_std.tolist(),  # x
+    # }
+    # print(dict_kriging_model)
     # plt.show()
+
+    json_rbf_model = json.dumps(dict_kriging_model)
+    with open("C:/Users/asus/Desktop/" + path_switch[4:-2] + ".json", "w") as f:
+        json.dump(json_rbf_model, f)
 
 
 """模型训练"""
@@ -311,7 +330,3 @@ Surrogate_Model()
 # 下面两个是应力和位移的训练数据
 # text_Create(path_four_write, "stress", str_stress_results.rstrip('\n'))
 # text_Create(path_four_write, "disp", str_disp_sum_results.rstrip('\n'))
-
-
-# dtf.dataToPostFile_v2_Bysorted(v_fd=fd, rbf_type='lin_a', which_part=path_switch[4:-2])
-# dtf.dataToMidFile()

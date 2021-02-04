@@ -160,10 +160,10 @@ def Surrogate_Model():
     coord = path_switch[4:-2] + '_coord'
     x_train = fd.flatten().tolist()
 
-    pathisExists = os.path.exists(path_four_write)
-    if not pathisExists:
-        os.makedirs(path_four_write)  # 不存在创建目录
-        pf.printf('文件夹[' + path_four_write + ']创建成功,正在写入文件...')
+    # pathisExists = os.path.exists(path_four_write)
+    # if not pathisExists:
+    #     os.makedirs(path_four_write)  # 不存在创建目录
+    #     pf.printf('文件夹[' + path_four_write + ']创建成功,正在写入文件...')
 
     dict_rbf_model = {
         "coordinates": list_coord_results,

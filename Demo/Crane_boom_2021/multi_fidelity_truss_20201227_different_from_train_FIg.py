@@ -1,11 +1,5 @@
 import numpy as np
-import dat_to_file as dtf
-from ele_data import ElementData
-from coords_data import CoordinateData
-from disp_data import DispalcementData
-from stre_data import StressData
-from txt_file_create import text_Create
-from read_data import Read_Data
+from Demo.Crane_boom_2021.read_data import Read_Data
 from openmdao.surrogate_models.kriging import KrigingSurrogate
 from openmdao.surrogate_models.multifi_cokriging import MultiFiCoKriging
 from smt.applications.mfk import MFK
@@ -13,7 +7,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from collections import OrderedDict
 import pandas as pd
+from Demo.Ansys_Data_Utils_2021.Surrogate_Models.Kriging import Kriging
 from Demo.Ansys_Data_Utils_2021.model_save_to_file import ModelSaveToFile
+
 """ 
 2020.12.20
 20201219的节点还是不够满足，所以在这里取了另外取了10个节点，总共加上原来的节点是18个节点 
@@ -24,7 +20,7 @@ from Demo.Ansys_Data_Utils_2021.model_save_to_file import ModelSaveToFile
 """
 所谓low_fidelity，其实就是Beam188单元
 """
-path_prefix = r"C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\\"
+path_prefix = r"H:\Code\DT_Crane_Boom_v1.0\APP_models\\"
 path_arr = \
     {
         "low": r"pre_low_fidelity_truss_point\stress_point_more_nodes\\",
@@ -63,6 +59,7 @@ def r2(data_real, data_predict):
 def create_kriging(_independent_variables, _dependent_variables):
     kriging_stress_list = []
     for _dependent_var in _dependent_variables:
+        # kriging_stress = Kriging()
         kriging_stress = KrigingSurrogate()
 
         kriging_stress.train(_independent_variables, _dependent_var.reshape(-1, 1))
@@ -264,8 +261,8 @@ def ax_fun(_ax, _str):
 
 
 list_results_excel = []
-# for i_point in range(18):
-for i_point in [0]:
+for i_point in range(18):
+# for i_point in [0]:
     """
     2020.12.19 颜色中比较常用的是:viridis, rainbow, coolwarm, inferno, ocean
     """
@@ -317,7 +314,7 @@ for i_point in [0]:
     """
     2020.12.19 避免画图内存泄露
     """
-    # plt.close('all')  # 避免内存泄漏
+    plt.close('all')  # 避免内存泄漏
     verification_high = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
                            list_test_predict_stress_high[i_point])
     verification_low = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
@@ -325,11 +322,11 @@ for i_point in [0]:
     verification_co = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
                          list_test_predict_stress_multi[i_point])
     list_results_excel.append(np.asarray([verification_high, verification_low, verification_co]))
-    # print(
-    #     'verification_high', str(verification_high) + '\n',
-    #     'verification_low', str(verification_low) + '\n',
-    #     'verification_co', str(verification_co) + '\n',
-    # )
+    print(
+        'verification_high', str(verification_high) + '\n',
+        'verification_low', str(verification_low) + '\n',
+        'verification_co', str(verification_co) + '\n',
+    )
 
 # plt.show()
 # save_to_excel()
