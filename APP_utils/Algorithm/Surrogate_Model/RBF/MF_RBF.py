@@ -1,17 +1,3 @@
-# Input:
-#	xtest: testing points
-#	xH: training points
-#	yL_H: value of low-fidelity model at high-fidelity training points
-#	yH: value of high-fidelity model at high-fidelity training points
-#	bf_type: basis function type
-#       'LN'--Linear,phi(r) = r;
-#       'CB'--Cubic,phi(r) = r^3;
-#       'TPS'--Thin Plate Spline,phi(r) = r^2*log10(r);
-#       'G'--Gaussian,phi(r) = exp(-r^2/(2*sigma^2));
-#       'MQ'--Multiquadric, phi(r) = sqrt(r^2+sigma^2);
-#       'IMQ'--Inverse multiquadric,phi(r) = 1/sqrt(r^2+sigma^2)...
-# Output:
-#   MFS: a struct including the scaling factor and the weight
 import numpy as np
 from APP_utils.Algorithm.Surrogate_Model.RBF.RBF_Surrogate import RBF
 import matplotlib.pyplot as plt

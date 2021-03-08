@@ -134,9 +134,10 @@ list_stress, len_data_stress = mstf._getData(str_stress_results.rstrip('\n'), 's
 
 
 def Surrogate_Model():
-    rbf_type = 'lin_a'
+    rbf_type = 'mq'
     list_w_stress = []
     list_w_dSum = []
+    # list_y_name = []
     stds = None
     cycle_index = len(list_stress)
     for i in range(cycle_index):

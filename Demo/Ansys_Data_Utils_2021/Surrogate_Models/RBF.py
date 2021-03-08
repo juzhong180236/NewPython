@@ -5,16 +5,14 @@ import time
 
 def gaussian(x, c, s):
     if c.ndim != 1:
-        # return np.exp(-np.sum((x - c) ** 2, axis=-1) / (2 * s ** 2))  # gs多维正确公式
-        return np.sum(np.exp(-(x - c) ** 2 / (2 * s ** 2)), axis=-1)  # gs多维正确公式
+        return np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2))
     else:
         return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 
 
 def multiquadric(x, c, s):
     if c.ndim != 1:
-        return np.sqrt(np.sum((x - c) ** 2, axis=-1) + s ** 2)  # mq多维正确公式
-        # return np.sum(np.sqrt((x - c) ** 2 + s ** 2), axis=-1) # lin_a多维，先求基函数，再相加
+        return np.sqrt(np.sqrt(np.sum((x - c) ** 2, axis=-1)) + s ** 2)
     else:
         return np.sqrt((x - c) ** 2 + s ** 2)
 

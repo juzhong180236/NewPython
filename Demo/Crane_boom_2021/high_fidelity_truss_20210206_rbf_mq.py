@@ -25,4 +25,4 @@ fd_flat = fd.flatten()
 # print(fd)
 # 存储模型
 mstf = ModelSaveToFile(path_four_read, path_four_write, geometry_type)
-mstf.dataSaveToJSON_RBF(v_fd=fd, rbf_type='lin_a', which_part=path_switch[4:-2])
+mstf.dataSaveToJSON_RBF(v_fd=fd, rbf_type='mq', which_part=path_switch[4:-2])

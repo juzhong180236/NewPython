@@ -5,7 +5,7 @@ import time
 
 def gaussian(x, c, s):
     if c.shape[-1] != 1:
-        return np.sum(np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2)), axis=-1)
+        return np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2))
     else:
         return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 
@@ -74,7 +74,8 @@ class RBF(object):
                 list_result.append(self.rbf(X[i], X, self.std).ravel())
         Gaussian_result = np.array(list_result)
         self.w = np.linalg.inv(Gaussian_result).dot(Y)
-        return ','.join(map(str, self.w))
+        # return ','.join(map(str, self.w))
+        return self.w.tolist()
 
     def predict(self, X_Pre):
         list_pre_x = []

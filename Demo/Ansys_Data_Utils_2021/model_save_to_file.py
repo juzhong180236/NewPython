@@ -170,7 +170,6 @@ class ModelSaveToFile(object):
         # 应力
         txt_stress, s_step, s_min = surfaced.get_Stress_SStepandMin_Bysorted()
         # print(len(list_coords.split('\n')[0].split(',')))
-        stds = ''
         list_stress, len_data_stress = _getData(txt_stress, 'stressOrdSum')
         list_dopSum, len_data_dopSum = _getData(txt_dopSum, 'stressOrdSum')
         if len_data_stress != len_data_dopSum:
@@ -244,15 +243,16 @@ class ModelSaveToFile(object):
         cycle_index = len(list_stress)
         for i in range(cycle_index):
             stress_real = list_stress[i]
-            dSum_real = list_dopSum[i]
-            rbfnet_stress = RBF(rbf_type)
-            rbfnet_dSum = RBF(rbf_type)
-            w_stress = rbfnet_stress.fit(v_fd, stress_real)
-            w_dSum = rbfnet_dSum.fit(v_fd, dSum_real)
-            stds = rbfnet_stress.std
+            deformation_real = list_dopSum[i]
+            rbf_stress = RBF(rbf_type)
+            rbf_deformation = RBF(rbf_type)
+            w_stress = rbf_stress.fit(v_fd, stress_real)
+            w_dSum = rbf_deformation.fit(v_fd, deformation_real)
+            if i == 0:
+                stds = rbf_stress.std
             list_w_stress.append(w_stress)
             list_w_dSum.append(w_dSum)
-            print("\r" + rbfnet_stress.__class__.__name__ + "程序当前已完成：" + str(
+            print("\r" + rbf_stress.__class__.__name__ + "程序当前已完成：" + str(
                 round(i / len(list_stress) * 10000) / 100) + '%', end="")
         if v_fd.ndim == 1:
             x_train = v_fd.flatten().tolist()
@@ -277,8 +277,8 @@ class ModelSaveToFile(object):
             "deformation_step": d_step,
             "deformation_min": d_min,
 
-            "x_train": x_train,
             "stds": stds,
+            "x_train": x_train,
             "rbf_type": rbf_type,
         }
         # print(type(list_coords))
@@ -293,7 +293,7 @@ class ModelSaveToFile(object):
         # print(type(stds))
 
         json_rbf_model = json.dumps(dict_rbf_model)
-        with open("C:/Users/asus/Desktop/" + which_part + ".json", "w") as f:
+        with open("C:/Users/laisir/Desktop/" + which_part + "_rbf.json", "w") as f:
             json.dump(json_rbf_model, f)
 
     def dataSaveToJSON_GPR(self, v_fd, which_part='truss'):

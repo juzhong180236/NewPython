@@ -22,6 +22,8 @@ class MF_RBF(object):
         self.y_high = y_high
         self.low_model = RBF()
         self.low_model.fit(x_low, y_low)
+        # print(np.asarray([12.5, 0]).reshape(1, -1))
+        # print(self.low_model.predict(np.asarray([12.5, 0]).reshape(1, -1)))
         self.y_x_high_by_low_model = self.low_model.predict(x_high)
         n_train = len(self.x_high)
         dist = np.zeros((n_train, n_train))
@@ -60,10 +62,13 @@ class MF_RBF(object):
         self.phi = phi
 
     def predict(self, x_test):
+        # x_test = np.asarray([[12.5, 0]])
         self.y_x_low_by_low_model = self.low_model.predict(x_test)
         n_train = len(self.x_high)
         n_test = len(x_test)
         dists = np.zeros((n_test, n_train))
+        # print(x_test)
+        # print(np.tile(x_test[0, :], (n_train, 1)))
         for i in range(n_test):
             dists1 = (self.x_high - np.tile(x_test[i, :], (n_train, 1))) ** 2
             dists[i, :] = np.sqrt(np.sum(dists1, axis=1))
@@ -86,8 +91,13 @@ class MF_RBF(object):
         self.phis = phis
         # 只需要知道 yyL phis omega 就可以进行预测
         # 而在这之前，XL,YL,XH yL_H YH 'MQ' 可固化 xtest yyL 动态
+        # print(self.y_x_low_by_low_model)
+        # print(self.phis)
         Mphis = np.hstack((self.y_x_low_by_low_model, self.phis))
+        # print(Mphis)
         y_MFRBF = Mphis.dot(self.omega)
+        # print(y_MFRBF)
+
         return y_MFRBF
 
 
