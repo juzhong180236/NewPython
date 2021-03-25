@@ -20,7 +20,7 @@ class MF_RBF(object):
     def fit(self, x_low, y_low, x_high, y_high, bf_type="MQ"):
         self.x_high = x_high
         self.y_high = y_high
-        self.low_model = RBF()
+        self.low_model = RBF(rbf="gs")
         self.low_model.fit(x_low, y_low)
         # print(np.asarray([12.5, 0]).reshape(1, -1))
         # print(self.low_model.predict(np.asarray([12.5, 0]).reshape(1, -1)))

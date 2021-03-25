@@ -24,28 +24,35 @@ import json
 path_prefix = r"C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\\"
 path_arr = \
     {
-        "low": r"pre_low_fidelity_truss_point\deformation_point_more_nodes\\",
-        "high": r"pre_high_fidelity_truss_point\deformation_point_less_samples\\",
-        "verification": r"pre_verification_truss_point\deformation_eighteen_nodes\\",
+        "low": r"pre_low_fidelity_truss_point\stress_point_more_nodes\\",
+        "high": r"pre_high_fidelity_truss_point\stress_point_less_samples\\",
+        "verification": r"pre_verification_truss_point\stress_eighteen_nodes\\",
     }
 rd = Read_Data()
 """ 2020.12.21
 读入高低保真的18个节点应力数据
 """
-list_deformation_low = rd.read_stress(path_prefix + path_arr["low"], mode='v')
-list_deformation_high = rd.read_stress(path_prefix + path_arr["high"], mode='v')
-list_deformation_verification = rd.read_stress(path_prefix + path_arr["verification"], mode='v')
+list_stress_low = rd.read_stress(path_prefix + path_arr["low"], mode='v')
+list_stress_high = rd.read_stress(path_prefix + path_arr["high"], mode='v')
+list_stress_verification = rd.read_stress(path_prefix + path_arr["verification"], mode='v')
 """ 2020.12.21
 每个点的应力放入一个数组，二维数组 
 低保真样本18*10*10=18*100
 高保真样本18*6
 验证18*37*19=18*703
 """
-array_real_deformation_low = np.asarray(list_deformation_low).T
-array_real_deformation_high = np.asarray(list_deformation_high).T
-array_real_deformation_verification = np.asarray(list_deformation_verification).T
+array_real_stress_low = np.asarray(list_stress_low).T
+array_real_stress_high = np.asarray(list_stress_high).T
+_array_real_stress_verification = np.asarray(list_stress_verification).T
 
-
+indices_degree = np.delete(np.arange(0, 37), np.arange(4, 36, 4))
+indices_force = np.delete(np.arange(0, 19), np.arange(2, 18, 2))
+list_real_stress_verification = []
+for _d in _array_real_stress_verification:
+    d = _d.reshape(19, 37)[indices_force, :]
+    d1 = d[:, indices_degree]
+    list_real_stress_verification.append(d1)
+array_real_stress_verification = np.asarray(list_real_stress_verification)
 # print(array_real_stress_verification)
 # print(array_real_stress_verification.shape)
 
@@ -58,20 +65,20 @@ def r2(data_real, data_predict):
 
 
 def create_rbf(_independent_variables, _dependent_variables):
-    rbf_deformation_list = []
+    rbf_stress_list = []
     for _dependent_var in _dependent_variables:
-        # kriging_deformation = Kriging()
-        rbf_deformation = RBF()
-        rbf_deformation.fit(_independent_variables, _dependent_var.reshape(-1, 1))
-        rbf_deformation_list.append(rbf_deformation)
-    return rbf_deformation_list
+        # kriging_stress = Kriging()
+        rbf_stress = RBF(rbf="gs")
+        rbf_stress.fit(_independent_variables, _dependent_var.reshape(-1, 1))
+        rbf_stress_list.append(rbf_stress)
+    return rbf_stress_list
 
 
 def create_mf_rbf(_independent_variables_low, _independent_variables_high,
                   _dependent_variables_low, _dependent_variables_high):
-    mf_rbf_deformation_list = []
+    mf_rbf_stress_list = []
 
-    low_model_deformation_w_list = []
+    low_model_stress_w_list = []
     stds = None
     rbf_type = 'mq'
     x_high = None
@@ -79,22 +86,24 @@ def create_mf_rbf(_independent_variables_low, _independent_variables_high,
     omega_list = []
 
     for _i_point in range(len(_dependent_variables_low)):
-        mf_rbf_deformation = MF_RBF()
-        mf_rbf_deformation.fit(_independent_variables_low,
-                               _dependent_variables_low[_i_point].reshape(-1, 1),
-                               _independent_variables_high,
-                               _dependent_variables_high[_i_point].reshape(-1, 1))
-        mf_rbf_deformation_list.append(mf_rbf_deformation)
+        mf_rbf_stress = MF_RBF()
+        mf_rbf_stress.fit(_independent_variables_low,
+                          _dependent_variables_low[_i_point].reshape(-1, 1),
+                          _independent_variables_high,
+                          _dependent_variables_high[_i_point].reshape(-1, 1),
+                          bf_type="G",
+                          )
+        mf_rbf_stress_list.append(mf_rbf_stress)
 
-        low_model_deformation_w_list.append(mf_rbf_deformation.low_model.w.tolist())
+        low_model_stress_w_list.append(mf_rbf_stress.low_model.w.tolist())
         if _i_point == 0:
-            stds = mf_rbf_deformation.low_model.std
-            x_high = mf_rbf_deformation.x_high.tolist()
-            bf_sigma = mf_rbf_deformation.bf_sigma.tolist()
-        omega_list.append(mf_rbf_deformation.omega.tolist())
+            stds = mf_rbf_stress.low_model.std
+            x_high = mf_rbf_stress.x_high.tolist()
+            bf_sigma = mf_rbf_stress.bf_sigma.tolist()
+        omega_list.append(mf_rbf_stress.omega.tolist())
 
     dict_mf_rbf_model = {
-        "low_model_w": low_model_deformation_w_list,
+        "low_model_w": low_model_stress_w_list,
         "stds": stds,
         "x_train": train_low.flatten().tolist(),
         "rbf_type": rbf_type,
@@ -104,10 +113,10 @@ def create_mf_rbf(_independent_variables_low, _independent_variables_high,
         "omega": omega_list,
     }
     # json_rbf_model = json.dumps(dict_mf_rbf_model)
-    # with open("C:/Users/asus/Desktop/multi_fidelity_truss_deformation_mf_rbf.json", "w") as f:
+    # with open("C:/Users/asus/Desktop/multi_fidelity_truss_stress_mf_rbf.json", "w") as f:
     #     json.dump(json_rbf_model, f)
 
-    return mf_rbf_deformation_list
+    return mf_rbf_stress_list
 
 
 def create_test_independent_variables(_force_arr, _degree_arr):
@@ -140,17 +149,19 @@ train_high = np.asarray([[5, 0], [5, 72], [20, 24], [35, 48], [50, 0], [50, 72]]
 这里一定要注意使用float，不然用整数的话kriging工作会出问题
 '''
 degree_arr_verification = np.arange(0, 74, 2, dtype=float)
+degree_arr_verification = np.delete(degree_arr_verification, np.arange(4, 36, 4))
 force_arr_verification = np.arange(5, 52.5, 2.5, dtype=float)
+force_arr_verification = np.delete(force_arr_verification, np.arange(2, 18, 2))
 verification_independent_variables, verification_X, verification_Y = create_test_independent_variables(
     force_arr_verification, degree_arr_verification)
 
 train_low = create_train_independent_variables(force_arr_low, degree_arr_low)
 # train_high = create_train_independent_variables(force_arr_high, degree_arr_high)
 """ 训练得到kriging模型 """
-rbf_low_list = create_rbf(train_low, array_real_deformation_low)
-rbf_high_list = create_rbf(train_high, array_real_deformation_high)
+rbf_low_list = create_rbf(train_low, array_real_stress_low)
+rbf_high_list = create_rbf(train_high, array_real_stress_high)
 
-multirbf_list = create_mf_rbf(train_low, train_high, array_real_deformation_low, array_real_deformation_high)
+multirbf_list = create_mf_rbf(train_low, train_high, array_real_stress_low, array_real_stress_high)
 """
 测试集数据：自变量
 """
@@ -159,30 +170,30 @@ multirbf_list = create_mf_rbf(train_low, train_high, array_real_deformation_low,
 # test_independent_variables, test_X, test_Y = create_test_independent_variables(_forceArr, _degreeArr)
 
 """ 测试集数据：预测得到的因变量 """
-list_test_predict_deformation_low = []
-list_test_predict_deformation_high = []
-list_test_predict_deformation_co = []
-list_test_predict_deformation_multi = []
+list_test_predict_stress_low = []
+list_test_predict_stress_high = []
+list_test_predict_stress_co = []
+list_test_predict_stress_multi = []
 # print(test_independent_variables.reshape((20, 20, 2)))
 for i in range(len(rbf_low_list)):
-    test_predict_deformation_low = rbf_low_list[i].predict(verification_independent_variables).reshape(
+    test_predict_stress_low = rbf_low_list[i].predict(verification_independent_variables).reshape(
         verification_X.shape)
-    test_predict_deformation_high = rbf_high_list[i].predict(verification_independent_variables).reshape(
+    test_predict_stress_high = rbf_high_list[i].predict(verification_independent_variables).reshape(
         verification_X.shape)
-    test_predict_deformation_multi = multirbf_list[i].predict(verification_independent_variables).reshape(
+    test_predict_stress_multi = multirbf_list[i].predict(verification_independent_variables).reshape(
         verification_X.shape)
     # print(multirbf_list[i].predict(np.asarray([[12.5, 0]])))
-    list_test_predict_deformation_low.append(test_predict_deformation_low)
-    list_test_predict_deformation_high.append(test_predict_deformation_high)
-    list_test_predict_deformation_multi.append(test_predict_deformation_multi)
+    list_test_predict_stress_low.append(test_predict_stress_low)
+    list_test_predict_stress_high.append(test_predict_stress_high)
+    list_test_predict_stress_multi.append(test_predict_stress_multi)
 
 
-def create_figure(_ax, _test_X, _test_Y, _predict_deformation_results, _train_X, _train_Y, _real_deformation,
+def create_figure(_ax, _test_X, _test_Y, _predict_stress_results, _train_X, _train_Y, _real_stress,
                   color_map='rainbow', point_color='k'):
     _ax.plot_surface(
         _test_X,
         _test_Y,
-        _predict_deformation_results,
+        _predict_stress_results,
         rstride=1,
         cstride=1,
         cmap=plt.get_cmap(color_map)  # coolwarm
@@ -192,16 +203,16 @@ def create_figure(_ax, _test_X, _test_Y, _predict_deformation_results, _train_X,
     # _ax.scatter(
     #     _train_X,
     #     _train_Y,
-    #     _real_deformation,
+    #     _real_stress,
     #     c=point_color,
     # )
 
 
-def create_figure_co(_ax, _test_X, _test_Y, _predict_deformation_results, color_map='rainbow'):
+def create_figure_co(_ax, _test_X, _test_Y, _predict_stress_results, color_map='rainbow'):
     _ax.plot_surface(
         _test_X,
         _test_Y,
-        _predict_deformation_results,
+        _predict_stress_results,
         rstride=1,
         cstride=1,
         cmap=plt.get_cmap(color_map)  # coolwarm
@@ -212,7 +223,7 @@ def save_to_excel():
     pd_results_excel = pd.DataFrame(list_results_excel)
     pd_results_excel.columns = ['verification_high', 'verification_low', 'verification_co', 'improvement']
     pd_results_excel.index = range(1, 19)
-    writer = pd.ExcelWriter('r2_results_20210308_deformation.xlsx')  # 创建名称为hhh的excel表格
+    writer = pd.ExcelWriter('r2_results_20210311_stress_gs.xlsx')  # 创建名称为hhh的excel表格
     pd_results_excel.to_excel(writer, 'page_1',
                               float_format='%.10f')  # float_format 控制精度，将data_df写到hhh表格的第一页中。若多个文件，可以在page_2中写入
     writer.save()  #
@@ -266,41 +277,41 @@ for i_point in range(18):
     2021.03.06 在出图的时候分别注释下面的4段代码中的3段。
     """
 
-    # fig = plt.figure(figsize=(10, 8))
-    # ax = Axes3D(fig)
-    # create_figure(ax,
-    #               verification_X, verification_Y, list_test_predict_deformation_high[i_point],
-    #               train_high[:, 0], train_high[:, 1],
-    #               array_real_deformation_high[i_point],
-    #               'ocean',
-    #               'r',
-    #               )
-    # ax_fun(ax, str(i_point) + "high")
+    fig = plt.figure(figsize=(10, 8))
+    ax = Axes3D(fig)
+    create_figure(ax,
+                  verification_X, verification_Y, list_test_predict_stress_high[i_point],
+                  train_high[:, 0], train_high[:, 1],
+                  array_real_stress_high[i_point],
+                  'ocean',
+                  'r',
+                  )
+    ax_fun(ax, str(i_point) + "high")
 
     # fig = plt.figure(figsize=(10, 8))
     # ax = Axes3D(fig)
     # create_figure(ax,
-    #               verification_X, verification_Y, list_test_predict_deformation_low[i_point],
-    #               train_low[:, 0], train_low[:, 1], array_real_deformation_low[i_point]
+    #               verification_X, verification_Y, list_test_predict_stress_low[i_point],
+    #               train_low[:, 0], train_low[:, 1], array_real_stress_low[i_point]
     #               )
     # ax_fun(ax, str(i_point) + "low")
 
     # fig = plt.figure(figsize=(10, 8))
     # ax = Axes3D(fig)
-    # # create_figure_co(ax, verification_X, verification_Y, list_test_predict_deformation_co[i_point], 'inferno')
-    # create_figure_co(ax, verification_X, verification_Y, list_test_predict_deformation_multi[i_point],
+    # # create_figure_co(ax, verification_X, verification_Y, list_test_predict_stress_co[i_point], 'inferno')
+    # create_figure_co(ax, verification_X, verification_Y, list_test_predict_stress_multi[i_point],
     #                  'viridis',
     #                  )
     # ax_fun(ax, str(i_point) + "co")
 
-    fig = plt.figure(figsize=(10, 8))
-    ax = Axes3D(fig)
-    create_figure_co(ax, verification_X, verification_Y,
-                     array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
-                     'inferno',
-                     )
-
-    ax_fun(ax, str(i_point) + "real")
+    # fig = plt.figure(figsize=(10, 8))
+    # ax = Axes3D(fig)
+    # create_figure_co(ax, verification_X, verification_Y,
+    #                  array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
+    #                  'inferno',
+    #                  )
+    #
+    # ax_fun(ax, str(i_point) + "real")
 
     BIGGER_SIZE = 16
     MIDDLE_SIZE = 12
@@ -310,17 +321,17 @@ for i_point in range(18):
 
     plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
     ax.view_init(elev=30., azim=-135)  # 调整视角
-    plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i_point) + '.png', bbox_inches='tight')
-    # """
-    # 2020.12.19 避免画图内存泄露
-    # """
-    plt.close('all')  # 避免内存泄漏
-    verification_high = r2(array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
-                           list_test_predict_deformation_high[i_point])
-    verification_low = r2(array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
-                          list_test_predict_deformation_low[i_point])
-    verification_co = r2(array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
-                         list_test_predict_deformation_multi[i_point])
+    # plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i_point) + '.png', bbox_inches='tight')
+    """
+    2020.12.19 避免画图内存泄露
+    """
+    # plt.close('all')  # 避免内存泄漏
+    verification_high = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
+                           list_test_predict_stress_high[i_point])
+    verification_low = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
+                          list_test_predict_stress_low[i_point])
+    verification_co = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
+                         list_test_predict_stress_multi[i_point])
     # temp_min = min(verification_high, verification_low)
     improvement = (verification_co - verification_high) / verification_high * 100
     list_results_excel.append(np.asarray([verification_high, verification_low, verification_co, improvement]))
@@ -331,4 +342,4 @@ for i_point in range(18):
     # )
 
 # plt.show()
-save_to_excel()
+# save_to_excel()

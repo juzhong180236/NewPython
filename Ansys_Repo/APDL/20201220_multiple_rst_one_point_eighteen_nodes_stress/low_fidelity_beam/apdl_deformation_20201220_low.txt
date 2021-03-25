@@ -69,7 +69,7 @@ arr_nodes_pair(13)=224
 arr_nodes(14)=215
 arr_nodes_pair(14)=216
 
-arr_nodes(15)=238
+arr_nodes(15)=237
 arr_nodes_pair(15)=238
 arr_nodes(16)=100
 arr_nodes_pair(16)=101

@@ -5,8 +5,8 @@ FINISH
 *DIM,path_read,STRING,128,1
 *DIM,path_write,STRING,128,1
 
-path_write(1,1)='C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\pre_low_fidelity_truss\ele\'
-path_read(1,1)='C:\Users\asus\Desktop\file'
+path_write(1,1)='C:\Users\asus\Desktop\'
+path_read(1,1)='D:\Alai\ansys_Alai\Crane\Crane_Parts_v2.0\truss_high_fidelity_20201219_less_samples\20191220_files\dp0\SYS-3\MECH\file'
 
 
 /POST1
@@ -18,7 +18,7 @@ SET
 !选择需要的节点，先选择所有的单元，然后再选择角节点
 !SEL,S,ELEM,,EMIN,EMAX
 !比上述选择所有节点的方法要好，因为上面的会多出来了一个节点
-ESEL,S,ENAME,,188
+ESEL,S,ENAME,,185
 NSLE,S,CORNER
 
 *GET,n_count,NODE,0,COUNT

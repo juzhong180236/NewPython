@@ -43,9 +43,16 @@ list_deformation_verification = rd.read_stress(path_prefix + path_arr["verificat
 """
 array_real_deformation_low = np.asarray(list_deformation_low).T
 array_real_deformation_high = np.asarray(list_deformation_high).T
-array_real_deformation_verification = np.asarray(list_deformation_verification).T
+_array_real_deformation_verification = np.asarray(list_deformation_verification).T
 
-
+indices_degree = np.delete(np.arange(0, 37), np.arange(4, 36, 4))
+indices_force = np.delete(np.arange(0, 19), np.arange(2, 18, 2))
+list_real_deformation_verification = []
+for _d in _array_real_deformation_verification:
+    d = _d.reshape(19, 37)[indices_force, :]
+    d1 = d[:, indices_degree]
+    list_real_deformation_verification.append(d1)
+array_real_deformation_verification = np.asarray(list_real_deformation_verification)
 # print(array_real_stress_verification)
 # print(array_real_stress_verification.shape)
 
@@ -140,7 +147,9 @@ train_high = np.asarray([[5, 0], [5, 72], [20, 24], [35, 48], [50, 0], [50, 72]]
 这里一定要注意使用float，不然用整数的话kriging工作会出问题
 '''
 degree_arr_verification = np.arange(0, 74, 2, dtype=float)
+degree_arr_verification = np.delete(degree_arr_verification, np.arange(4, 36, 4))
 force_arr_verification = np.arange(5, 52.5, 2.5, dtype=float)
+force_arr_verification = np.delete(force_arr_verification, np.arange(2, 18, 2))
 verification_independent_variables, verification_X, verification_Y = create_test_independent_variables(
     force_arr_verification, degree_arr_verification)
 
@@ -212,7 +221,7 @@ def save_to_excel():
     pd_results_excel = pd.DataFrame(list_results_excel)
     pd_results_excel.columns = ['verification_high', 'verification_low', 'verification_co', 'improvement']
     pd_results_excel.index = range(1, 19)
-    writer = pd.ExcelWriter('r2_results_20210308_deformation.xlsx')  # 创建名称为hhh的excel表格
+    writer = pd.ExcelWriter('r2_results_20210311_deformation_gs.xlsx')  # 创建名称为hhh的excel表格
     pd_results_excel.to_excel(writer, 'page_1',
                               float_format='%.10f')  # float_format 控制精度，将data_df写到hhh表格的第一页中。若多个文件，可以在page_2中写入
     writer.save()  #
@@ -266,16 +275,16 @@ for i_point in range(18):
     2021.03.06 在出图的时候分别注释下面的4段代码中的3段。
     """
 
-    # fig = plt.figure(figsize=(10, 8))
-    # ax = Axes3D(fig)
-    # create_figure(ax,
-    #               verification_X, verification_Y, list_test_predict_deformation_high[i_point],
-    #               train_high[:, 0], train_high[:, 1],
-    #               array_real_deformation_high[i_point],
-    #               'ocean',
-    #               'r',
-    #               )
-    # ax_fun(ax, str(i_point) + "high")
+    fig = plt.figure(figsize=(10, 8))
+    ax = Axes3D(fig)
+    create_figure(ax,
+                  verification_X, verification_Y, list_test_predict_deformation_high[i_point],
+                  train_high[:, 0], train_high[:, 1],
+                  array_real_deformation_high[i_point],
+                  'ocean',
+                  'r',
+                  )
+    ax_fun(ax, str(i_point) + "high")
 
     # fig = plt.figure(figsize=(10, 8))
     # ax = Axes3D(fig)
@@ -293,14 +302,14 @@ for i_point in range(18):
     #                  )
     # ax_fun(ax, str(i_point) + "co")
 
-    fig = plt.figure(figsize=(10, 8))
-    ax = Axes3D(fig)
-    create_figure_co(ax, verification_X, verification_Y,
-                     array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
-                     'inferno',
-                     )
-
-    ax_fun(ax, str(i_point) + "real")
+    # fig = plt.figure(figsize=(10, 8))
+    # ax = Axes3D(fig)
+    # create_figure_co(ax, verification_X, verification_Y,
+    #                  array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
+    #                  'inferno',
+    #                  )
+    #
+    # ax_fun(ax, str(i_point) + "real")
 
     BIGGER_SIZE = 16
     MIDDLE_SIZE = 12
@@ -310,11 +319,11 @@ for i_point in range(18):
 
     plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
     ax.view_init(elev=30., azim=-135)  # 调整视角
-    plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i_point) + '.png', bbox_inches='tight')
+    # plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i_point) + '.png', bbox_inches='tight')
     # """
     # 2020.12.19 避免画图内存泄露
     # """
-    plt.close('all')  # 避免内存泄漏
+    # plt.close('all')  # 避免内存泄漏
     verification_high = r2(array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
                            list_test_predict_deformation_high[i_point])
     verification_low = r2(array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
@@ -331,4 +340,4 @@ for i_point in range(18):
     # )
 
 # plt.show()
-save_to_excel()
+# save_to_excel()

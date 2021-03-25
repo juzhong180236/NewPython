@@ -1,0 +1,53 @@
+!直接通过结果文件导出equivalent stress
+FINISH
+/CLEAR
+/NOPR
+*DIM,path_write,STRING,128,1
+!有几个rst文件，最后的数字写几
+*DIM,path_read,STRING,128,1
+
+path_write(1,1)='C:\Users\admin\Desktop\zhangjianhua\'
+!有几个file.rst文件，就将path_read设为几维数组
+path_read(1,1)='E:\HTGS_thermal deform\thermal11.30_files\dp0\SYS-102\MECH\file'
+
+! 外循环次数，也就是rst文件的个数
+outter_cycle_times=1
+! 内循环次数，随便设一个值，也就是每个rst文件中的子步数目，会在外循环中根据实际的子步数目动态更改。
+inner_cycle_times=10
+
+sub_step=7
+
+/POST1
+/MKDIR,path_write(1,1)
+/CWD,path_write(1,1)
+!最外层循环是对.rst结果文件的循环，几个rst，倒数第二个数字就为几
+file_name_middle='_'
+file_name=CHRVAL(0)
+*CFOPEN,%file_name%,txt
+*DO,s,1,outter_cycle_times,1
+    FILE,path_read(1,s),'rst'
+    INRES,ALL
+    file_name_out=CHRVAL(s)
+    !里层的循环是每个结果文件有几个时间步
+    *DO,j,1,inner_cycle_times,1
+        *DO,k,1,sub_step,1
+            SET,j,k
+            ALLSEL
+            *GET,cont_pres,NODE,xxx,CONT,PRES
+            NSORT,S,EQV,0,1,ALL
+	        !NSORT,CONT,PRES,0,1,ALL
+            *GET,max_s_eqv_node,SORT,0,IMAX
+            *GET,max_s_eqv,NODE,max_s_eqv_node,S,EQV
+            *VWRITE,CHRVAL(j),CHRVAL(k),CHRVAL(max_s_eqv_node),max_s_eqv,cont_pres
+            (A9,A9,A9,E16.8,E16.8)
+        *ENDDO
+    *ENDDO
+*ENDDO
+*CFCLOSE
+/GOPR
+FINISH
+/CLEAR
+/DELETE,file,page
+/DELETE,RPCRequestTmp,out
+/DELETE,CHRVAL(0),txt
+!/EOF
