@@ -6,12 +6,22 @@ import itertools
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import serial.tools.list_ports
-import numpy as np
+from numpy import abs
 
 port_list = list(serial.tools.list_ports.comports())
-serialPort = port_list[0].device  # 串口名称的字符串
+
+
+def return_correct_port():
+    for p in port_list:
+        if p.vid == 6790 and p.pid == 29987:
+            return p.name
+
+
+serialPort = return_correct_port()  # 串口名称的字符串
+
 baudRate = 460800  # 波特率   acceleration sensor-- 115200; pose sensor--460800
 ser = serial.Serial(serialPort, baudRate, timeout=None)  # 默认打开
+
 """
 input 是传感器给到电脑的
 output 是电脑给到传感器的
@@ -37,7 +47,7 @@ def run(data):
         xdata.append(data)
         y = int.from_bytes(receive_data[78:82], byteorder='little', signed=True) * 0.000001
         ymin, ymax = ax.get_ylim()
-        if np.abs(y) >= ymax:
+        if abs(y) >= ymax:
             ax.set_ylim(-2 * ymax, 2 * ymax)
             ax.figure.canvas.draw()
         ydata.append(y)
@@ -52,7 +62,7 @@ def run(data):
 
 def data_gen():
     for cnt in itertools.count():
-        t = cnt / 10
+        t = cnt
         yield t
 
 
@@ -60,20 +70,20 @@ ani = animation.FuncAnimation(fig, run, data_gen, interval=5, init_func=init)
 plt.show()
 
 ser.close()
-"""
-    timeout = None 读到所要求数量的字节再返回，要不就一直阻塞
-    timeout = 0 立即返回，返回0，或者更多，取决于要读取的字节数
-    timeout = x 等待x秒，字节数够立即返回，不够等待x秒有多少字节返回多少字节
-    ser = serial.Serial()  # 默认不打开
-    print(ser.is_open)
-    ser.port = 'xxx'
-    ser.baudrate = 460800
-    ser.bytesize = 8
-    ser.parity = serial.PARITY_NONE
-    ser.stopbits = 1
-    ser.open()
-    ser.close()
-"""
+# """
+#     timeout = None 读到所要求数量的字节再返回，要不就一直阻塞
+#     timeout = 0 立即返回，返回0，或者更多，取决于要读取的字节数
+#     timeout = x 等待x秒，字节数够立即返回，不够等待x秒有多少字节返回多少字节
+#     ser = serial.Serial()  # 默认不打开
+#     print(ser.is_open)
+#     ser.port = 'xxx'
+#     ser.baudrate = 460800
+#     ser.bytesize = 8
+#     ser.parity = serial.PARITY_NONE
+#     ser.stopbits = 1
+#     ser.open()
+#     ser.close()
+# """
 
 # hex_str = bytes.fromhex(str(450146))  # 串口接收信号开始传输数据
 # ser.write(hex_str)

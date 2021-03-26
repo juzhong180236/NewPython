@@ -7,7 +7,16 @@ from matplotlib.animation import FuncAnimation  # 导入负责绘制动画的接
 # port_list = list(serial.tools.list_ports.comports())
 # # https://blog.csdn.net/weixin_30689307/article/details/98043846
 # for p in port_list:
-#     print(p.device)
+#     print(p.description)
+#     print(p.hwid)
+#     print(p.vid)
+#     print(p.pid)
+#     print(p.serial_number)
+#     print(p.location)
+#     print(p.manufacturer)
+#     print(p.product)
+#     print(p.interface)
+#     print(1)
 # print(int(bytes.fromhex("59")[0]))
 # print(int.from_bytes(b'\x12\x34'))
 # fig, ax = plt.subplots()  # 生成轴和fig,  可迭代的对象

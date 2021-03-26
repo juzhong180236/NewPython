@@ -6,9 +6,18 @@ import itertools
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import serial.tools.list_ports
+from numpy import abs
 
 port_list = list(serial.tools.list_ports.comports())
-serialPort = port_list[0].device  # 串口名称的字符串
+
+
+def return_correct_port():
+    for p in port_list:
+        if p.vid == 6790 and p.pid == 29987:
+            return p.name
+
+
+serialPort = return_correct_port()  # 串口名称的字符串
 baudRate = 460800  # 波特率   acceleration sensor-- 115200; pose sensor--460800
 ser = serial.Serial(serialPort, baudRate, timeout=None)  # 默认打开
 """
@@ -37,7 +46,12 @@ def run(data):
     ser.flushInput()
     if receive_data[0:3] == b'YIS':
         xdata.append(data)
-        ydata.append(int.from_bytes(receive_data[78:82], byteorder='little', signed=True) * 0.000001)
+        y = int.from_bytes(receive_data[78:82], byteorder='little', signed=True) * 0.000001
+        ymin, ymax = ax.get_ylim()
+        if abs(y) >= ymax:
+            ax.set_ylim(-2 * ymax, 2 * ymax)
+            ax.figure.canvas.draw()
+        ydata.append(y)
     xmin, xmax = ax.get_xlim()
     if data >= xmax:
         ax.set_xlim(xmin, 2 * xmax)

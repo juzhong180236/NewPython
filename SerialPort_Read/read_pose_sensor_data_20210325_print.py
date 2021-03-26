@@ -9,9 +9,15 @@ from time import *
 import serial.tools.list_ports
 
 port_list = list(serial.tools.list_ports.comports())
-log = 0
 
-serialPort = port_list[0].device  # 串口名称的字符串
+
+def return_correct_port():
+    for p in port_list:
+        if p.vid == 6790 and p.pid == 29987:
+            return p.name
+
+
+serialPort = return_correct_port()  # 串口名称的字符串
 baudRate = 460800  # 波特率   acceleration sensor-- 115200; pose sensor--460800
 
 ser = serial.Serial(serialPort, baudRate, timeout=None)  # 默认打开
