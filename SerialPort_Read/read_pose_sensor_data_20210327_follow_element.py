@@ -32,12 +32,12 @@ ax.grid()
 plt.xlabel("Points")
 plt.ylabel("Angle (°)")
 xdata, ydata = [], []
-y_lim = 10
+y_lim = 50
 
 
 def init():
     ax.set_ylim(-y_lim, y_lim)
-    ax.set_xlim(0, 100)
+    ax.set_xlim(0, 300)
     line.set_data(xdata, ydata)
     return line
 
@@ -55,7 +55,10 @@ def run(data):
         ydata.append(y)
     xmin, xmax = ax.get_xlim()
     if data >= xmax:
-        ax.set_xlim(xmin, 2 * xmax)
+        # print(xmax / 2 + 1)
+        # del xdata[0]
+        # del ydata[0]
+        ax.set_xlim(data - 300, data)
         ax.figure.canvas.draw()
     line.set_data(xdata, ydata)
 
@@ -68,7 +71,7 @@ def data_gen():
         yield t
 
 
-ani = animation.FuncAnimation(fig, run, data_gen, interval=5, init_func=init)
+ani = animation.FuncAnimation(fig, run, data_gen, interval=10, init_func=init)
 plt.show()
 
 ser.close()

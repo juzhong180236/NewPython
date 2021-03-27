@@ -27,6 +27,8 @@ output 是电脑给到传感器的
 fig, ax = plt.subplots()
 line, = ax.plot([], [], lw=2)
 ax.grid()
+plt.xlabel("Points")
+plt.ylabel("Angle (°)")
 xdata, ydata = [], []
 nums = 50000  # 需要的帧数
 
