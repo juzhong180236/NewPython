@@ -1,0 +1,98 @@
+!直接通过结果文件导出位移
+FINISH
+/CLEAR
+/NOPR
+
+point_quantity=4
+
+*DIM,path_write,STRING,128,1
+*DIM,path_read,STRING,128,16
+*DIM,str_named_selection,STRING,128,point_quantity
+
+path_write(1,1)='C:\Users\asus\Desktop\'
+!有几个file.rst文件，就将path_read设为几维数组
+path_read(1,1)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-60\MECH\file'
+
+
+! List-Components
+str_named_selection(1,1)='C_1'
+str_named_selection(1,2)='C_2'
+str_named_selection(1,3)='C_3'
+str_named_selection(1,4)='C_4'
+
+! 外循环次数，也就是rst文件的个数
+outter_cycle_times=1
+! 内循环次数，也就是每个rst文件中的子步数目。
+inner_cycle_times=1
+
+/POST1
+/MKDIR,path_write(1,1)
+/CWD,path_write(1,1)
+!最外层循环是对.rst结果文件的循环
+file_name_middle='_'
+
+*DO,s,1,outter_cycle_times,1
+    file_name_out=CHRVAL(s)
+    FILE,path_read(1,s),'rst'
+    INRES,ALL
+
+    *DO,j,1,inner_cycle_times,1
+        SET,j
+        *IF,s,EQ,1,AND,j,EQ,1,THEN
+            *DO,n,1,2,1
+               *IF,n,EQ,1,THEN
+                  file_name=CHRVAL(0)
+                  *CFOPEN,%file_name%,txt
+               *ELSE
+                  file_name=CHRVAL(1)
+                  *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
+               *ENDIF
+               !ALLS,ALL
+               *VWRITE,'NODE_NUM_MIN','NODE_NUM_MAX','NODE_COUNT','ELE_NUM_MIN','ELE_NUM_MAX','ELE_COUNT'
+               (A9,A9,A9,A9,A9,A9)
+               *DO,h,1,point_quantity,1
+                   !NSEL,S,NODE,,str_named_selection(1,h)
+                   !ESEL,S,ELEM,,str_named_selection(1,h)
+
+                   ESEL,S,ENAME,,187
+                   CMSEL,S,str_named_selection(1,h)
+                   NSLE,S,CORNER
+
+                   *GET,node_num_min,NODE,,NUM,MIN
+                   *GET,node_num_max,NODE,,NUM,MAX
+                   *GET,node_count,NODE,0,COUNT
+
+                   *GET,ele_num_min,ELEM,,NUM,MIN
+                   *GET,ele_num_max,ELEM,,NUM,MAX
+                   *GET,ele_count,ELEM,0,COUNT
+
+                   *VWRITE,CHRVAL(node_num_min),CHRVAL(node_num_max),CHRVAL(node_count),CHRVAL(ele_num_min),CHRVAL(ele_num_max),CHRVAL(ele_count)
+                   (A9,A9,A9,A9,A9,A9)
+               *ENDDO
+               *CFCLOSE
+            *ENDDO
+        *ELSE
+            file_name=CHRVAL(j)
+            *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
+            *DO,count,1,point_quantity,1
+               !ESEL,S,ENAME,,187
+               !NSLE,R,CORNER
+               !通过CMSEL选择定义的元件
+               CMSEL,S,,NODE
+               *GET,node_num_min,NODE,,NUM,MIN
+               *GET,node_num_max,NODE,,NUM,MAX
+               *GET,node_num_,NODE,0,COUNT
+               *VWRITE,CHRVAL(node_num),CHRVAL(node_num_max),CHRVAL(node_num_)
+               (A9,A9,A9)
+            *ENDDO
+            *CFCLOSE
+        *ENDIF
+    *ENDDO
+*ENDDO
+/GOPR
+FINISH
+/CLEAR
+/DELETE,file,page
+/DELETE,RPCRequestTmp,out
+/DELETE,CHRVAL(0),txt
+!/EOF

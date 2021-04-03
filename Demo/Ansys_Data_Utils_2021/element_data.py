@@ -49,8 +49,8 @@ class ElementData(object):
                     其实在apdl导出时，程序通常仅保留单个类型的单元，所以下面这一句判断可以不加，但也要看情况
                     【查明原因】：因为有solid186单元没有导出，导致序号不连续。
                     """
-                    if (int(list_everyline[0]) - index_ele) != 1:
-                        break
+                    # if (int(list_everyline[0]) - index_ele) != 1:
+                    #     break
                     # 1332  2391  1389  1389  1372  1372  1372  1372
                     # 1594  1999  1617  1617  1616  1616  1616  1616
                     # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中
@@ -59,8 +59,8 @@ class ElementData(object):
                                         list_temp[0] - 1, list_temp[4] - 1, list_temp[2] - 1,  # outter
                                         list_temp[0] - 1, list_temp[1] - 1, list_temp[4] - 1])  # outter
                 elif TETRAHEDRON_PROGRAM_CONTROL in self.geometry_type:
-                    if (int(list_everyline[0]) - index_ele) != 1:
-                        break
+                    # if (int(list_everyline[0]) - index_ele) != 1:
+                    #     break
                     # 190     919    1105     747
                     # 88239   88800   88850   89126
                     # 所有的ele【前4位】排列为【四面体】的画图形式，得到这些值并存在list_result中

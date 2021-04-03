@@ -4,40 +4,22 @@ FINISH
 /NOPR
 
 ! 外循环次数，也就是rst文件的个数
-outter_cycle_times=16
+outter_cycle_times=1
 ! 内循环次数，也就是每个rst文件中的子步数目。
-inner_cycle_times=1
+inner_cycle_times=30
 ! Components数量
-point_quantity=4
+point_quantity=1
 
 *DIM,path_write,STRING,128,1
 *DIM,path_read,STRING,128,outter_cycle_times
 *DIM,str_named_selection,STRING,128,point_quantity
 
-path_write(1,1)='C:\Users\asus\Desktop\displacement\'
+path_write(1,1)='C:\Users\asus\Desktop\pre_aerofoil\dopAndCoord\'
 !有几个file.rst文件，就将path_read设为几维数组
-path_read(1,1)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-60\MECH\file'
-path_read(1,2)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-61\MECH\file'
-path_read(1,3)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-62\MECH\file'
-path_read(1,4)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-63\MECH\file'
-path_read(1,5)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-64\MECH\file'
-path_read(1,6)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-65\MECH\file'
-path_read(1,7)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-66\MECH\file'
-path_read(1,8)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-67\MECH\file'
-path_read(1,9)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-68\MECH\file'
-path_read(1,10)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-69\MECH\file'
-path_read(1,11)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-70\MECH\file'
-path_read(1,12)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-71\MECH\file'
-path_read(1,13)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-72\MECH\file'
-path_read(1,14)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-73\MECH\file'
-path_read(1,15)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-74\MECH\file'
-path_read(1,16)='D:\Alai\ansys_Alai\Telescopic Boom\70_files\dp0\SYS-75\MECH\file'
+path_read(1,1)='D:\Alai\ansys_Alai\AeroFoil\Airplane\airplane_files\dp0\SYS\MECH\file'
 
 ! List-Components
 str_named_selection(1,1)='C_1'
-str_named_selection(1,2)='C_2'
-str_named_selection(1,3)='C_3'
-str_named_selection(1,4)='C_4'
 
 /POST1
 /MKDIR,path_write(1,1)
@@ -57,10 +39,10 @@ file_name_middle='_'
             *DO,n,1,2,1
                *IF,n,EQ,1,THEN
                   file_name=CHRVAL(0)
-                  *CFOPEN,%file_name%,txt
+                  *CFOPEN,%file_name%,lis
                *ELSE
                   file_name=CHRVAL(1)
-                  *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
+                  *CFOPEN,%file_name_out%%file_name_middle%%file_name%,lis
                *ENDIF
                *DO,h,1,point_quantity,1
                   ESEL,S,ENAME,,187
@@ -75,9 +57,12 @@ file_name_middle='_'
                       (A1)
                   *ENDIF
                   *DO,i,1,node_count,1
+                      n_disp_x = UX(node_num_min)
+                      n_disp_y = UY(node_num_min)
+                      n_disp_z = UZ(node_num_min)
                       *GET,n_disp_sum,NODE,node_num_min,U,SUM
-                      *VWRITE,CHRVAL(node_num_min),n_disp_sum
-                      (A9,E16.8)
+                      *VWRITE,CHRVAL(node_num_min),n_disp_x,n_disp_y,n_disp_z,n_disp_sum
+                      (A9,E16.8,E16.8,E16.8,E16.8)
                       node_num_min=NDNEXT(node_num_min)
                   *ENDDO
                *ENDDO
@@ -85,7 +70,7 @@ file_name_middle='_'
             *ENDDO
         *ELSE
             file_name=CHRVAL(j)
-            *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
+            *CFOPEN,%file_name_out%%file_name_middle%%file_name%,lis
             *DO,h,1,point_quantity,1
                ESEL,S,ENAME,,187
                !通过CMSEL选择定义的元件
@@ -99,9 +84,12 @@ file_name_middle='_'
                    (A1)
                *ENDIF
                *DO,i,1,node_count,1
+                   n_disp_x = UX(node_num_min)
+                   n_disp_y = UY(node_num_min)
+                   n_disp_z = UZ(node_num_min)
                    *GET,n_disp_sum,NODE,node_num_min,U,SUM
-                   *VWRITE,CHRVAL(node_num_min),n_disp_sum
-                   (A9,E16.8)
+                   *VWRITE,CHRVAL(node_num_min),n_disp_x,n_disp_y,n_disp_z,n_disp_sum
+                   (A9,E16.8,E16.8,E16.8,E16.8)
                    node_num_min=NDNEXT(node_num_min)
                *ENDDO
             *ENDDO
@@ -114,5 +102,5 @@ FINISH
 /CLEAR
 /DELETE,file,page
 /DELETE,RPCRequestTmp,out
-/DELETE,CHRVAL(0),txt
+/DELETE,CHRVAL(0),lis
 !/EOF

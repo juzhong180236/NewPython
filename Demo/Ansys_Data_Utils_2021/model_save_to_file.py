@@ -388,3 +388,118 @@ class ModelSaveToFile(object):
         # json_gpr_model = json.dumps(dict_gpr_model)
         # with open("C:/Users/laisir/Desktop/" + which_part + "_gpr.json", "w") as f:
         #     json.dump(json_gpr_model, f)
+
+    def dataSaveToJSON_RBF_Aerofoil(self, v_fd, rbf_type='lin_a', which_part='truss'):
+        """
+        因为机翼和小板都是对称的，所以训练集的响应值可以直接对称复制一下，与以前的训练方式略有不同
+        :param v_fd: 输入的训练自变量
+        :param rbf_type: 使用的rbf类型
+        :param which_part: 存储的数据是哪个零件的
+        :return:
+        """
+        surfaced = SurfaceData(self.path_read, self.geometry_type)
+        """以下为节点数据"""
+        # 索引
+        list_ele = surfaced.get_Ele_Data()
+        # print(len(set(sorted(map(int, list_ele.split(',')), key=lambda x: x))))
+        list_coords = surfaced.get_Coord_Data()
+        # 位移
+        txt_displacement, txt_dopSum, d_step, d_min = surfaced.get_Displacement_DopSum_Dcolor_Bysorted()
+        # 应力
+        txt_stress, s_step, s_min = surfaced.get_Stress_SStepandMin_Bysorted()
+        # print(len(list_coords.split('\n')[0].split(',')))
+        stds = None
+        list_stress, len_data_stress = _getData(txt_stress, 'stressOrdSum')
+        list_dopSum, len_data_dopSum = _getData(txt_dopSum, 'stressOrdSum')
+        list_x, list_y, list_z = _getData(txt_displacement, 'coord')
+
+        if len_data_stress != len_data_dopSum:
+            print('displacement数据与stress数据数目不同!\n'
+                  'displacemen数据个数：' + str(len_data_dopSum)
+                  + '      stress数据个数:' + str(len_data_stress))
+            return
+        list_w_stress = []
+        list_w_dSum = []
+        list_w_y = []
+        list_w_z = []
+        cycle_index = len(list_stress)
+
+        for i in range(cycle_index):
+            coord_y_real = list_coords[i * 3 + 1]
+            coord_z_real = list_coords[i * 3 + 2]
+            stress_real = list_stress[i]
+            stress_real.insert(0, 0)
+            deformation_real = list_dopSum[i]
+            deformation_real.insert(0, 0)
+
+            y_real = list_y[i]
+            y_real.insert(0, 0)
+            # y_real = [y_real_child + coord_y_real for y_real_child in y_real]
+
+            z_real = list_z[i]
+            z_real.insert(0, 0)
+            # z_real = [z_real_child + coord_z_real for z_real_child in z_real]
+
+            rbf_stress = RBF(rbf_type)
+            rbf_deformation = RBF(rbf_type)
+            rbf_y = RBF(rbf_type)
+            rbf_z = RBF(rbf_type)
+
+            w_stress = rbf_stress.fit(v_fd, stress_real)
+            w_dSum = rbf_deformation.fit(v_fd, deformation_real)
+            w_y = rbf_y.fit(v_fd, y_real)
+            w_z = rbf_z.fit(v_fd, z_real)
+
+            if i == 0:
+                stds = rbf_stress.std
+            list_w_stress.append(w_stress)
+            list_w_dSum.append(w_dSum)
+            list_w_y.append(w_y)
+            list_w_z.append(w_z)
+            print("\r" + rbf_stress.__class__.__name__ + "程序当前已完成：" + str(
+                round(i / len(list_stress) * 10000) / 100) + '%', end="")
+
+        if v_fd.ndim == 1:
+            x_train = v_fd.flatten().tolist()
+        elif v_fd.ndim == 2:
+            x_train = v_fd.flatten().tolist()
+        else:
+            x_train = None
+        pathisExists = os.path.exists(self.path_write)
+        if not pathisExists:
+            os.makedirs(self.path_write)  # 不存在创建目录
+            pf.printf('文件夹[' + self.path_write + ']创建成功,正在写入文件...')
+
+        dict_rbf_model = {
+            "coordinates": list_coords,
+            "elements_index": list_ele,
+
+            "stress_w": list_w_stress,
+            "stress_step": s_step,
+            "stress_min": s_min,
+
+            "deformation_w": list_w_dSum,
+            "deformation_step": d_step,
+            "deformation_min": d_min,
+
+            "y_w": list_w_y,
+            "z_w": list_w_z,
+
+            "stds": stds,
+            "x_train": x_train,
+            "rbf_type": rbf_type,
+        }
+        # print(type(list_coords))
+        # print(type(list_coords[0]))
+        # print(type(list_ele))
+        # print(type(list_ele[0]))
+        # print(type(list_w_stress))
+        # print(type(list_w_stress[0]))
+        # print(type(s_step))
+        # print(type(x_train))
+        # print(type(rbf_type))
+        # print(type(stds))
+
+        json_rbf_model = json.dumps(dict_rbf_model)
+        with open("C:/Users/asus/Desktop/" + which_part + "_rbf.json", "w") as f:
+            json.dump(json_rbf_model, f)
