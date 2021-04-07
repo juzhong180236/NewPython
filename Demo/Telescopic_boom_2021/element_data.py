@@ -185,7 +185,7 @@ class ElementData(object):
 
     def surfaceEle_Sequence_aerofoil(self):
         """
-        :return:返回表面所有节点索引的str
+        :return:返回表面所有节点索引的list
         """
         list_result = []
         for _list in self.__allEle_To_List():
@@ -227,11 +227,11 @@ class ElementData(object):
 
     def list_SurfaceEle_aerofoil(self):
         """
-        :return:返回表面所有节点索引去重后的set
+        :return:返回表面所有节点索引去重后的list
         """
         list_result = []
         for _str in self.surfaceEle_Sequence_aerofoil():
-            list_result.append(set(map(lambda x: int(x) + 1, set(_str.split(',')))))
+            list_result.append(list(map(lambda x: int(x) + 1, _str.split(','))))
         return list_result
 
     def surfaceEle_Real_Sequence(self, path_coord):
@@ -254,7 +254,7 @@ class ElementData(object):
                 dict_coord[everyline_index] = iCoord  # 将对应点的真实编号和要更新的iCoord一一对应起来
                 iCoord += 1
         # print(list_surface_ele)
-        for i_ele in range(len(list_surface_ele)):  # 将排序好的表面点的索引值替换成更新后的0,1,2...索引
+        for i_ele, _ in enumerate(list_surface_ele):  # 将排序好的表面点的索引值替换成更新后的0,1,2...索引
             if int(list_surface_ele[i_ele]) in dict_coord.keys():  # 如果list_ele中的索引是表面的点的索引，进行替换
                 list_surface_ele[i_ele] = dict_coord[list_surface_ele[i_ele]]  # 获取字典dict_coord中的第一值替换list_ele
         # print('替换后:' + str(list_surface_ele))
@@ -262,58 +262,48 @@ class ElementData(object):
         coordfile.close()
         return list_surface_ele
 
-    # def surfaceEle_Real_Sequence_aerofoil(self, path_coord):
-    #     """
-    #     :param path_coord: 坐标数据文件
-    #     :return:
-    #     """
-    #     set_surface_ele_list = self.set_SurfaceEle_aerofoil()
-    #     list_surface_ele_list = self.list_SurfaceEle_aerofoil()
-    #
-    #     coordfile = open(path_coord, 'rt')
-    #     iCoord = 0  # 上述替换真实索引值(real_index_1、real_index_2...)的值
-    #     # 存放所有坐标值的“从0开始的虚假索引”的字典
-    #     # 结构为{real_index_1：[0,x,y,z],real_index_2:[1,x,y,z]...}
-    #     # 其意图是用0,1...来替换real_index_1,real_index_2...
-    #
-    #     elements_str = coordfile.read()
-    #     elements_list = elements_str.split("C")
-    #     ele_result_list = []
-    #     for ele_str in elements_list:
-    #         ele_component_list = []
-    #         temp_list = ele_str.strip().split("\n")
-    #         for temp_list_child in temp_list:
-    #             _list = temp_list_child.strip().split()
-    #             ele_number = int(_list[0])
-    #             node_1 = int(_list[1])
-    #             node_2 = int(_list[2])
-    #             node_3 = int(_list[3])
-    #             node_4 = int(_list[4])
-    #             node_5 = int(_list[5])
-    #             node_6 = int(_list[6])
-    #             node_7 = int(_list[7])
-    #             node_8 = int(_list[8])
-    #             ele_component_list.append(
-    #                 [ele_number, node_1, node_2, node_3, node_4,
-    #                  node_5, node_6, node_7, node_8])
-    #         ele_result_list.append(ele_component_list)
-    #
-    #
-    #     dict_coord = {}
-    #     for everyline in coordfile:
-    #         list_everyline = everyline.split()
-    #         everyline_index = int(list_everyline[0])
-    #         if everyline_index in set_surface_ele:  # 根据element_data中set_surfaceEle方法返回的信息，只需表面点的坐标
-    #             dict_coord[everyline_index] = iCoord  # 将对应点的真实编号和要更新的iCoord一一对应起来
-    #             iCoord += 1
-    #     # print(list_surface_ele)
-    #     for i_ele in range(len(list_surface_ele)):  # 将排序好的表面点的索引值替换成更新后的0,1,2...索引
-    #         if int(list_surface_ele[i_ele]) in dict_coord.keys():  # 如果list_ele中的索引是表面的点的索引，进行替换
-    #             list_surface_ele[i_ele] = dict_coord[list_surface_ele[i_ele]]  # 获取字典dict_coord中的第一值替换list_ele
-    #     # print('替换后:' + str(list_surface_ele))
-    #     # 将真实索引值（real_index_12...）更新为[0,1...]返回
-    #     coordfile.close()
-    #     return list_surface_ele
+    def surfaceEle_Real_Sequence_aerofoil(self, path_coord):
+        """
+        :param path_coord: 坐标数据文件
+        :return:
+        """
+        set_surface_ele_list = self.set_SurfaceEle_aerofoil()
+        # for i, _ in enumerate(set_surface_ele_list):
+        #     print(len(set_surface_ele_list[i]))
+        list_surface_ele_list = self.list_SurfaceEle_aerofoil()
+
+        coordfile = open(path_coord, 'rt')
+
+        coordinates_str = coordfile.read()
+        coordinates_list = coordinates_str.split("C")
+        cd_component_dict_list = []
+        for i_cd_list, _ in enumerate(coordinates_list):
+            iCoord = 0  # 上述替换真实索引值(real_index_1、real_index_2...)的值
+            # 存放所有坐标值的“从0开始的虚假索引”的字典
+            # 结构为{real_index_1：[0,x,y,z],real_index_2:[1,x,y,z]...}
+            # 其意图是用0,1...来替换real_index_1,real_index_2...
+            dict_coord = {}
+            temp_list = coordinates_list[i_cd_list].strip().split("\n")
+            for temp_list_child in temp_list:
+                _list = temp_list_child.split()
+                cd_index = int(_list[0])
+                if cd_index in set_surface_ele_list[i_cd_list]:  # 根据element_data中set_surfaceEle方法返回的信息，只需表面点的坐标
+                    dict_coord[cd_index] = iCoord  # 将对应点的真实编号和要更新的iCoord一一对应起来
+                    iCoord += 1
+            cd_component_dict_list.append(dict_coord)
+        for i_cd_com_dict, _ in enumerate(cd_component_dict_list):
+            # 将排序好的表面点的索引值替换成更新后的0,1,2...索引
+            for i_ele, _ in enumerate(list_surface_ele_list[i_cd_com_dict]):
+                # 如果list_ele中的索引是表面的点的索引，进行替换
+                if int(list_surface_ele_list[i_cd_com_dict][i_ele]) in cd_component_dict_list[i_cd_com_dict].keys():
+                    # 获取字典dict_coord中的第一值替换list_ele
+                    list_surface_ele_list[i_cd_com_dict][i_ele] = cd_component_dict_list[i_cd_com_dict][
+                        list_surface_ele_list[i_cd_com_dict][i_ele]]
+
+                    # print('替换后:' + str(list_surface_ele))
+        # 将真实索引值（real_index_12...）更新为[0,1...]返回
+        coordfile.close()
+        return list_surface_ele_list
 
 
 if __name__ == "__main__":
