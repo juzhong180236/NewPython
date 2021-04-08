@@ -33,7 +33,7 @@ for ele_str in elements_list:
 elements.close()
 
 ele_data = ElementData(geometry_type=['3D4_P'], data_list=ele_result_list)
-list_ele_surface_list = ele_data.surfaceEle_Sequence_aerofoil()
+# list_ele_surface_list = ele_data.surfaceEle_Sequence_aerofoil()
 set_ele_surface_list = ele_data.set_SurfaceEle_aerofoil()
 # 在Three.js中可用的索引数据
 ele_data_save = ele_data.surfaceEle_Real_Sequence_aerofoil(path_four_read + r'coordinates\1_1.txt')
@@ -42,8 +42,10 @@ coordinates = open(path_four_read + r'coordinates\1_1.txt', 'rt')
 coordinates_str = coordinates.read()
 coordinates_list = coordinates_str.split("C")
 cd_result_list = []
-for i_cd_list in range(len(coordinates_list)):
+cd_result_list_negative = []
+for i_cd_list, _ in enumerate(coordinates_list):
     cd_component_list = []
+    cd_component_list_negative = []
     temp_list = coordinates_list[i_cd_list].strip().split("\n")
     for temp_list_child in temp_list:
         _list = temp_list_child.split()
@@ -53,10 +55,14 @@ for i_cd_list in range(len(coordinates_list)):
             cd_y = float(_list[2])
             cd_z = float(_list[3])
             cd_component_list.extend([cd_x, cd_y, cd_z])
+            cd_component_list_negative.extend([-cd_x, cd_y, cd_z])
     cd_result_list.append(cd_component_list)
+    cd_result_list_negative.append(cd_component_list_negative)
+
 coordinates.close()
 dict_rbf_model = {
     "coordinates": cd_result_list,
+    "coordinates_negative": cd_result_list_negative,
     "elements_index": ele_data_save,
 
     # "stress_w": list_w_stress,

@@ -471,6 +471,7 @@ class ModelSaveToFile(object):
             pf.printf('文件夹[' + self.path_write + ']创建成功,正在写入文件...')
 
         dict_rbf_model = {
+            # 因为机翼是对称的，只储存了一份坐标
             "coordinates": list_coords,
             "elements_index": list_ele,
 
@@ -500,6 +501,6 @@ class ModelSaveToFile(object):
         # print(type(rbf_type))
         # print(type(stds))
 
-        json_rbf_model = json.dumps(dict_rbf_model)
-        with open("C:/Users/asus/Desktop/" + which_part + "_rbf.json", "w") as f:
-            json.dump(json_rbf_model, f)
+        # json_rbf_model = json.dumps(dict_rbf_model)
+        # with open("C:/Users/asus/Desktop/" + which_part + "_rbf.json", "w") as f:
+        #     json.dump(json_rbf_model, f)
