@@ -1,4 +1,4 @@
-from Demo.Telescopic_boom_2021.element_data import ElementData
+from Demo.Telescopic_boom_2021.libs.element_data import ElementData
 from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF import RBF
 import json
 import numpy as np
@@ -151,11 +151,11 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
     # 应力数据
     stresses = open(path_four_read + r'stresses\\' + str(i_file + 1) + '_1.txt', 'rt')
     stresses_str = stresses.read()
-    stresses_list = coordinates_str.split("C")
+    stresses_list = stresses_str.split("C")
     # 变形数据
     displacement = open(path_four_read + r'displacement\\' + str(i_file + 1) + '_1.txt', 'rt')
     displacement_str = displacement.read()
-    displacement_list = coordinates_str.split("C")
+    displacement_list = displacement_str.split("C")
 
     stresses_prediction_child_list = []
     displacement_prediction_child_list = []
@@ -181,7 +181,7 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
                 stresses_list_child = stresses_temp_list[i_list_child].split()
                 displacement_list_child = displacement_temp_list[i_list_child].split()
                 stresses_component_list.append(float(stresses_list_child[1]))
-                displacement_component_list.append(float(stresses_list_child[1]))
+                displacement_component_list.append(float(displacement_list_child[1]))
         # 每个Component建立一个代理模型
         # rbf_stress = RBF(rbf_type)
         # rbf_displacement = RBF(rbf_type)

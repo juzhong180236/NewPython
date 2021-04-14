@@ -49,7 +49,12 @@ if __name__ == '__main__':
 
 
     path_ = r'C:\Users\asus\Desktop\Code\DT_Telescopic_Boom_v1.0\APP_models\pre_telescopic_boom\\'
+    # path_ = r'C:\Users\asus\Desktop\\'
     elements = "elements"
     coordinates = "coordinates"
-    excute(elements)
-    excute(coordinates)
+    stresses = "stresses"
+    displacement = "displacement"
+    # excute(elements)
+    # excute(coordinates)
+    excute(stresses)
+    excute(displacement)

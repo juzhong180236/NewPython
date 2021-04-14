@@ -1,4 +1,4 @@
-from Demo.Telescopic_boom_2021.element_data import ElementData
+from Demo.Telescopic_boom_2021.libs.element_data import ElementData
 from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF import RBF
 import Demo.Telescopic_boom_2021.coordinate_transform.coordinate_transform as ct
 import json
@@ -18,7 +18,7 @@ path_four_read = path_prefix + path_switch
 """
 以1_1的网格作为最终的网格排布形态，读取节点索引数据
 """
-elements = open(path_four_read + r'elements\1_1.txt', 'rt')
+elements = open(path_four_read + r'elements_sort\1_1.txt', 'rt')
 elements_str = elements.read()
 elements_list = elements_str.split("C")
 ele_result_list = []
@@ -51,9 +51,9 @@ print("The element data in the file '1_1' has been loaded！")
 """
 以1_1的网格作为最终的网格排布形态，所有后续的网格训练出的模型用1_1作为输入进行预测
 """
-coordinates_benchmark = open(path_four_read + r'coordinates\1_1.txt', 'rt')
-stresses_benchmark = open(path_four_read + r'stresses\1_1.txt', 'rt')
-displacement_benchmark = open(path_four_read + r'displacement\1_1.txt', 'rt')
+coordinates_benchmark = open(path_four_read + r'coordinates_sort\1_1.txt', 'rt')
+stresses_benchmark = open(path_four_read + r'stresses_sort\1_1.txt', 'rt')
+displacement_benchmark = open(path_four_read + r'displacement_sort\1_1.txt', 'rt')
 
 coordinates_benchmark_str = coordinates_benchmark.read()
 stresses_benchmark_str = stresses_benchmark.read()
@@ -112,7 +112,7 @@ print("The independent variables of the train set has been created！")
 ele_set_surface_prediction_list = []
 for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15个文件15次循环
     # 索引数据
-    elements = open(path_four_read + r'elements\\' + str(i_file + 1) + '_1.txt', 'rt')
+    elements = open(path_four_read + r'elements_sort\\' + str(i_file + 1) + '_1.txt', 'rt')
     elements_str = elements.read()
     elements_list = elements_str.split("C")
     ele_prediction_list = []
@@ -142,7 +142,7 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
 """
 1_2到1_16的网格作为训练集的输入，应力/位移作为输出建立模型
 """
-rbf_type = "mq"
+rbf_type = "lin_a"
 stresses_prediction_list = [stresses_benchmark_result_list]
 displacement_prediction_list = [displacement_benchmark_result_list]
 rbf_list = []
@@ -150,17 +150,17 @@ print("The coordinate-based model is building...")
 
 for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15个文件15次循环
     # 节点坐标数据
-    coordinates = open(path_four_read + r'coordinates\\' + str(i_file + 1) + '_1.txt', 'rt')
+    coordinates = open(path_four_read + r'coordinates_sort\\' + str(i_file + 1) + '_1.txt', 'rt')
     coordinates_str = coordinates.read()
     coordinates_list = coordinates_str.split("C")
     # 应力数据
-    stresses = open(path_four_read + r'stresses\\' + str(i_file + 1) + '_1.txt', 'rt')
+    stresses = open(path_four_read + r'stresses_sort\\' + str(i_file + 1) + '_1.txt', 'rt')
     stresses_str = stresses.read()
-    stresses_list = coordinates_str.split("C")
+    stresses_list = stresses_str.split("C")
     # 变形数据
-    displacement = open(path_four_read + r'displacement\\' + str(i_file + 1) + '_1.txt', 'rt')
+    displacement = open(path_four_read + r'displacement_sort\\' + str(i_file + 1) + '_1.txt', 'rt')
     displacement_str = displacement.read()
-    displacement_list = coordinates_str.split("C")
+    displacement_list = displacement_str.split("C")
 
     stresses_prediction_child_list = []
     displacement_prediction_child_list = []
@@ -176,8 +176,13 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
         displacement_temp_list = displacement_list[i_list].strip().split("\n")
 
         # 每个Component中的坐标，应力，位移个数。根据Component的不同循环次数不同
+        # print(len(cd_temp_list))
+        # print(len(stresses_temp_list))
+        # print(len(displacement_temp_list))
         for i_list_child, _ in enumerate(cd_temp_list):
             cd_list_child = cd_temp_list[i_list_child].split()
+            stresses_list_child = stresses_temp_list[i_list_child].split()
+            displacement_list_child = displacement_temp_list[i_list_child].split()
             cd_index = int(cd_list_child[0])
             if cd_index in ele_set_surface_prediction_list[i_file - 1][i_list]:
                 """
@@ -192,10 +197,8 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
                 #                           float(cd_list_child[2]),
                 #                           float(cd_list_child[3])])
                 cd_component_list.append(final_coordinate)
-                stresses_list_child = stresses_temp_list[i_list_child].split()
-                displacement_list_child = displacement_temp_list[i_list_child].split()
                 stresses_component_list.append(float(stresses_list_child[1]))
-                displacement_component_list.append(float(stresses_list_child[1]))
+                displacement_component_list.append(float(displacement_list_child[1]))
         # 每个Component都用最近邻来插值
         np_array_cd_component = np.array(cd_component_list)
         grid_stress = griddata(np_array_cd_component,
@@ -210,7 +213,7 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
         # 每个Component插值得到的应力和位移数据存放到list中
         stresses_prediction_child_list.append(list(grid_stress))
         displacement_prediction_child_list.append(list(grid_displacement))
-        print("\r" + str(i_file) + " stage: " + str(i_list + 1) + ' model(s) have been built', end="")
+        print("\r" + str(i_file) + " stage(s): " + str(i_list + 1) + ' model(s) have been built', end="")
 
     coordinates.close()
     stresses_prediction_list.append(stresses_prediction_child_list)
@@ -287,5 +290,5 @@ for i_component, _ in enumerate(list_temp_stresses):
     }
 
     json_rbf_model = json.dumps(dict_rbf_model)
-    with open("C:/Users/asus/Desktop/" + path_switch[4:-2] + "_rbf_s_d.json", "w") as f:
+    with open("C:/Users/asus/Desktop/" + path_switch[4:-2] + "_s_d_rbf.json", "w") as f:
         json.dump(json_rbf_model, f)

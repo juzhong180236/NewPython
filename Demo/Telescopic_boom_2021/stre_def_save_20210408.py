@@ -1,4 +1,4 @@
-from Demo.Telescopic_boom_2021.element_data import ElementData
+from Demo.Telescopic_boom_2021.libs.element_data import ElementData
 from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF import RBF
 import json
 import numpy as np
