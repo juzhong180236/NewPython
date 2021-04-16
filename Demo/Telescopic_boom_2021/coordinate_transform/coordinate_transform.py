@@ -32,7 +32,7 @@ def rotateZ(_point, angle):
     cosa = np.cos(radian)
     sina = np.sin(radian)
     return [_point[0] * cosa - _point[1] * sina,
-            _point[0] * sina - _point[1] * cosa,
+            _point[0] * sina + _point[1] * cosa,
             _point[2]]
 
 

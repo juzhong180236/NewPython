@@ -54,7 +54,7 @@ if __name__ == '__main__':
     coordinates = "coordinates"
     stresses = "stresses"
     displacement = "displacement"
-    # excute(elements)
-    # excute(coordinates)
+    excute(elements)
+    excute(coordinates)
     excute(stresses)
     excute(displacement)

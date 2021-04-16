@@ -1,19 +1,27 @@
 from Demo.Telescopic_boom_2021.libs.element_data import ElementData
+import Demo.Telescopic_boom_2021.coordinate_transform.coordinate_transform as ct
+import numpy as np
 import json
 
 """
 因为ansys中的文件顺序（也就是工况顺序）是乱序排列，所以要使用filename_sort将文件排列好后进行存储
 """
-path_prefix = r"C:\Users\asus\Desktop\Code\DT_Telescopic_Boom_v1.0\APP_models\\"
+# path_prefix = r"C:\Users\asus\Desktop\Code\DT_Telescopic_Boom_v1.0\APP_models\\"
+path_prefix = r"C:\Users\asus\Desktop\\"
 # path_switch = 'rbf_correct_model'
 path_switch = r'pre_telescopic_boom\\'
 # 读取路径(读pre)
 path_four_read = path_prefix + path_switch
-
-for i in range(16):
-    # for i in [7, 8]:
+degreeArr = [0, 30, 50, 70]
+distanceArr = [100, 1200, 2400, 3600]
+combine = []
+for i_degree, _ in enumerate(degreeArr):
+    for i_distance, _ in enumerate(distanceArr):
+        combine.append((degreeArr[i_degree], distanceArr[i_distance]))
+np_array_combination_train = np.array(combine)
+# for i in range(16):
+for i in [8]:
     file_name = str(i + 1) + "_1"
-
     elements = open(path_four_read + r'elements_sort\\' + file_name + '.txt', 'rt')
     elements_str = elements.read()
     elements_list = elements_str.split("C")
@@ -63,8 +71,26 @@ for i in range(16):
                 cd_x = float(_list[1])
                 cd_y = float(_list[2])
                 cd_z = float(_list[3])
-                cd_component_list.extend([cd_x, cd_y, cd_z])
-                cd_component_list_negative.extend([-cd_x, cd_y, cd_z])
+                if i > 0:
+                    rotated_coordinate = ct.rotateX([cd_x,
+                                                     cd_y,
+                                                     cd_z],
+                                                    np_array_combination_train[i][0])
+                    if i_cd_list == 0:
+                        final_coordinate = rotated_coordinate
+                    elif i_cd_list == 1:
+                        final_coordinate = ct.translate(rotated_coordinate, 0, 0,
+                                                        -np_array_combination_train[i][1] + 100)
+                    elif i_cd_list == 2:
+                        final_coordinate = ct.translate(rotated_coordinate, 0, 0,
+                                                        -np_array_combination_train[i][1] * 2 + 200)
+                    else:
+                        final_coordinate = ct.translate(rotated_coordinate, 0, 0,
+                                                        -np_array_combination_train[i][1] * 3 + 300)
+                else:
+                    final_coordinate = [cd_x, cd_y, cd_z]
+                cd_component_list.extend(final_coordinate)
+                cd_component_list_negative.extend([-final_coordinate[0], final_coordinate[1], final_coordinate[2]])
         cd_result_list.append(cd_component_list)
         cd_result_list_negative.append(cd_component_list_negative)
 
@@ -91,6 +117,6 @@ for i in range(16):
     }
 
     json_rbf_model = json.dumps(dict_rbf_model)
-    with open(path_prefix + "sort_sequence/" + file_name + "_" + path_switch[4:-2] + "_rbf.json", "w") as f:
+    with open(path_prefix + "sort_sequence_1/" + file_name + "_" + path_switch[4:-2] + "_rbf.json", "w") as f:
         json.dump(json_rbf_model, f)
     print("\r" + str(i + 1) + '/16 json file(s) have been created...', end="")

@@ -83,7 +83,7 @@ for i_list, _ in enumerate(coordinates_benchmark_list):
             stresses_list_child = stresses_temp_list[i_list_child].split()
             displacement_list_child = displacement_temp_list[i_list_child].split()
             stresses_benchmark_component_list.append(float(stresses_list_child[1]))
-            displacement_benchmark_component_list.append(float(stresses_list_child[1]))
+            displacement_benchmark_component_list.append(float(displacement_list_child[1]))
     cd_benchmark_result_list.append(cd_benchmark_component_list)  # 这个得到的数据因为是4个不同的component，所以长度不同
     stresses_benchmark_result_list.append(stresses_benchmark_component_list)
     displacement_benchmark_result_list.append(displacement_benchmark_component_list)

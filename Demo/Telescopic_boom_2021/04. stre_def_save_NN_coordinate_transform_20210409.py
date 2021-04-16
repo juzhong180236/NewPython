@@ -60,8 +60,8 @@ stresses_benchmark_str = stresses_benchmark.read()
 displacement_benchmark_str = displacement_benchmark.read()
 
 coordinates_benchmark_list = coordinates_benchmark_str.split("C")
-stresses_benchmark_list = coordinates_benchmark_str.split("C")
-displacement_benchmark_list = coordinates_benchmark_str.split("C")
+stresses_benchmark_list = stresses_benchmark_str.split("C")
+displacement_benchmark_list = displacement_benchmark_str.split("C")
 
 cd_benchmark_result_list = []
 stresses_benchmark_result_list = []
@@ -88,7 +88,7 @@ for i_list, _ in enumerate(coordinates_benchmark_list):
             stresses_list_child = stresses_temp_list[i_list_child].split()
             displacement_list_child = displacement_temp_list[i_list_child].split()
             stresses_benchmark_component_list.append(float(stresses_list_child[1]))
-            displacement_benchmark_component_list.append(float(stresses_list_child[1]))
+            displacement_benchmark_component_list.append(float(displacement_list_child[1]))
     cd_benchmark_result_list.append(cd_benchmark_component_list)  # 这个得到的数据因为是4个不同的component，所以长度不同
     stresses_benchmark_result_list.append(stresses_benchmark_component_list)
     displacement_benchmark_result_list.append(displacement_benchmark_component_list)
@@ -142,7 +142,7 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
 """
 1_2到1_16的网格作为训练集的输入，应力/位移作为输出建立模型
 """
-rbf_type = "lin_a"
+rbf_type = "mq"
 stresses_prediction_list = [stresses_benchmark_result_list]
 displacement_prediction_list = [displacement_benchmark_result_list]
 rbf_list = []
@@ -181,8 +181,6 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
         # print(len(displacement_temp_list))
         for i_list_child, _ in enumerate(cd_temp_list):
             cd_list_child = cd_temp_list[i_list_child].split()
-            stresses_list_child = stresses_temp_list[i_list_child].split()
-            displacement_list_child = displacement_temp_list[i_list_child].split()
             cd_index = int(cd_list_child[0])
             if cd_index in ele_set_surface_prediction_list[i_file - 1][i_list]:
                 """
@@ -191,11 +189,23 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
                 rotated_coordinate = ct.rotateX([float(cd_list_child[1]),
                                                  float(cd_list_child[2]),
                                                  float(cd_list_child[3])],
-                                                -np_array_combination_train[i_file][0])
-                final_coordinate = ct.translate(rotated_coordinate, 0, 0, -np_array_combination_train[i_file][1])
+                                                np_array_combination_train[i_file][0])
+                if i_list == 0:
+                    final_coordinate = rotated_coordinate
+                elif i_list == 1:
+                    final_coordinate = ct.translate(rotated_coordinate, 0, 0,
+                                                    -np_array_combination_train[i_file][1] + 100)
+                elif i_list == 2:
+                    final_coordinate = ct.translate(rotated_coordinate, 0, 0,
+                                                    -np_array_combination_train[i_file][1] * 2 + 200)
+                else:
+                    final_coordinate = ct.translate(rotated_coordinate, 0, 0,
+                                                    -np_array_combination_train[i_file][1] * 3 + 300)
                 # cd_component_list.append([float(cd_list_child[1]),
                 #                           float(cd_list_child[2]),
                 #                           float(cd_list_child[3])])
+                stresses_list_child = stresses_temp_list[i_list_child].split()
+                displacement_list_child = displacement_temp_list[i_list_child].split()
                 cd_component_list.append(final_coordinate)
                 stresses_component_list.append(float(stresses_list_child[1]))
                 displacement_component_list.append(float(displacement_list_child[1]))
@@ -250,12 +260,15 @@ for i_component, _ in enumerate(list_temp_stresses):
     list_w_displacement_component = []
     np_array_component_stresses = np.array(list_temp_stresses[i_component]).T
     np_array_component_displacement = np.array(list_temp_displacement[i_component]).T
+    # print(len(np_array_component_stresses))
+    # print(len(np_array_component_displacement))
     for i_node, _ in enumerate(np_array_component_stresses):
         rbf_stress_node = RBF(rbf_type)
         rbf_displacement_node = RBF(rbf_type)
         w_stress = rbf_stress_node.fit(
             np_array_combination_train,
             np_array_component_stresses[i_node])
+        # print(np_array_component_displacement[i_node].shape)
         w_displacement = rbf_displacement_node.fit(
             np_array_combination_train,
             np_array_component_displacement[i_node])
@@ -290,5 +303,5 @@ for i_component, _ in enumerate(list_temp_stresses):
     }
 
     json_rbf_model = json.dumps(dict_rbf_model)
-    with open("C:/Users/asus/Desktop/" + path_switch[4:-2] + "_s_d_rbf.json", "w") as f:
+    with open(path_prefix + path_switch[4:-2] + "_s_d_rbf.json", "w") as f:
         json.dump(json_rbf_model, f)

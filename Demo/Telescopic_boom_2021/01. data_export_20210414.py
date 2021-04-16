@@ -76,7 +76,7 @@ def read_elements_data(_list, _path_write):
             apdl.run(r"/CLEAR")
 
 
-def read_coordinate_data(_list, _path_write):
+def read_coordinates_data(_list, _path_write):
     for i, _name in enumerate(_list):
         with apdl.non_interactive:
             apdl.run(r"FINISH")
@@ -273,8 +273,12 @@ def read_displacement_data(_list, _path_write):
 rst_files_num = 16
 _list = np.array([60]) + list(range(rst_files_num))
 rst_file_path = ""
+path_write_elements = r"C:\Users\asus\Desktop\elements"
+path_write_coordinates = r"C:\Users\asus\Desktop\coordinates"
 path_write_stresses = r"C:\Users\asus\Desktop\stresses"
 path_write_displacement = r"C:\Users\asus\Desktop\displacement"
 
+read_elements_data(_list, path_write_elements)
+read_coordinates_data(_list, path_write_coordinates)
 read_stresses_data(_list, path_write_stresses)
 read_displacement_data(_list, path_write_displacement)
