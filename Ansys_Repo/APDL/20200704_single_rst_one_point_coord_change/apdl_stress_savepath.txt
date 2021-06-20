@@ -30,7 +30,9 @@ FILE,path_read(1,1),'rst'
 INRES,ALL
 *DO,j,1,73,1
     SET,j
-    RSYS,sys_num
+    !应该是CSYS
+    !RSYS,sys_num
+    CSYS,sys_num
     ESEL,S,ENAME,,185
     NSLE,S,CORNER
 

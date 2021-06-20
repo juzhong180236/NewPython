@@ -13,6 +13,8 @@ class PRS(object):
         有交叉项，向后传播，截距为零，无交叉项一维，无交叉项多维，逐步回归
         self.name = name
         self.prs = None
+
+        NOTE: matlab中默认的full mode和python的simple mode相同
     """
 
     def __init__(self, name='simple', m=3):

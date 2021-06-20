@@ -6,20 +6,27 @@ FINISH
 ! 外循环次数，也就是rst文件的个数
 outter_cycle_times=1
 ! 内循环次数，也就是每个rst文件中的子步数目。
-inner_cycle_times=30
+inner_cycle_times=1
 ! Components数量
-point_quantity=1
+point_quantity=4
 
 *DIM,path_write,STRING,128,1
 *DIM,path_read,STRING,128,outter_cycle_times
 *DIM,str_named_selection,STRING,128,point_quantity
 
-path_write(1,1)='C:\Users\asus\Desktop\pre_aerofoil\dopAndCoord\'
+path_write(1,1)='C:\Users\asus\Desktop\weld_data\\'
 !有几个file.rst文件，就将path_read设为几维数组
-path_read(1,1)='D:\Alai\ansys_Alai\AeroFoil\Airplane\airplane_files\dp0\SYS\MECH\file'
+path_read(1,1)='C:\Users\asus\Desktop\telescopic_boom_weld\A0_2K_X_files\dp0\SYS-105\MECH\file'
 
 ! List-Components
-str_named_selection(1,1)='C_1'
+! 34
+str_named_selection(1,1)='WELD_1'
+! 35
+str_named_selection(1,2)='WELD_2'
+! 36
+str_named_selection(1,3)='WELD_3'
+! 37
+str_named_selection(1,4)='WELD_4'
 
 /POST1
 /MKDIR,path_write(1,1)
@@ -45,23 +52,23 @@ file_name_middle='_'
                   *CFOPEN,%file_name_out%%file_name_middle%%file_name%,lis
                *ENDIF
                *DO,h,1,point_quantity,1
-                  ESEL,S,ENAME,,187
+                  sys_num=33+h
+                  CSYS,sys_num
                   CMSEL,S,str_named_selection(1,h)
-                  NSLE,S,CORNER
                   *GET,node_num_min,NODE,,NUM,MIN
                   *GET,node_num_max,NODE,,NUM,MAX
                   *GET,node_count,NODE,0,COUNT
                   *IF,h,NE,1,THEN
                       *VWRITE,'C'
+                      !*VWRITE,CHRVAL(34)
                       (A1)
                   *ENDIF
                   *DO,i,1,node_count,1
-                      n_disp_x = UX(node_num_min)
-                      n_disp_y = UY(node_num_min)
-                      n_disp_z = UZ(node_num_min)
-                      *GET,n_disp_sum,NODE,node_num_min,U,SUM
-                      *VWRITE,CHRVAL(node_num_min),n_disp_x,n_disp_y,n_disp_z,n_disp_sum
-                      (A9,E16.8,E16.8,E16.8,E16.8)
+                       n_coord_x = NX(node_num_min)
+                       n_coord_y = NY(node_num_min)
+                       n_coord_z = NZ(node_num_min)
+                      *VWRITE,CHRVAL(node_num_min),n_coord_x,n_coord_y,n_coord_z
+                      (A9,E16.8,E16.8,E16.8)
                       node_num_min=NDNEXT(node_num_min)
                   *ENDDO
                *ENDDO
@@ -71,9 +78,9 @@ file_name_middle='_'
             file_name=CHRVAL(j)
             *CFOPEN,%file_name_out%%file_name_middle%%file_name%,lis
             *DO,h,1,point_quantity,1
-               ESEL,S,ENAME,,187
+               sys_num=33+h
+               CSYS,sys_num
                CMSEL,S,str_named_selection(1,h)
-               NSLE,S,CORNER
                *GET,node_num_min,NODE,,NUM,MIN
                *GET,node_num_max,NODE,,NUM,MAX
                *GET,node_count,NODE,0,COUNT
@@ -82,12 +89,11 @@ file_name_middle='_'
                    (A1)
                *ENDIF
                *DO,i,1,node_count,1
-                   n_disp_x = UX(node_num_min)
-                   n_disp_y = UY(node_num_min)
-                   n_disp_z = UZ(node_num_min)
-                   *GET,n_disp_sum,NODE,node_num_min,U,SUM
-                   *VWRITE,CHRVAL(node_num_min),n_disp_x,n_disp_y,n_disp_z,n_disp_sum
-                   (A9,E16.8,E16.8,E16.8,E16.8)
+                   n_coord_x = NX(node_num_min)
+                   n_coord_y = NY(node_num_min)
+                   n_coord_z = NZ(node_num_min)
+                   *VWRITE,CHRVAL(node_num_min),n_coord_x,n_coord_y,n_coord_z
+                   (A9,E16.8,E16.8,E16.8)
                    node_num_min=NDNEXT(node_num_min)
                *ENDDO
             *ENDDO

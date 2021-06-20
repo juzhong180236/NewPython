@@ -52,6 +52,7 @@ der = sm.predict_derivatives(x, kx=0)
 plt.figure()
 
 plt.plot(x, HF_function(x), label="reference")
+plt.plot(x, LF_function(x), label="reference")
 plt.plot(x, y, linestyle="-.", label="mean_gp")
 plt.scatter(Xt_e, yt_e, marker="o", color="k", label="HF doe")
 plt.scatter(Xt_c, yt_c, marker="*", color="g", label="LF doe")

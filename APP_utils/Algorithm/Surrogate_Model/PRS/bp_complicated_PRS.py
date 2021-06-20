@@ -89,7 +89,7 @@ class PRS(object):
         return w_remove, PRS_result_remove
 
     def predict(self, X_Pre):
-        print(self.w)
+        # print(self.w)
         list_pre_x = []
         for i in range(X_Pre.shape[0]):
             list_result = X_Pre[i]

@@ -33,10 +33,10 @@ class MF_RBF(object):
             phi = dist ** 3
         elif bf_type == 'TPS':
             bf_sigma = 0
-            phi = dist ** 2. * np.log(dist)
+            phi = dist ** 2 * np.log(dist)
         elif bf_type == 'G':
             bf_sigma = np.max(np.max(dist / np.sqrt(2 * ntrain)))
-            phi = np.exp(-dist ** 2. / (2 * np.tile(bf_sigma ** 2, [ntrain, ntrain])))
+            phi = np.exp(-dist ** 2 / (2 * np.tile(bf_sigma ** 2, [ntrain, ntrain])))
         elif bf_type == 'MQ':
             bf_sigma = np.max(np.max(dist / np.sqrt(2 * ntrain)))
             phi = np.sqrt(dist ** 2 + np.tile(bf_sigma ** 2, [ntrain, ntrain]))
@@ -64,13 +64,13 @@ class MF_RBF(object):
         elif bf_type == 'CB':
             phis = dists ** 3
         elif bf_type == 'TPS':
-            phis = dists ** 2. * np.log(dists)
+            phis = dists ** 2 * np.log(dists)
         elif bf_type == 'G':
-            phis = np.exp(-dists ** 2. / (2 * np.tile(bf_sigma ** 2, [ntest, ntrain])))
+            phis = np.exp(-dists ** 2 / (2 * np.tile(bf_sigma ** 2, [ntest, ntrain])))
         elif bf_type == 'MQ':
             phis = np.sqrt(dists ** 2 + np.tile(bf_sigma ** 2, [ntest, ntrain]))
         elif bf_type == 'IMQ':
-            phis = np.ones(ntrain) / np.sqrt(dists ** 2 + np.tile(bf_sigma ** 2, [ntest, ntrain]))
+            phis = np.ones((ntest, ntrain)) / np.sqrt(dists ** 2 + np.tile(bf_sigma ** 2, [ntest, ntrain]))
         else:
             raise AttributeError("please input follow values: 'LN', 'CB', 'TSP', 'G', 'MQ', 'IMQ'.")
         self.omega = omega

@@ -49,4 +49,4 @@ plt.plot(XE_PRED, y_pre_E, color='#000000',
          linestyle='-')
 plt.scatter(Xc, yc)
 plt.legend()
-# plt.show()
+plt.show()
