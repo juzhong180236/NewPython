@@ -13,7 +13,7 @@ port_list = list(serial.tools.list_ports.comports())
 
 def return_correct_port():
     for p in port_list:
-        if p.vid == 6790 and p.pid == 29987:
+        if p.vid == 1659 and p.pid == 8963:
             return p.name
 
 

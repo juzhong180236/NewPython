@@ -8,7 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from collections import OrderedDict
 import pandas as pd
 from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF_Surrogate import RBF
-from Demo.Ansys_Data_Utils_2021.Surrogate_Models.MF_RBF import MF_RBF
+from Demo.Ansys_Data_Utils_2021.Surrogate_Models.MFS_RBF import MFS_RBF
 import json
 
 """ 
@@ -55,8 +55,8 @@ for _d in _array_real_deformation_verification:
 array_real_deformation_verification = np.asarray(list_real_deformation_verification)
 
 
-# print(array_real_stress_verification)
-# print(array_real_stress_verification.shape)
+# print(array_real_deformation_verification)
+# print(array_real_deformation_verification.shape)
 
 
 # R^2
@@ -96,7 +96,7 @@ def create_mf_rbf(_independent_variables_low, _independent_variables_high,
     omega_list = []
 
     for _i_point in range(len(_dependent_variables_low)):
-        mf_rbf_deformation = MF_RBF()
+        mf_rbf_deformation = MFS_RBF()
         mf_rbf_deformation.fit(_independent_variables_low,
                                _dependent_variables_low[_i_point].reshape(-1, 1),
                                _independent_variables_high,
@@ -175,8 +175,10 @@ for _i, _real_deformation_low in enumerate(array_real_deformation_low):
         _real_deformation_low[99],
     ])
     r2_small_list.append(r2_small(array_real_deformation_high[_i], r2_low_data))
-    print(np.average((r2_low_data - array_real_deformation_high[_i]) / r2_low_data))
-print(r2_small_list)
+    print(np.round(r2_small(array_real_deformation_high[_i], r2_low_data), 4))
+    # print(
+    #     np.round(np.average(np.abs((r2_low_data - array_real_deformation_high[_i]) / array_real_deformation_high[_i])), 4) * 100)
+# print(np.round(r2_small_list, 3))
 
 # mm = np.array([
 #     train_low[0],

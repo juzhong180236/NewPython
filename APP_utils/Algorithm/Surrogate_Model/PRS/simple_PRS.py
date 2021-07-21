@@ -17,6 +17,7 @@ class PRS(object):
                 # data_PRS_result[i][j] = X[i] ** j
             list_PRS_result.append(np.array(list_temp).ravel())
         PRS_result = np.array(list_PRS_result)
+        # print(PRS_result)
         # 根据Y和伪逆求出w
         self.w = np.linalg.pinv(PRS_result).dot(Y)
         return self.w

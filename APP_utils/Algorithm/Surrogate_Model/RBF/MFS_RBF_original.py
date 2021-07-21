@@ -3,7 +3,7 @@ from APP_utils.Algorithm.Surrogate_Model.RBF.RBF_Surrogate import RBF
 import matplotlib.pyplot as plt
 
 
-class MF_RBF(object):
+class MFS_RBF(object):
 
     def __init__(self):
         self.omega = None
@@ -125,7 +125,7 @@ if __name__ == "__main__":
     yyL = model_rbf.predict(xtest)
     yL_H = model_rbf.predict(XH)
     # print(yyL)
-    mf_rbf = MF_RBF()
+    mf_rbf = MFS_RBF()
     y_hat = mf_rbf.MFRBF_predict_fix(xtest, yyL, XH, yL_H, YH, 'MQ')
     # print(y_hat)
     plt.plot(xtest, y_hat, color='r', linestyle='-', lw=2, label='predicted value')

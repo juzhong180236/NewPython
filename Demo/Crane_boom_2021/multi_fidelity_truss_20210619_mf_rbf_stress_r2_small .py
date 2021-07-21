@@ -8,7 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from collections import OrderedDict
 import pandas as pd
 from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF_Surrogate import RBF
-from Demo.Ansys_Data_Utils_2021.Surrogate_Models.MF_RBF import MF_RBF
+from Demo.Ansys_Data_Utils_2021.Surrogate_Models.MFS_RBF import MFS_RBF
 import json
 
 """ 
@@ -96,7 +96,7 @@ def create_mf_rbf(_independent_variables_low, _independent_variables_high,
     omega_list = []
 
     for _i_point in range(len(_dependent_variables_low)):
-        mf_rbf_stress = MF_RBF()
+        mf_rbf_stress = MFS_RBF()
         mf_rbf_stress.fit(_independent_variables_low,
                           _dependent_variables_low[_i_point].reshape(-1, 1),
                           _independent_variables_high,
@@ -177,8 +177,10 @@ for _i, _real_stress_low in enumerate(array_real_stress_low):
         _real_stress_low[99],
     ])
     r2_small_list.append(r2_small(array_real_stress_high[_i], r2_low_data))
-    print(np.average((r2_low_data - array_real_stress_high[_i]) / r2_low_data))
-print(r2_small_list)
+    print(np.round(r2_small(array_real_stress_high[_i], r2_low_data), 4))
+    # print(
+    #     np.round(np.average(np.abs((r2_low_data - array_real_stress_high[_i]) / array_real_stress_high[_i])), 4) * 100)
+# print(np.round(r2_small_list, 3))
 # """ 训练模型 """
 # rbf_low_list = create_rbf(train_low, array_real_stress_low)
 # rbf_high_list = create_rbf(train_high, array_real_stress_high)

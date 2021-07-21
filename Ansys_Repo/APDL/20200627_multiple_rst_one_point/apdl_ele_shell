@@ -1,0 +1,52 @@
+!2020.12.13
+!直接通过结果文件导出ele
+FINISH
+/CLEAR
+/NOPR
+*DIM,path_write,STRING,128,1
+*DIM,path_read,STRING,128,1
+
+path_write(1,1)='C:\Users\asus\Desktop\'
+path_read(1,1)='C:\Users\asus\Desktop\file'
+
+/POST1
+/MKDIR,path_write(1,1)
+/CWD,path_write(1,1)
+FILE,path_read(1,1),'rst'
+INRES,ALL
+SET
+
+!Shell 181
+ESEL,S,ENAME,,181
+
+*GET,e_count,ELEM,0,COUNT
+!*GET,emax,ELEM,,NUM,MAX
+!*GET,e_current,ELEM,,NUM,MIN
+!*DIM,e_node_arr,ARRAY,e_count,8
+!因为导出的第一个文件总是缺少第一行，所以索性导出两次，用保留第二次导出的文件，删除第一次导出的文件
+*DO,j,1,2,1
+    *GET,e_current,ELEM,,NUM,MIN
+    *IF,j,EQ,1,THEN
+    file_name='ELIST_DELETE'
+    *ELSE
+    file_name='ELIST'
+    *ENDIF
+    !file_name=CHRVAL(j)
+    *CFOPEN,%file_name%,lis
+    *DO,i,1,e_count,1
+        e_node_1=CHRVAL(NELEM(e_current,1))
+        e_node_2=CHRVAL(NELEM(e_current,2))
+        e_node_3=CHRVAL(NELEM(e_current,3))
+        e_node_4=CHRVAL(NELEM(e_current,4))
+        *VWRITE,CHRVAL(e_current),e_node_1,e_node_2,e_node_3,e_node_4
+        (A9,A9,A9,A9,A9)
+        e_current =ELNEXT(e_current)
+    *ENDDO
+*ENDDO
+*CFCLOSE
+/GOPR
+FINISH
+/CLEAR
+/DELETE,file,page
+/DELETE,ELIST_DELETE,lis
+!/EOF

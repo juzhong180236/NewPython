@@ -44,7 +44,7 @@ class PRS(object):
             arr_combine = X[i]  # 输入值X的每一个元素经过m（次数）次合并的Gramian矩阵
             list_index = list(range(1, X.shape[-1] + 1))
             list_index.reverse()  # 得到初始的每一次m时的Gramian矩阵的每一行元素个数，初始为3,2,1
-            for j in range(self.m):  # 遍历输入值X的每个元素个次数m
+            for j in range(self.m - 1):  # 遍历输入值X的每个元素个次数m
                 list_temp = []  # 数据与arr_result一样，类型为list
                 for h in range(X.shape[-1]):  # 遍历输入值X的每个元素的每个维度
                     # print("当前Gramian矩阵的第" + str(h) + "行:" + str(list_result[-list_index[h]:len(list_result)]))
@@ -53,10 +53,12 @@ class PRS(object):
                     # 更新list_index中的元素，更新后的list第一个元素为原list所有元素相加，第二个元素为原list去掉第一个元素后所有元素相加，以此类推
                     list_index[h] = sum(list_index[h:])
                 arr_result = np.array(list_temp)  # 将list转为ndarray
-                arr_combine = np.concatenate((arr_combine, arr_result))  # 将ndarray组合起来作为每个元素的Gramian矩阵
+                # arr_combine = np.concatenate((arr_combine, arr_result))  # 将ndarray组合起来作为每个元素的Gramian矩阵
+                arr_combine = np.hstack([arr_combine, arr_result])  # 将ndarray组合起来作为每个元素的Gramian矩阵
                 # print("当前的Gramian矩阵:" + str(list_combine))
-            list_PRS_result.append(arr_combine)  # 每个元素的Gramian矩阵
+            list_PRS_result.append(np.hstack([[1] * X.shape[-1], arr_combine]))  # 每个元素的Gramian矩阵
         PRS_result = np.array(list_PRS_result)
+        # print(PRS_result)
         if self.name != 'zi':
             PRS_result = np.insert(PRS_result, 0, 1, axis=1)  # 所有元素的Gramian矩阵，将list转为ndarray
         # print(PRS_result)
@@ -96,14 +98,15 @@ class PRS(object):
             list_combine = X_Pre[i]
             list_index = list(range(1, X_Pre.shape[-1] + 1))
             list_index.reverse()
-            for j in range(self.m):
+            for j in range(self.m - 1):
                 list_temp = []
                 for h in range(X_Pre.shape[-1]):
                     list_temp.extend(X_Pre[i][h] * list_result[-list_index[h]:len(list_result)])
                     list_index[h] = sum(list_index[h:])
                 list_result = np.array(list_temp).flatten()
-                list_combine = np.concatenate((list_combine, list_result))
-            list_pre_x.append(list_combine)
+                # list_combine = np.concatenate((list_combine, list_result))
+                list_combine = np.hstack([list_combine, list_result])
+            list_pre_x.append(np.hstack([[1] * X_Pre.shape[-1], list_combine]))
         array_pre_x = np.array(list_pre_x)
         if self.name != 'zi':
             array_pre_x = np.insert(array_pre_x, 0, 1, axis=1)

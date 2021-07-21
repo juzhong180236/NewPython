@@ -1,0 +1,7 @@
+MAPDL commands containing a / or * have had those characters removed,
+unless this causes a conflict with an existing name. Most notable is /SOLU which would conflict with SOLU.
+Therefore, the /SOLU has been renamed to slashsolu to differentiate it from solu.
+Out of the 1500 MAPDL commands, about 15 start with slash and 8 with star.
+
+
+

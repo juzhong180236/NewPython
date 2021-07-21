@@ -4,14 +4,14 @@ import time
 
 
 def gaussian(x, c, s):
-    if c.shape[-1] != 1:
+    if c.ndim != 1:
         return np.sum(np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2)), axis=-1)
     else:
         return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 
 
 def multiquadric(x, c, s):
-    if c.shape[-1] != 1:
+    if c.ndim != 1:
         return np.sqrt(np.sqrt(np.sum((x - c) ** 2, axis=-1)) + s ** 2)
     else:
         return np.sqrt((x - c) ** 2 + s ** 2)
@@ -73,7 +73,8 @@ class RBF(object):
             else:
                 list_result.append(self.rbf(X[i], X, self.std).ravel())
         Gaussian_result = np.array(list_result)
-        self.w = np.linalg.inv(Gaussian_result).dot(Y)
+        # self.w = np.linalg.inv(Gaussian_result).dot(Y)
+        self.w = np.linalg.solve(Gaussian_result, Y)
         return ','.join(map(str, self.w))
 
     def predict(self, X_Pre):
@@ -99,11 +100,13 @@ if __name__ == "__main__":
 
     x_pred = np.arange(-17, 18, 0.1)
 
-    rbf = RBF('mq')
+    rbf = RBF('gs')
 
     rbf.fit(x_train, y_train)
 
     y_pred = rbf.predict(x_pred)
+    elapsed = (time.perf_counter() - start)
+
     # RR = 1 - (np.sum(np.square(data_pre[1] - y_Pre)) / np.sum(np.square(data_pre[1] - np.mean(data_pre[1]))))
     # print(RR)
     plt.plot(x_real, y_real, color='#ff0000', linestyle='-', label='real')
@@ -113,5 +116,4 @@ if __name__ == "__main__":
     # print(RR)
     plt.legend()
     plt.show()
-    elapsed = (time.perf_counter() - start)
     print("Time used:", elapsed)

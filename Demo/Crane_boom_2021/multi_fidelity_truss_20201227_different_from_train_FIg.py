@@ -20,7 +20,7 @@ from Demo.Ansys_Data_Utils_2021.model_save_to_file import ModelSaveToFile
 """
 所谓low_fidelity，其实就是Beam188单元
 """
-path_prefix = r"H:\Code\DT_Crane_Boom_v1.0\APP_models\\"
+path_prefix = r"C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\\"
 path_arr = \
     {
         "low": r"pre_low_fidelity_truss_point\stress_point_more_nodes\\",
@@ -261,8 +261,8 @@ def ax_fun(_ax, _str):
 
 
 list_results_excel = []
-for i_point in range(18):
-# for i_point in [0]:
+# for i_point in range(18):
+for i_point in [0]:
     """
     2020.12.19 颜色中比较常用的是:viridis, rainbow, coolwarm, inferno, ocean
     """
@@ -314,7 +314,7 @@ for i_point in range(18):
     """
     2020.12.19 避免画图内存泄露
     """
-    plt.close('all')  # 避免内存泄漏
+    # plt.close('all')  # 避免内存泄漏
     verification_high = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
                            list_test_predict_stress_high[i_point])
     verification_low = r2(array_real_stress_verification[i_point].reshape(verification_X.T.shape).T,
