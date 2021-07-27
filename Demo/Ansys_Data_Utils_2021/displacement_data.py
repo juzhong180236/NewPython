@@ -106,8 +106,8 @@ class DispalcementData(object):
         float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut_sorted_2, self.path_displacement,
                                                                 'd')  # 获取step
 
-        list_coords = self.cd.surfaceCoord_To_List()  # 获取xyz坐标信息
-        set_surface_ele = self.ed.set_SurfaceEle()
+        list_coords = self.cd.surface_int_list_threejs()  # 获取xyz坐标信息
+        set_surface_ele = self.ed.surface_int_set()
 
         i_processing = 1  # 遍历到第i个文件
         str_coords_allFile = ''  # 不带初始坐标信息
@@ -173,7 +173,7 @@ class DispalcementData(object):
         float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut_sorted_2, self.path_displacement,
                                                                 'd')  # 获取step
 
-        set_surface_ele = self.ed.set_SurfaceEle()
+        set_surface_ele = self.ed.surface_int_set()
 
         i_processing = 1  # 遍历到第i个文件
         str_displacementXYZ_allFile = ''  # 不带初始坐标信息
@@ -238,7 +238,7 @@ class DispalcementData(object):
         float_Dcolor_step, float_Dcolor_min = colord.color_Step(files_cut_sorted_2, self.path_displacement,
                                                                 'd')  # 获取step
 
-        set_surface_ele = self.ed.set_SurfaceEle()
+        set_surface_ele = self.ed.surface_int_set()
 
         i_processing = 1  # 遍历到第i个文件
         str_displacementXYZ_allFile = ''  # 不带初始坐标信息

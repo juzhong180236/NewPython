@@ -5,7 +5,6 @@ import pyvistaqt as pvqt
 import asyncio
 import websockets
 
-
 _radian = np.pi / 180
 pitch_angle_degree = 0
 
@@ -34,9 +33,9 @@ mapdl.et(1, 181)
 mapdl.esize(0.004)
 # mapdl.etcontrol('set')
 mapdl.amesh('ALL')
-mapdl.sectype(1, "shell")
+mapdl.sectype(1, "SHELL")
 mapdl.secdata(0.00115)
-mapdl.run("secoff,mid")
+mapdl.secoffset('MID')
 # vertices = mapdl.mesh.nodes
 # elements = mapdl.mesh.elem
 # mesh = mapdl.mesh.grid
@@ -54,9 +53,9 @@ mapdl.run("secoff,mid")
 # mapdl.eplot(show_bounds=True, cpos='iso')
 
 ''' Material Properties '''
-mapdl.mp('ex', 1, 7.1e10)
-mapdl.mp('nuxy', 1, 0.33)
-mapdl.mp('dens', 1, 2.83e3)
+mapdl.mp('EX', 1, 7.1e10)
+mapdl.mp('NUXY', 1, 0.33)
+mapdl.mp('DENS', 1, 2.83e3)
 
 ''' Boundary Conditions '''
 # Fix the left-hand side of the aerofoil.
@@ -67,15 +66,15 @@ mapdl.nsel('S', 'LOC', 'X', 0.2802)
 assert np.allclose(mapdl.mesh.nodes[:, 0], 0.2802)
 # mapdl.cp(5, 'UZ', 'ALL')
 # mapdl.nsel('R', 'LOC', 'Y', 0.008)
-mapdl.d("all", "uz", -0.08)
+mapdl.d("ALL", "UZ", -0.08)
 
 # _ = mapdl.allsel()
 mapdl.finish()  # 退出prep7处理器
 
 ''' Solve '''
 mapdl.slashsolu()
-mapdl.antype(antype='static')
-mapdl.eqslv(lab='sparse', keepfile=1)
+mapdl.antype(antype='STATIC')
+mapdl.eqslv(lab='SPARSE', keepfile=1)
 # mapdl.nlgeom(key='on')
 mapdl.solve()
 output = mapdl.finish()
@@ -101,14 +100,14 @@ async def update():
     while True:
         try:
             mapdl.prep7()
-            mapdl.d("all", "uz", 0.2802 * np.sin(pitch_angle_degree * _radian))
+            mapdl.d("ALL", "UZ", 0.2802 * np.sin(pitch_angle_degree * _radian))
             # _ = mapdl.allsel()
             mapdl.finish()  # 退出prep7处理器
 
             ''' Solve '''
             mapdl.slashsolu()
-            mapdl.antype(antype='static')
-            mapdl.eqslv(lab='sparse', keepfile=1)
+            mapdl.antype(antype='STATIC')
+            mapdl.eqslv(lab='SPARSE', keepfile=1)
             # mapdl.nlgeom(key='on')
             mapdl.solve()
             mapdl.finish()
@@ -123,6 +122,7 @@ async def update():
         except (ValueError, RuntimeError, TypeError, NameError):
             print('Analytical program crashed!')
             break
+
 
 async def send_data(websocket, path):
     global pitch_angle_degree

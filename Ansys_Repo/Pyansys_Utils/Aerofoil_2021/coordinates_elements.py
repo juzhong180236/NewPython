@@ -1,7 +1,21 @@
 from ansys.mapdl.core import launch_mapdl
+from Ansys_Repo.Pyansys_Utils.datasave import ElementData, CoordinateData
+import json
 import numpy as np
 import pyvista as pv
 import pyvistaqt as pvqt
+
+
+def list_mesh_line_coordinates(list_elements, list_coordinates):
+    list_results = []
+    for i in list_elements:  # 单元中每个节点的编号
+        list_results.extend(
+            [list_coordinates[i * 3],
+             list_coordinates[i * 3 + 1],
+             list_coordinates[i * 3 + 2]]
+        )
+    return list_results
+
 
 ''' Simulation initialization '''
 mapdl = launch_mapdl()
@@ -31,35 +45,38 @@ mapdl.amesh('ALL')
 mapdl.sectype(1, "SHELL")
 mapdl.secdata(0.00115)
 mapdl.run("SECOFF,MID")
-vertices = mapdl.mesh.nodes
-elements = mapdl.mesh.elem
-# print(vertices)
-# print(elements)
-# mapdl.mesh.save(
-#     filename=r'C:\Users\laisir\Desktop\mesh1.vtk',
-#     binary=False,
-#     allowable_types=181,
-# )
+# vertices = mapdl.mesh.nodes
+# elements = mapdl.mesh.elem
 # mesh = mapdl.mesh.grid
-# faces = np.hstack((map(lambda x: np.hstack((4, x[-4:])), mapdl.mesh.elem)))
-# mesh = pv.PolyData(vertices, faces)
-# mesh.plot()
-# mesh = pv.wrap(mapdl.mesh.grid)
+mapdl_mesh_elem = list(map(lambda x: x[-4:], mapdl.mesh.elem))
+ed = ElementData(mapdl_mesh_elem=mapdl_mesh_elem, element_type=181)
+ed_mesh_line = ElementData(mapdl_mesh_elem=mapdl_mesh_elem, element_type=1810)
+cd = CoordinateData(ed=ed, mapdl_mesh_nodes=mapdl.mesh.nodes)
+coordinates = list(map(lambda x: x * 1000, cd.all_int_list_threejs()))
+coordinates_negative = list(map(lambda x: -x[1] if x[0] % 3 == 0 else x[1], enumerate(coordinates)))
+elements_index = ed.all_int_list_threejs()
+mesh_Line_elements_index = ed_mesh_line.all_int_list_threejs()
+mesh_line_coordinates = list_mesh_line_coordinates(mesh_Line_elements_index, coordinates)
+mesh_line_coordinates_negative = list_mesh_line_coordinates(mesh_Line_elements_index, coordinates_negative)
+# print(coordinates)
+# print(len(coordinates_negative))
+# print(elements_index)
 
-# mesh1 = pv.ExplicitStructuredGrid(mesh)
-# mesh1.save(
-#     filename=r'C:\Users\laisir\Desktop\mesh1.vtk',
-#     binary=False,
-# )
-# pl = pvqt.BackgroundPlotter()
-# pl.add_mesh(mesh)
-# pl.camera_position = 'iso'
-# pl.background_color = 'white'
-# cpos = pl.show()
-
-# mapdl.aplot(show_lines=True, line_width=5, show_bounds=True, cpos='xy')
-mapdl.eplot(show_bounds=True, cpos='iso')
-
+dict_model = {
+    "coordinates": coordinates,
+    "coordinates_negative": coordinates_negative,
+    "elements_index": elements_index,
+    "mesh_line_coordinates": mesh_line_coordinates,
+    "mesh_line_coordinates_negative": mesh_line_coordinates_negative,
+}
+'''
+Note: Error -> Object of type 'int32' is not JSON serializable
+    <class 'numpy.int32'> -> <class 'int'>
+'''
+path_prefix = r'C:\Users\laisir\Desktop'
+json_model = json.dumps(dict_model)
+with open(path_prefix + r"\aerofoil.json", "w") as f:
+    json.dump(json_model, f)
 ''' Material Properties '''
 # mapdl.mp('ex', 1, 7.1e10)
 # mapdl.mp('nuxy', 1, 0.33)

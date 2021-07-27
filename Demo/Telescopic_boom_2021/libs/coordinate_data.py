@@ -8,7 +8,7 @@ class CoordinateData(object):
         self.data_list = data_list
 
     def surfaceCoord_To_List(self, whichAxis='xyz'):
-        set_surface_ele = self.ed.set_SurfaceEle()
+        set_surface_ele = self.ed.surface_int_set()
         list_coords = []  # 获取该文件夹下面的节点初始的坐标数据
         if self.path_coord is not None:
             coordfile = open(self.path_coord + "NLIST.lis", 'rt')

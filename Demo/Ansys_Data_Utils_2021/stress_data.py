@@ -93,7 +93,7 @@ class StressData(object):
         files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
         float_Scolor_step, float_Scolor_min = colord.color_Step(files_cut_sorted_2, self.path_stress, 's')  # 获取step
 
-        set_surface_ele = self.ed.set_SurfaceEle()
+        set_surface_ele = self.ed.surface_int_set()
 
         i_processing = 0
         str_Scolor_allFile = ''
@@ -145,7 +145,7 @@ class StressData(object):
         files_cut_sorted_2 = sorted(files_cut_sorted_1, key=lambda x: int(x[:-4].split('_')[0]))
         float_Scolor_step, float_Scolor_min = colord.color_Step(files_cut_sorted_2, self.path_stress, 's')  # 获取step
 
-        set_surface_ele = self.ed.set_SurfaceEle()
+        set_surface_ele = self.ed.surface_int_set()
 
         i_processing = 0
         str_Scolor_allFile = ''

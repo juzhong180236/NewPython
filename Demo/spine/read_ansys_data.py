@@ -19,8 +19,8 @@ path_four_write = r"C:\Users\asus\Desktop\DT_Crane_v2.0\APP_models\post\\"
 # ele_data
 def read_ed():
     ed = ElementData(path_four_read_ele, ['3D4_P'])
-    print(len(ed.set_SurfaceEle()))
-    txt_ed = ed.surfaceEle_Real_Sequence(path_four_read_dopAndCoord)
+    print(len(ed.surface_int_set()))
+    txt_ed = ed.surface_int_list_threejs(path_four_read_dopAndCoord)
     # # txt_all = ','.join(map(str, ed.aa()))
     # tfc.text_Create(path_four_write, 'ele', txt_ed)
     # # tfc.text_Create(r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\\" + path_switch + r"\mid\\", 'ele_all', txt_all)
@@ -33,7 +33,7 @@ def read_ed():
 def read_cd(ed):
     cd = CoordinateData(path_four_read_dopAndCoord, ed)
 
-    cd_list = cd.surfaceCoord_To_List()
+    cd_list = cd.surface_int_list_threejs()
     tfc.text_Create(path_four_write, part_type + '_coord', ','.join(cd_list))
     return cd
 
