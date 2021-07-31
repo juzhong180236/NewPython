@@ -23,7 +23,7 @@ def linear(x, c):
 
 def linear_abs(x, c):
     if c.shape[-1] != 1:
-        return np.sum(np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1))), axis=-1)
+        return np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1)))
     else:
         return np.abs(x - c)
 

@@ -17,7 +17,7 @@ class PRS(object):
         self.prs = None
     """
 
-    def __init__(self, name='simple', m=3):
+    def __init__(self, name='simple', m=2):
         self.name = name
         self.m = m
         self.prs = None
@@ -29,10 +29,12 @@ class PRS(object):
             self.prs = simple_m.PRS(m=self.m)
         elif self.name == 'stepwise':
             self.prs = sw_com.PRS(m=self.m)
+        else:
+            self.prs = None
             # 有其他的继续往下加
 
     def fit(self, X, Y):
-        self.prs.fit(X, Y)
+        return self.prs.fit(X, Y)
 
     def predict(self, X_Pre):
         return self.prs.predict(X_Pre)

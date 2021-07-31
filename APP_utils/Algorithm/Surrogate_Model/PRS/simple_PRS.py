@@ -20,7 +20,7 @@ class PRS(object):
         # print(PRS_result)
         # 根据Y和伪逆求出w
         self.w = np.linalg.pinv(PRS_result).dot(Y)
-        return self.w
+        return self.w.tolist()
 
     def predict(self, X_Pre):
         list_pre_x = []

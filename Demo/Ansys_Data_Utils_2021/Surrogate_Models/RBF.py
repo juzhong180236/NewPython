@@ -4,7 +4,7 @@ import time
 
 
 def gaussian(x, c, s):
-    if c.ndim != 1:
+    if c.ndim != 1:  # 需要用shape来判断
         return np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2))
     else:
         return np.exp(-(x - c) ** 2 / (2 * s ** 2))

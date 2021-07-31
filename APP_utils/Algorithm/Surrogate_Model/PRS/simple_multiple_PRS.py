@@ -2,7 +2,7 @@ import numpy as np
 
 
 class PRS(object):
-    def __init__(self, m=3, w=0):
+    def __init__(self, m=2, w=0):
         self.m = m
         self.w = w
 
@@ -26,7 +26,7 @@ class PRS(object):
         # print(PRS_result)
         # 根据Y和伪逆求出w
         self.w = np.linalg.pinv(PRS_result).dot(Y)
-        return self.w
+        return self.w.tolist()
 
     def predict(self, X_Pre):
         list_pre_x = []
@@ -41,6 +41,7 @@ class PRS(object):
                 # list_combine = np.concatenate((list_combine, list_result))
             # list_pre_x.append(list_combine)
             list_pre_x.append(np.array(list_temp).ravel())
+        print(np.array(list_pre_x))
         Y_Pre = np.array(list_pre_x).dot(self.w)
         return Y_Pre
 
