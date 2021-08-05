@@ -77,7 +77,7 @@ if __name__ == "__main__":
     x_real = np.linspace(0, 1)
     y_real = curve(x_real)
     # x_train = np.array([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]).reshape(-1, 1)
-    x_train = np.array([0, 0.4, 0.6, 1]).reshape(-1, 1)
+    x_train = np.array([0, 0.2, 0.4, 0.6, 0.8, 1]).reshape(-1, 1)
     y_train = curve(x_train)
 
     kriging = Kriging(parameter=parameters)

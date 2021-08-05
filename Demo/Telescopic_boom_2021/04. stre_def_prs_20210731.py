@@ -141,7 +141,7 @@ for i_file in range(1, 16):  # 2_1到16_1坐标，应力，位移文件。共15�
 """
 1_2到1_16的网格作为训练集的输入，应力/位移作为输出建立模型
 """
-prs_type = "simple_m"
+prs_type = "full"
 stresses_prediction_list = [stresses_benchmark_result_list]
 displacement_prediction_list = [displacement_benchmark_result_list]
 print("The coordinate-based model is building...")
@@ -253,8 +253,8 @@ for i_component, _ in enumerate(list_temp_stresses):
     np_array_component_stresses = np.array(list_temp_stresses[i_component]).T
     np_array_component_displacement = np.array(list_temp_displacement[i_component]).T
     for i_node, _ in enumerate(np_array_component_stresses):
-        prs_stress_node = PRS(name='simple_m')
-        prs_displacement_node = PRS(name='simple_m')
+        prs_stress_node = PRS(name=prs_type)
+        prs_displacement_node = PRS(name=prs_type)
         w_stress = prs_stress_node.fit(
             np_array_combination_train,
             np_array_component_stresses[i_node])
@@ -271,16 +271,16 @@ for i_component, _ in enumerate(list_temp_stresses):
             ' model(s) have been built', end="")
     list_w_stress.append(list_w_stress_component)
     list_w_displacement.append(list_w_displacement_component)
-    """
-    按照每个节点进行预测
-    """
-    dict_prs_model = {
-        "stress_w": list_w_stress,
-        "deformation_w": list_w_displacement,
-        "x_train": np_array_combination_train.flatten().tolist(),
-        "prs_type": prs_type,
-        "m": m,
-    }
-    json_prs_model = json.dumps(dict_prs_model)
-    with open(path_prefix + path_switch[4:-2] + "_s_d_prs.json", "w") as f:
-        json.dump(json_prs_model, f)
+"""
+按照每个节点进行预测
+"""
+dict_prs_model = {
+    "stress_w": list_w_stress,
+    "deformation_w": list_w_displacement,
+    "x_train": np_array_combination_train.flatten().tolist(),
+    "prs_type": prs_type,
+    "m": m,
+}
+json_prs_model = json.dumps(dict_prs_model)
+with open(path_prefix + path_switch[4:-2] + "_s_d_prs.json", "w") as f:
+    json.dump(json_prs_model, f)

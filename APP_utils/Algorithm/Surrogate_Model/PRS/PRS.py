@@ -31,8 +31,11 @@ class PRS(object):
             self.prs = sw_com.PRS(m=self.m)
             # 有其他的继续往下加
 
-    def fit(self, X, Y):
-        self.prs.fit(X, Y)
+    def calc_gram_matrix(self, X):
+        return self.prs.calc_gram_matrix(X)
+
+    def fit(self, Y):
+        return self.prs.fit(Y)
 
     def predict(self, X_Pre):
         return self.prs.predict(X_Pre)

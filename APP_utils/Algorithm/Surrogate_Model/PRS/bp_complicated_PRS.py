@@ -36,8 +36,9 @@ class PRS(object):
         self.m = m
         self.w = w
         self.remove_index = remove_index
+        self.gram_matrix = None
 
-    def fit(self, X, Y):
+    def calc_gram_matrix(self, X):
         list_PRS_result = []  # 存放最终的Gramian矩阵的列表
         for i in range(X.shape[0]):  # 遍历输入值X的每个元素
             arr_result = X[i]  # 输入值X的每一个元素的在每一次m（次数）的Gramian矩阵
@@ -57,41 +58,34 @@ class PRS(object):
                 arr_combine = np.hstack([arr_combine, arr_result])  # 将ndarray组合起来作为每个元素的Gramian矩阵
                 # print("当前的Gramian矩阵:" + str(list_combine))
             list_PRS_result.append(np.hstack([[1] * X.shape[-1], arr_combine]))  # 每个元素的Gramian矩阵
-        PRS_result = np.array(list_PRS_result)
-        # print(PRS_result)
-        if self.name != 'zi':
-            PRS_result = np.insert(PRS_result, 0, 1, axis=1)  # 所有元素的Gramian矩阵，将list转为ndarray
-        # print(PRS_result)
-        self.w = np.linalg.pinv(PRS_result).dot(Y)  # 根据Y和Gramian矩阵的伪逆求出权重w
-        # print(self.w)
-        w_remove = self.w
-        PRS_result_remove = PRS_result
+        self.gram_matrix = np.array(list_PRS_result)
+        if self.name == 'zi':
+            self.gram_matrix = np.insert(self.gram_matrix, 0, 1, axis=1)  # 所有元素的Gramian矩阵，将list转为ndarray
+        return self.gram_matrix
+
+    def fit(self, Y):
+        # self.w = np.linalg.solve(self.gram_matrix, Y)
+        self.w = np.linalg.pinv(self.gram_matrix).dot(Y)  # 根据Y和Gramian矩阵的伪逆求出权重w
         min_element = -np.Inf
         while min_element < self.threshold:
             # print(PRS_result_remove[0])
             # 计算偏回归平方和loss，将公式拆解为四部分
-            first = Y.dot(Y) - (w_remove.T.dot(PRS_result_remove.T)).dot(Y)
-            second = Y.shape[0] - w_remove.shape[0]
-            third = np.diag(np.linalg.inv(PRS_result_remove.T.dot(PRS_result_remove)))
+            first = Y.dot(Y) - (self.w.T.dot(self.gram_matrix.T)).dot(Y)
+            second = Y.shape[0] - self.w.shape[0]
+            third = np.diag(np.linalg.inv(self.gram_matrix.T.dot(self.gram_matrix)))
             inner = first / second * third
             index_positive = np.where(inner > 0)  # 防止除数为零
             if inner[inner > 0].size == 0:
-                break
-            loss = w_remove / (np.maximum(inner, min(inner[inner > 0])) ** 0.5)
-
+                return self.w, self.gram_matrix
+            loss = self.w / (np.maximum(inner, min(inner[inner > 0])) ** 0.5)
             min_element = min(np.abs(loss[index_positive]))
-            # print(np.abs(loss[index_positive]))
-            # print(min_element)
             remove_index = index_positive[0][np.where(np.abs(loss[index_positive]) == min_element)[0][0]]
-            # print(w_remove)
             self.remove_index.append(remove_index)
-            w_remove = np.delete(w_remove, remove_index, axis=0)
-            self.w = w_remove
-            PRS_result_remove = np.delete(PRS_result_remove, remove_index, axis=1)
-        return w_remove, PRS_result_remove
+            self.w = np.delete(self.w, remove_index, axis=0)
+            self.gram_matrix = np.delete(self.gram_matrix, remove_index, axis=1)
+        return self.w.tolist()
 
     def predict(self, X_Pre):
-        # print(self.w)
         list_pre_x = []
         for i in range(X_Pre.shape[0]):
             list_result = X_Pre[i]
@@ -104,17 +98,13 @@ class PRS(object):
                     list_temp.extend(X_Pre[i][h] * list_result[-list_index[h]:len(list_result)])
                     list_index[h] = sum(list_index[h:])
                 list_result = np.array(list_temp).flatten()
-                # list_combine = np.concatenate((list_combine, list_result))
                 list_combine = np.hstack([list_combine, list_result])
             list_pre_x.append(np.hstack([[1] * X_Pre.shape[-1], list_combine]))
         array_pre_x = np.array(list_pre_x)
         if self.name != 'zi':
             array_pre_x = np.insert(array_pre_x, 0, 1, axis=1)
-        # print(array_pre_x)
         for index in self.remove_index:
             array_pre_x = np.delete(array_pre_x, index, axis=-1)
-        #     print(index)
-        # print(array_pre_x)
         Y_Pre = array_pre_x.dot(self.w)
         return Y_Pre
 

@@ -23,7 +23,8 @@ class LR_MFS(object):
         if mx != my or mx < 2:
             ValueError("The size of training data are wrong!")
         self.prs = PRS(name="simple", m=10)
-        self.prs.fit(_XL, _YL)
+        self.prs.calc_gram_matrix(_XL)
+        self.prs.fit(_YL)
         # 求高保真点在低保真模型处的值
         YL_H = self.prs.predict(_XH).reshape(-1, 1)
         if self.degree == 1:

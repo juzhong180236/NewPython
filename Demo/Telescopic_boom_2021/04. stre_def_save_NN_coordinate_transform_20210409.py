@@ -283,25 +283,25 @@ for i_component, _ in enumerate(list_temp_stresses):
     list_w_stress.append(list_w_stress_component)
     list_w_displacement.append(list_w_displacement_component)
 
-    """
-    按照每个节点进行预测
-    """
+"""
+按照每个节点进行预测
+"""
 
-    dict_rbf_model = {
+dict_rbf_model = {
 
-        "stress_w": list_w_stress,
-        # "stress_step": s_step,
-        # "stress_min": s_min,
+    "stress_w": list_w_stress,
+    # "stress_step": s_step,
+    # "stress_min": s_min,
 
-        "deformation_w": list_w_displacement,
-        # "deformation_step": d_step,
-        # "deformation_min": d_min,
+    "deformation_w": list_w_displacement,
+    # "deformation_step": d_step,
+    # "deformation_min": d_min,
 
-        "stds": stds,
-        "x_train": np_array_combination_train.flatten().tolist(),
-        "rbf_type": rbf_type,
-    }
+    "stds": stds,
+    "x_train": np_array_combination_train.flatten().tolist(),
+    "rbf_type": rbf_type,
+}
 
-    json_rbf_model = json.dumps(dict_rbf_model)
-    with open(path_prefix + path_switch[4:-2] + "_s_d_rbf.json", "w") as f:
-        json.dump(json_rbf_model, f)
+json_rbf_model = json.dumps(dict_rbf_model)
+with open(path_prefix + path_switch[4:-2] + "_s_d_rbf.json", "w") as f:
+    json.dump(json_rbf_model, f)

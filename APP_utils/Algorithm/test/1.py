@@ -1,9 +1,36 @@
 import numpy as np
 from threading import Thread
-from Demo.Ansys_Data_Utils_2021.Surrogate_Models.PRS import PRS
+from APP_utils.Algorithm.Surrogate_Model.PRS.bp_complicated_PRS import PRS
 
 
 # from APP_utils.Algorithm.Surrogate_Model.PRS.simple_multiple_PRS import PRS
+def spherical_variogram_model(m, d):
+    """Spherical model, m is [psill, range, nugget]"""
+    psill = float(m[0])  # c1
+    range_ = float(m[1])  # c2
+    nugget = float(m[2])  # c0
+    return np.piecewise(
+        d,
+        [d <= range_, d > range_],
+        [
+            lambda x: psill * ((3.0 * x) / (2.0 * range_) - (x ** 3.0) / (2.0 * range_ ** 3.0)) + nugget,
+            psill + nugget,
+        ],
+    )
+
+
+def a(m, d):
+    c1 = float(m[0])  # c1
+    c2 = float(m[1])  # c2
+    c0 = float(m[2])  # c0
+    return np.piecewise(
+        d,
+        [d <= c2, d > c2],
+        [
+            lambda x: c1 * ((3.0 * x) / (2.0 * c2) - (x ** 3.0) / (2.0 * c2 ** 3.0)) + c0,
+            c1 + c0,
+        ],
+    )
 
 
 # a = [[1, 2, 5], [3, 4, 6]]
@@ -34,13 +61,13 @@ def fun(x1, y1, x2, y2, x):
 #         _list_temp.append(X_pre[i] ** j)
 #     list_temp.append(np.array(_list_temp))
 # print(list_temp)
-x_train = np.array([[3, 2], [2, 3], [4, 5]])
-y_train = np.array([4, 5, 5])
-p = PRS(name='simple_m')
-print(p.prs)
-print(p.fit(x_train, y_train))
-print(p.predict(np.array([[3, 2]])))
-a = np.array([1, 1, 3, 2, 9, 4])
-b = [0.677844511177845, 0.6778445111778441, 0.8978144811478144, 1.187103770437104, -0.23014681348014693,
-     -0.08800467133800473]
-print(np.sum(a * b))
+# x_train = np.array([[3, 2, 5], [2, 3, 4], [4, 5, 6]])
+# y_train = np.array([4, 5, 5])
+# p = PRS()
+# print(p.calc_gram_matrix(x_train))
+# p.fit(y_train)
+
+x = np.arange(0, 10)
+print(x)
+xx = np.piecewise(x, [x < 4, x >= 6], [-1, 1])
+# print(spherical_variogram_model(np.array([3, 4, 5]), 6))

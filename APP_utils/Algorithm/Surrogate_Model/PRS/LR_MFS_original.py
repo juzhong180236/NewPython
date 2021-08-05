@@ -21,7 +21,8 @@ class LR_MFS(object):
         if ns != nx:
             ValueError("The variables of xtr and xts should be the same!")
         prs = PRS(name="simple", m=9)
-        prs.fit(XL, YL)
+        prs.fit(XL)
+        prs.fit(YL)
         # 求得测试点在低保真模型处的预测值
         YLtest = prs.predict(xtest).reshape(-1, 1)
         # print(YLtest)

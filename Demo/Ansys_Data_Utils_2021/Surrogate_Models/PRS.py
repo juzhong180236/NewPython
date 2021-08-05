@@ -17,7 +17,7 @@ class PRS(object):
         self.prs = None
     """
 
-    def __init__(self, name='simple', m=2):
+    def __init__(self, name='simple', m=3):
         self.name = name
         self.m = m
         self.prs = None
@@ -32,6 +32,9 @@ class PRS(object):
         else:
             self.prs = None
             # 有其他的继续往下加
+
+    def calc_gram_matrix(self, X):
+        return self.prs.calc_gram_matrix(X)
 
     def fit(self, X, Y):
         return self.prs.fit(X, Y)

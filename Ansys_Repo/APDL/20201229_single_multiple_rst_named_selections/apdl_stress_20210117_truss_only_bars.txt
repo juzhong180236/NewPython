@@ -3,7 +3,7 @@ FINISH
 /CLEAR
 /NOPR
 
-bar_quantity=9
+bar_quantity=11
 
 *DIM,path_write,STRING,128,1
 *DIM,path_read,STRING,128,1
@@ -13,30 +13,26 @@ bar_quantity=9
 ! 0 总坐标系，12开始自定义坐标
 sys_num = 0
 
-path_write(1,1)='C:\Users\asus\Desktop\bars_ele\'
+path_write(1,1)='C:\Users\asus\Desktop\bars_data\'
 !有几个file.rst文件，就将path_read设为几维数组
-path_read(1,1)='E:\Truss_ws_bar\20200905_files\dp0\SYS-7\MECH\file'
+path_read(1,1)='F:\Truss2\20200905_files\dp0\SYS-13\MECH\file'
 
-
-
-str_named_selection(1,1)='C_1'
-str_named_selection(1,2)='C_2'
-str_named_selection(1,3)='C_3'
-str_named_selection(1,4)='C_4'
-str_named_selection(1,5)='C_5'
-str_named_selection(1,6)='C_6'
-str_named_selection(1,7)='C_7'
-str_named_selection(1,8)='C_8'
-str_named_selection(1,9)='C_9'
-
-
+str_named_selection(1,1)='G1'
+str_named_selection(1,2)='G2'
+str_named_selection(1,3)='G3'
+str_named_selection(1,4)='G4'
+str_named_selection(1,5)='G5'
+str_named_selection(1,6)='G6'
+str_named_selection(1,7)='G7'
+str_named_selection(1,8)='G8'
+str_named_selection(1,9)='G9'
+str_named_selection(1,10)='G10'
+str_named_selection(1,11)='G11'
 
 ! 外循环次数，也就是rst文件的个数
 outter_cycle_times=1
 ! 内循环次数，随便设一个值，也就是每个rst文件中的子步数目，会在外循环中根据实际的子步数目动态更改。
-inner_cycle_times=1
-
-!109 和 115 行是输出stress的节点的序号
+inner_cycle_times=17
 
 /POST1
 /MKDIR,path_write(1,1)
@@ -62,73 +58,69 @@ file_name_middle='_'
                   *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
                *ENDIF
                *DO,count,1,bar_quantity,1
+                    *IF,count,EQ,4,THEN
+                       sys_num=12
+                    *ELSEIF,count,EQ,8
+                       sys_num=12
+                    *ELSEIF,count,EQ,6
+                       sys_num=13
+                    *ELSE
+                       sys_num=0
+                    *ENDIF
+                    CSYS,sys_num
                   !通过CMSEL选择定义的元件 CMSEL在单向选择很有用
-                  CMSEL,S,str_named_selection(1,count),ELEM
-                  !NSEL,S,NODE,,str_named_selection(1,count),str_named_selection(1,count)
-                  !*GET,node_num_max,NODE,,NUM,MAX
-                  !*GET,node_num_min,NODE,,NUM,MIN
-                  *GET,e_num_max,ELEM,,NUM,MAX
-                  *GET,e_num_min,ELEM,,NUM,MIN
+                  CMSEL,S,str_named_selection(1,count)
+                  NSLE,R,CORNER
+                  *GET,node_num_min,ELEM,,NUM,MIN
                   str_n_s=str_named_selection(1,count)
-                  *VWRITE,str_n_s
-                  !*VWRITE,CHRVAL(count) 数字编号不太好，使用数组形式需要先将它赋予一个变量，不然每一次数组中所有的元素都写入txt。
-                  (A9)
-                  e_num_diff = 1
-                  e_num = e_num_min
-                  *DOWHILE,e_num_diff
-                     !*GET,s_eqv,NODE,node_num,S,EQV,MAX
-                     !*VWRITE,CHRVAL(node_num),s_eqv
-                     !(A9,E16.8)
-
-                     e_node_1=CHRVAL(NELEM(e_num,1))
-                     e_node_2=CHRVAL(NELEM(e_num,2))
-                     e_node_3=CHRVAL(NELEM(e_num,3))
-                     e_node_4=CHRVAL(NELEM(e_num,4))
-                     e_node_5=CHRVAL(NELEM(e_num,5))
-                     e_node_6=CHRVAL(NELEM(e_num,6))
-                     e_node_7=CHRVAL(NELEM(e_num,7))
-                     e_node_8=CHRVAL(NELEM(e_num,8))
-                     *VWRITE,CHRVAL(e_num),e_node_1,e_node_2,e_node_3,e_node_4,e_node_5,e_node_6,e_node_7,e_node_8
-                     (A9,A9,A9,A9,A9,A9,A9,A9,A9)
-                     e_num_diff = e_num_max - e_num
-                     !node_num=NDNEXT(node_num)
-                     e_num =ELNEXT(e_num)
+                  *GET,node_count,NODE,0,COUNT
+                  *IF,count,NE,1,THEN
+                     *VWRITE,'C'
+                     (A1)
+                  *ENDIF
+                   *DO,i,1,node_count,1
+                      n_coord_x = NX(node_num_min)
+                      n_coord_y = NY(node_num_min)
+                      n_coord_z = NZ(node_num_min)
+                     *GET,s_eqv,NODE,node_num_min,S,EQV
+                     *VWRITE,CHRVAL(node_num_min),n_coord_x,n_coord_y,n_coord_z,s_eqv
+                     (A9,E16.8,E16.8,E16.8,E16.8)
+                     node_num_min=NDNEXT(node_num_min)
                   *ENDDO
                *ENDDO
             *ENDDO
         *ELSE
             file_name=CHRVAL(j)
             *CFOPEN,%file_name_out%%file_name_middle%%file_name%,txt
-
             *DO,count,1,bar_quantity,1
+                *IF,count,EQ,4,THEN
+                   sys_num=12
+                *ELSEIF,count,EQ,8
+                   sys_num=12
+                *ELSEIF,count,EQ,6
+                   sys_num=13
+                *ELSE
+                   sys_num=0
+                *ENDIF
+                CSYS,sys_num
                !通过CMSEL选择定义的元件 CMSEL在单向选择很有用
-               CMSEL,S,str_named_selection(1,count),ELEM
-               !NSEL,S,NODE,,str_named_selection(1,count),str_named_selection(1,count)
-               !*GET,node_num_max,NODE,,NUM,MAX
-               !*GET,node_num_min,NODE,,NUM,MIN
-               *GET,e_num_max,ELEM,,NUM,MAX
-               *GET,e_num_min,ELEM,,NUM,MIN
-               str_n_s=str_named_selection(1,count)
-               *VWRITE,str_n_s
-               !*VWRITE,CHRVAL(count) 数字编号不太好，使用数组形式需要先将它赋予一个变量，不然每一次数组中所有的元素都写入txt。
-               (A9)
-               e_num_diff = 1
-               e_num = e_num_min
-               *DOWHILE,node_num_diff
-                  e_node_1=CHRVAL(NELEM(e_num,1))
-                  e_node_2=CHRVAL(NELEM(e_num,2))
-                  e_node_3=CHRVAL(NELEM(e_num,3))
-                  e_node_4=CHRVAL(NELEM(e_num,4))
-                  e_node_5=CHRVAL(NELEM(e_num,5))
-                  e_node_6=CHRVAL(NELEM(e_num,6))
-                  e_node_7=CHRVAL(NELEM(e_num,7))
-                  e_node_8=CHRVAL(NELEM(e_num,8))
-                  *VWRITE,CHRVAL(e_num),e_node_1,e_node_2,e_node_3,e_node_4,e_node_5,e_node_6,e_node_7,e_node_8
-                  (A9,A9,A9,A9,A9,A9,A9,A9,A9)
-                  e_num_diff = e_num_max - e_num
-                  !node_num=NDNEXT(node_num)
-                  e_num =ELNEXT(e_num)
-               *ENDDO
+               CMSEL,S,str_named_selection(1,count)
+                NSLE,R,CORNER
+                  *GET,node_num_min,NODE,,NUM,MIN
+                  *GET,node_count,NODE,0,COUNT
+                  *IF,count,NE,1,THEN
+                     *VWRITE,'C'
+                     (A1)
+                  *ENDIF
+                  *DO,i,1,node_count,1
+                      n_coord_x = NX(node_num_min)
+                      n_coord_y = NY(node_num_min)
+                      n_coord_z = NZ(node_num_min)
+                     *GET,s_eqv,NODE,node_num_min,S,EQV
+                     *VWRITE,CHRVAL(node_num_min),n_coord_x,n_coord_y,n_coord_z,s_eqv
+                     (A9,E16.8,E16.8,E16.8,E16.8)
+                     node_num_min=NDNEXT(node_num_min)
+                  *ENDDO
             *ENDDO
         *ENDIF
         *CFCLOSE

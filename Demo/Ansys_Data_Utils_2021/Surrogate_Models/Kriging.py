@@ -4,8 +4,26 @@ from scipy.optimize import minimize
 from mpl_toolkits.mplot3d import Axes3D
 
 
+def gaussian(x1, x2, theta):
+    list_result = []
+    if x1.shape[-1] != 1:
+        for x1_ele in x1:
+            list_result.append(np.exp(np.sum(-theta * (x1_ele - x2) ** 2, axis=-1)).ravel())
+    else:
+        for x1_ele in x1:
+            list_result.append(np.exp(-theta * (x1_ele - x2) ** 2).ravel())
+    return np.asarray(list_result)
+
+
+func = {"gs": gaussian}
+
+
+# str_no_s = ['linear', 'cubic', 'square', 'linear_abs']
+
+
 class Kriging(object):
-    def __init__(self, theta=0.1, p=2):
+    def __init__(self, kernal='gs', theta=0.1, p=2):
+        self.krg = func[kernal]
         self.X = None
         self.Y = None
         self.theta = theta
@@ -14,19 +32,9 @@ class Kriging(object):
         self.inverse_matrix = None
         self.F = None
 
-    def gaussian_kernel(self, x1, x2):
-        list_result = []
-        if x1.shape[-1] != 1:
-            for x1_ele in x1:
-                list_result.append(np.exp(np.sum(-self.theta * (x1_ele - x2) ** 2, axis=-1)).ravel())
-        else:
-            for x1_ele in x1:
-                list_result.append(np.exp(-self.theta * (x1_ele - x2) ** 2).ravel())
-        return np.asarray(list_result)
-
     def negative_log_likelihood_loss(self, _theta):
         self.theta = _theta
-        correlation_matrix = self.gaussian_kernel(self.X, self.X) + 1e-8 * np.eye(len(self.X))
+        correlation_matrix = self.krg(self.X, self.X, self.theta) + 1e-8 * np.eye(len(self.X))
         inverse_matrix = np.linalg.inv(correlation_matrix)
         # 均值
         self.beta = self.F.T.dot(inverse_matrix).dot(self.Y) / (self.F.T.dot(inverse_matrix).dot(self.F))
@@ -52,14 +60,14 @@ class Kriging(object):
         # 单纯形法：Nelder-Mead
         # res = minimize(self.fitness, self.parameters, method='BFGS')
         self.theta = res.x
-        correlation_matrix = self.gaussian_kernel(self.X, self.X)
-
+        correlation_matrix = self.krg(self.X, self.X, self.theta)
         self.inverse_matrix = np.linalg.inv(correlation_matrix)
         self.beta = self.F.T.dot(self.inverse_matrix).dot(self.Y) / (self.F.T.dot(self.inverse_matrix).dot(self.F))
+        return [self.beta.tolist(), self.theta.tolist(), self.inverse_matrix.tolist(), self.F.tolist()]
 
     def predict(self, x_pre):
         # 相关向量
-        vector = self.gaussian_kernel(self.X, np.asarray(x_pre))
+        vector = self.krg(self.X, np.asarray(x_pre), self.theta)
         # 预测值
         y_pre = self.beta + vector.T.dot(self.inverse_matrix).dot(
             self.Y - self.F.dot(self.beta))

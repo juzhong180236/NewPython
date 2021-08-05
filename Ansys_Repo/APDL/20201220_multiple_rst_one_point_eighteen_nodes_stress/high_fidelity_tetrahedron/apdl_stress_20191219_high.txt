@@ -105,7 +105,7 @@ file_name_middle='_'
     *ENDIF
     *DO,j,1,inner_cycle_times,1
         SET,j
-        RSYS,sys_num
+        CSYS,sys_num
         !program control 187, linear 185
         !ESEL,S,ENAME,,187
         ESEL,S,ENAME,,185

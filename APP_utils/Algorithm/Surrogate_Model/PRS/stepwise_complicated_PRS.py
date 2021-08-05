@@ -94,8 +94,9 @@ class PRS(object):
         self.m = m
         self.w = w
         self.remove_index = remove_index
+        self.gram_matrix = None
 
-    def fit(self, X, Y):
+    def calc_gram_matrix(self, X):
         list_PRS_result = []  # 存放最终的Gramian矩阵的列表
         for i in range(X.shape[0]):  # 遍历输入值X的每个元素
             arr_result = X[i]  # 输入值X的每一个元素的在每一次m（次数）的Gramian矩阵
@@ -115,16 +116,14 @@ class PRS(object):
                 # print("当前的Gramian矩阵:" + str(list_combine))
             list_PRS_result.append(np.hstack([[1] * X.shape[-1], arr_combine]))  # 每个元素的Gramian矩阵
         PRS_result = np.array(list_PRS_result)
-        PRS_result = np.insert(PRS_result, 0, 1, axis=1)  # 所有元素的Gramian矩阵，将list转为ndarray
-        # print(PRS_result)
-        self.w = np.linalg.pinv(PRS_result).dot(Y)  # 根据Y和Gramian矩阵的伪逆求出权重w
-        # print(self.w)
-        # print(pd.DataFrame(PRS_result))
-        # print(self.w)
-        self.remove_index = stepwise_selection(pd.DataFrame(PRS_result), Y)
+        self.gram_matrix = np.insert(PRS_result, 0, 1, axis=1)  # 所有元素的Gramian矩阵，将list转为ndarray
+        return self.gram_matrix
+
+    def fit(self, Y):
+        self.w = np.linalg.pinv(self.gram_matrix).dot(Y)  # 根据Y和Gramian矩阵的伪逆求出权重w
+        self.remove_index = stepwise_selection(pd.DataFrame(self.gram_matrix), Y)
         self.w = np.delete(self.w, self.remove_index, axis=0)
-        # print(self.w)
-        PRS_result = np.delete(PRS_result, self.remove_index, axis=1)
+        PRS_result = np.delete(self.gram_matrix, self.remove_index, axis=1)
         return self.w, PRS_result
 
     def predict(self, X_Pre):

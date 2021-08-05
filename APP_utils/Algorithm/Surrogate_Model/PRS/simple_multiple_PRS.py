@@ -2,30 +2,24 @@ import numpy as np
 
 
 class PRS(object):
-    def __init__(self, m=2, w=0):
+    def __init__(self, m=3, w=0):
         self.m = m
         self.w = w
+        self.gram_matrix = None
 
-    def fit(self, X, Y):
-        # 把训练点的x输入
-        # data_PRS_result = np.empty(shape=(X.shape[0], self.m + 1), dtype=object)
+    def calc_gram_matrix(self, X):
         list_PRS_result = []
         for i in range(X.shape[0]):  # m
-            # list_result = X[i]
-            # list_combine = X[i]
             list_temp = []
             for j in range(self.m + 1):
-                # list_temp = [ele * list_result for ele in X[i]]
                 list_temp.append(X[i] ** j)
-                # list_result = np.array(list_temp).flatten()
-                # list_combine = np.concatenate((list_combine, list_result))
-                # list_combine = np.hstack([list_combine, list_result])
-                # data_PRS_result[i][j] = X[i] ** j
             list_PRS_result.append(np.array(list_temp).ravel())
-        PRS_result = np.array(list_PRS_result)
-        # print(PRS_result)
-        # 根据Y和伪逆求出w
-        self.w = np.linalg.pinv(PRS_result).dot(Y)
+        self.gram_matrix = np.array(list_PRS_result)
+        return self.gram_matrix
+
+    def fit(self, Y):
+        # self.w = np.linalg.solve(self.gram_matrix, Y)
+        self.w = np.linalg.pinv(self.gram_matrix).dot(Y)
         return self.w.tolist()
 
     def predict(self, X_Pre):
@@ -41,7 +35,6 @@ class PRS(object):
                 # list_combine = np.concatenate((list_combine, list_result))
             # list_pre_x.append(list_combine)
             list_pre_x.append(np.array(list_temp).ravel())
-        print(np.array(list_pre_x))
         Y_Pre = np.array(list_pre_x).dot(self.w)
         return Y_Pre
 
