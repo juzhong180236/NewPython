@@ -305,6 +305,35 @@ class ElementData(object):
         coordfile.close()
         return list_surface_ele_list
 
+    def surfaceEle_Convert_aerofoil(self, path_coord):
+        """
+        :param path_coord: 坐标数据文件
+        :return:
+        """
+        set_surface_ele_list = self.set_SurfaceEle_aerofoil()
+        # list_surface_ele_list = self.list_SurfaceEle_aerofoil()
+        coordfile = open(path_coord, 'rt')
+        coordinates_str = coordfile.read()
+        coordinates_list = coordinates_str.split("C")
+        cd_component_dict_list = []
+        for i_cd_list, _ in enumerate(coordinates_list):
+            iCoord = 0  # 上述替换真实索引值(real_index_1、real_index_2...)的值
+            # 存放所有坐标值的“从0开始的虚假索引”的字典
+            # 结构为{real_index_1：[0,x,y,z],real_index_2:[1,x,y,z]...}
+            # 其意图是用0,1...来替换real_index_1,real_index_2...
+            dict_coord = {}
+            temp_list = coordinates_list[i_cd_list].strip().split("\n")
+            for temp_list_child in temp_list:
+                _list = temp_list_child.split()
+                cd_index = int(_list[0])
+                if cd_index in set_surface_ele_list[i_cd_list]:  # 根据element_data中set_surfaceEle方法返回的信息，只需表面点的坐标
+                    dict_coord[cd_index] = iCoord  # 将对应点的真实编号和要更新的iCoord一一对应起来
+                    iCoord += 1
+            # cd_component_dict_list.append(dict_coord)
+            if i_cd_list == 0:
+                return dict_coord
+
+
 
 if __name__ == "__main__":
     # path_four_read = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\pulley\pre\ele\ELIST.lis"

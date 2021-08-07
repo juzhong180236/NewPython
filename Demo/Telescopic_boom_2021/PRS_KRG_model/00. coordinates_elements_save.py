@@ -1,11 +1,12 @@
 from Demo.Telescopic_boom_2021.libs.element_data import ElementData
 import json
+import pandas as pd
 
 """
 因为ansys中的文件顺序（也就是工况顺序）是乱序排列，所以要使用filename_sort将文件排列好后进行存储
 """
 path_prefix = r"H:\Code\DT_Telescopic_Boom_v2.0\APP_models\\"
-path_switch = r'pre_telescopic_boom_v3.0\\'
+path_switch = r'pre_telescopic_boom_v1.0\\'
 # 读取路径(读pre)
 path_read = path_prefix + path_switch
 
@@ -40,11 +41,18 @@ set_ele_surface_list = ele_data.set_SurfaceEle_aerofoil()
 ele_data_save = ele_data.surfaceEle_Real_Sequence_aerofoil(
     path_read + r'coordinates.txt')
 
+ele_index_threejs_dict = ele_data.surfaceEle_Convert_aerofoil(path_read + r'coordinates.txt')
+index_max = pd.read_csv(path_read + 'Index_max.csv')
+list_index_max_threejs = []
+for _cd_index_max in index_max.values:
+    list_index_max_threejs.append(ele_index_threejs_dict[_cd_index_max[0]])
+
 coordinates = open(path_read + r'coordinates.txt', 'rt')
 coordinates_str = coordinates.read()
 coordinates_list = coordinates_str.split("C")
 cd_result_list = []
 cd_result_list_negative = []
+cd_z_max_list = []
 # 命名为C_1到C_4的Component，共4个Components，即4次循环
 for i_cd_list, _ in enumerate(coordinates_list):
     cd_component_list = []
@@ -55,6 +63,9 @@ for i_cd_list, _ in enumerate(coordinates_list):
         _list = temp_list[i_list_child].split()
         cd_index = int(_list[0])
         if cd_index in set_ele_surface_list[i_cd_list]:
+            if i_cd_list == 0:
+                if cd_index in index_max.values:
+                    cd_z_max_list.append(float(_list[3]))
             cd_x = float(_list[1])
             cd_y = float(_list[2])
             cd_z = float(_list[3])
@@ -67,7 +78,9 @@ dict_rbf_model = {
     "coordinates": cd_result_list,
     "coordinates_negative": cd_result_list_negative,
     "elements_index": ele_data_save,
+    "index_max": list_index_max_threejs,
+    "cd_z_max": cd_z_max_list,
 }
 json_rbf_model = json.dumps(dict_rbf_model)
-with open(path_read + path_switch[4:-7] + "_ele_coord_prs.json", "w") as f:
+with open(path_prefix + r'pre_telescopic_boom_v3.0\\' + path_switch[4:-7] + "_ele_coord_prs.json", "w") as f:
     json.dump(json_rbf_model, f)

@@ -8,7 +8,7 @@ from scipy.interpolate import griddata
 import pandas as pd
 
 """
-3.3度的伸缩臂，应力和变形数据没有索引
+3.3度的伸缩臂，应力和变形数据没有索引，因为kriging用matlab编写，这篇程序被放弃
 """
 path_prefix = r"H:\Code\DT_Telescopic_Boom_v2.0\APP_models\\"
 path_switch = r'pre_telescopic_boom_v1.0\\'
@@ -52,23 +52,22 @@ coordinates_str = coordinates.read()
 coordinates_list = coordinates_str.split("C")
 cd_result_list = []
 cd_result_list_negative = []
-cd_index_list = []
+cd_index_max_list = []
 cd_z_max_list = []
 # 命名为C_1到C_4的Component，共4个Components，即4次循环
 for i_cd_list, _ in enumerate(coordinates_list):
     cd_component_list = []
     cd_component_list_negative = []
-    cd_component_list_index = []
     temp_list = coordinates_list[i_cd_list].strip().split("\n")
     # 每个Component中的坐标，应力，位移个数。根据Component的不同循环次数不同
     for i_list_child, _ in enumerate(temp_list):
         _list = temp_list[i_list_child].split()
         cd_index = int(_list[0])
-        cd_component_list_index.append(cd_index)
-        if i_cd_list == 0:
-            if cd_index in index_max.values:
-                cd_z_max_list.append(float(_list[3]))
         if cd_index in set_ele_surface_list[i_cd_list]:
+            if i_cd_list == 0:
+                if cd_index in index_max.values:
+                    cd_index_max_list.append(cd_index)
+                    cd_z_max_list.append(float(_list[3]))
             cd_x = float(_list[1])
             cd_y = float(_list[2])
             cd_z = float(_list[3])
@@ -76,7 +75,6 @@ for i_cd_list, _ in enumerate(coordinates_list):
             cd_component_list_negative.extend([-cd_x, cd_y, cd_z])
     cd_result_list.append(cd_component_list)
     cd_result_list_negative.append(cd_component_list_negative)
-    cd_index_list.append(cd_component_list_index)
 coordinates.close()
 
 """

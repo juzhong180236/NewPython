@@ -1,5 +1,5 @@
 import numpy as np
-from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF_Surrogate import RBF
+from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF import RBF
 import matplotlib.pyplot as plt
 
 

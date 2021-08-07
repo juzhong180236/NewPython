@@ -33,6 +33,20 @@ def a(m, d):
     )
 
 
+def spherical(_d, _theta):
+    m, n = _d.shape
+    td = min(abs(_d) * np.tile(_theta, m).any(), [1])
+    print(td)
+    return list(map(lambda _x: 1 - (1.5 * _x / _theta - (_x ** 3.0) / (2.0 * _theta ** 3.0)), _d))
+
+
+# d = np.array([1, 2, 3]).reshape(-1, 3)
+# theta = np.array([2, 3, 4])
+# spherical(d, theta)
+
+print(min([1, 3, 4], [1, 1, 1]))
+
+
 # a = [[1, 2, 5], [3, 4, 6]]
 # print(type(1))
 # b = [1, 2, 3, 4, 4, 5]
@@ -42,7 +56,6 @@ def fun(x1, y1, x2, y2, x):
     temp = (y2 - y1) / (x2 - x1)
     y = temp * (x - x1) + y1
     return y
-
 
 # print(fun(0.06, 0.05, 0.28, 0.02543, 0.06 + 0.073))
 # print(fun(0.06, 0.05, 0.28, 0.02543, 0.06 + 0.073 * 2))
@@ -67,7 +80,8 @@ def fun(x1, y1, x2, y2, x):
 # print(p.calc_gram_matrix(x_train))
 # p.fit(y_train)
 
-x = np.arange(0, 10)
-print(x)
-xx = np.piecewise(x, [x < 4, x >= 6], [-1, 1])
+# x = np.arange(0, 10)
+# print(x)
+# xx = np.piecewise(x, [x < 4, x >= 6], [-1, 1])
+# print(xx)
 # print(spherical_variogram_model(np.array([3, 4, 5]), 6))
