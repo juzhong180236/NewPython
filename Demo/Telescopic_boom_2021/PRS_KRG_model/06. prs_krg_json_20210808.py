@@ -18,6 +18,14 @@ with open(path_read + r"prs\\" + prs_type + r"\\" + path_switch[4:-7] + "_s_d_pr
           "r") as f:
     dict_s_d = json.loads(json.load(f))
 
+with open(path_read + r"prs\\" + prs_type + r"\\" + path_switch[4:-7] + "_delta_s_prs.json",
+          "r") as f:
+    dict_delta_s = json.loads(json.load(f))
+
+with open(path_read + r"prs\\" + prs_type + r"\\" + path_switch[4:-7] + "_f_prs.json",
+          "r") as f:
+    dict_f = json.loads(json.load(f))
+
 with open(path_read + r"krg\\" + path_switch[4:-7] + "_s_krg.json",
           "r") as f:
     dict_s_krg = json.loads(json.load(f))
@@ -41,6 +49,9 @@ for i in range(4):
 
             "jin_krg": dict_s_krg["jin_krg"],
             "hui_krg": dict_s_krg["hui_krg"],
+
+            "force_w": dict_f["force_w"],
+            "delta_stress_w": dict_delta_s["delta_stress_w"][i],
         }
     else:
         dict_result = {
@@ -55,6 +66,9 @@ for i in range(4):
             "m": dict_s_d["m"],
             "x_train": dict_s_d["x_train"],
             "prs_type": dict_s_d["prs_type"],
+
+            "force_w": dict_f["force_w"],
+            "delta_stress_w": dict_delta_s["delta_stress_w"][i],
         }
     with open(path_read + r"prs\\"
               + dict_s_d["prs_type"] + r"\\"

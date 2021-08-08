@@ -5,7 +5,9 @@
 02. 20210803 应力 full模式预测，进程回程未区分
 02. jin_hui 应力 full模式预测，进程回程区分
 02. v2 另一套坐标
-03. krg json保存
-04. prs json合并
-04. prs_krg 一起合并
-05. 试错代码
+03. delta力预测delta应力
+04. krg json保存
+05. 过坎力预测
+06. prs json合并
+06. prs_krg 一起合并
+99. 试错代码
