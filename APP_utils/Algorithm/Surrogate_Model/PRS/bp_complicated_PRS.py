@@ -59,8 +59,9 @@ class PRS(object):
                 # print("当前的Gramian矩阵:" + str(list_combine))
             list_PRS_result.append(np.hstack([[1] * X.shape[-1], arr_combine]))  # 每个元素的Gramian矩阵
         self.gram_matrix = np.array(list_PRS_result)
+        self.gram_matrix = np.delete(self.gram_matrix, range(self.m - 1), axis=1)
         if self.name == 'zi':
-            self.gram_matrix = np.insert(self.gram_matrix, 0, 1, axis=1)  # 所有元素的Gramian矩阵，将list转为ndarray
+            self.gram_matrix = np.delete(self.gram_matrix, 0, axis=1)  # 所有元素的Gramian矩阵，将list转为ndarray
         return self.gram_matrix
 
     def fit(self, Y):
@@ -101,8 +102,12 @@ class PRS(object):
                 list_combine = np.hstack([list_combine, list_result])
             list_pre_x.append(np.hstack([[1] * X_Pre.shape[-1], list_combine]))
         array_pre_x = np.array(list_pre_x)
-        if self.name != 'zi':
-            array_pre_x = np.insert(array_pre_x, 0, 1, axis=1)
+        print(array_pre_x)
+        array_pre_x = np.delete(array_pre_x, [0, 1], axis=1)
+        print(array_pre_x)
+
+        if self.name == 'zi':
+            array_pre_x = np.delete(array_pre_x, 0, axis=1)
         for index in self.remove_index:
             array_pre_x = np.delete(array_pre_x, index, axis=-1)
         Y_Pre = array_pre_x.dot(self.w)

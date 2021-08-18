@@ -57,6 +57,7 @@ def fun(x1, y1, x2, y2, x):
     y = temp * (x - x1) + y1
     return y
 
+
 # print(fun(0.06, 0.05, 0.28, 0.02543, 0.06 + 0.073))
 # print(fun(0.06, 0.05, 0.28, 0.02543, 0.06 + 0.073 * 2))
 # print(fun(0.06, 0.05, 0.28, 0.02543, 0.06 + 0.073 * 2 + 0.074))
@@ -74,11 +75,13 @@ def fun(x1, y1, x2, y2, x):
 #         _list_temp.append(X_pre[i] ** j)
 #     list_temp.append(np.array(_list_temp))
 # print(list_temp)
-# x_train = np.array([[3, 2, 5], [2, 3, 4], [4, 5, 6]])
-# y_train = np.array([4, 5, 5])
-# p = PRS()
-# print(p.calc_gram_matrix(x_train))
-# p.fit(y_train)
+x_train = np.array([[3, 2, 5], [2, 3, 4], [4, 5, 6]])
+y_train = np.array([4, 5, 5])
+x_pre = np.array([[3, 4, 5]])
+p = PRS(m=3)
+p.calc_gram_matrix(x_train)
+p.fit(y_train)
+p.predict(x_pre)
 
 # x = np.arange(0, 10)
 # print(x)

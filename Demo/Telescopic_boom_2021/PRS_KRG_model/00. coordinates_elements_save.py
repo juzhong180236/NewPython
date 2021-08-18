@@ -42,10 +42,19 @@ ele_data_save = ele_data.surfaceEle_Real_Sequence_aerofoil(
     path_read + r'coordinates.txt')
 
 ele_index_threejs_dict = ele_data.surfaceEle_Convert_aerofoil(path_read + r'coordinates.txt')
+# print(ele_index_threejs_dict)
 index_max = pd.read_csv(path_read + 'Index_max.csv')
 list_index_max_threejs = []
 for _cd_index_max in index_max.values:
     list_index_max_threejs.append(ele_index_threejs_dict[_cd_index_max[0]])
+
+test_points = pd.read_csv(path_read + 'test_points_real.csv')
+list_test_points_threejs = []
+for _test_points in test_points.values:
+    list_test_points_threejs.append(
+        [int(_test_points[0]),
+         int(ele_index_threejs_dict[_test_points[1]]),
+         float(_test_points[2])])
 
 coordinates = open(path_read + r'coordinates.txt', 'rt')
 coordinates_str = coordinates.read()
@@ -80,6 +89,7 @@ dict_rbf_model = {
     "elements_index": ele_data_save,
     "index_max": list_index_max_threejs,
     "cd_z_max": cd_z_max_list,
+    "test_points": list_test_points_threejs,
 }
 json_rbf_model = json.dumps(dict_rbf_model)
 with open(path_prefix + r'pre_telescopic_boom_v3.0\\' + path_switch[4:-7] + "_ele_coord_prs.json", "w") as f:

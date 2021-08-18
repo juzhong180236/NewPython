@@ -334,7 +334,6 @@ class ElementData(object):
                 return dict_coord
 
 
-
 if __name__ == "__main__":
     # path_four_read = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\pulley\pre\ele\ELIST.lis"
     path_four_read = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\pulley\mid\element_surface_new.txt"

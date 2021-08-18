@@ -38,6 +38,7 @@ for i in range(4):
             "elements_index": dict_c_e["elements_index"][i],
             "index_max": dict_c_e["index_max"],
             "cd_z_max": dict_c_e["cd_z_max"],
+            "test_points": dict_c_e["test_points"],
 
             "stress_w_jin": dict_s_d["stress_w_jin"][i],
             "deformation_w_jin": dict_s_d["deformation_w_jin"][i],
