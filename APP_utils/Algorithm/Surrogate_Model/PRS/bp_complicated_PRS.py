@@ -58,8 +58,10 @@ class PRS(object):
                 arr_combine = np.hstack([arr_combine, arr_result])  # 将ndarray组合起来作为每个元素的Gramian矩阵
                 # print("当前的Gramian矩阵:" + str(list_combine))
             list_PRS_result.append(np.hstack([[1] * X.shape[-1], arr_combine]))  # 每个元素的Gramian矩阵
-        self.gram_matrix = np.array(list_PRS_result)
-        self.gram_matrix = np.delete(self.gram_matrix, range(self.m - 1), axis=1)
+        if self.m == 0:
+            self.gram_matrix = np.array([1] * X.shape[-1]).reshape(-1, 1)
+        else:
+            self.gram_matrix = np.delete(np.array(list_PRS_result), range(X.shape[-1] - 1), axis=1)
         if self.name == 'zi':
             self.gram_matrix = np.delete(self.gram_matrix, 0, axis=1)  # 所有元素的Gramian矩阵，将list转为ndarray
         return self.gram_matrix
@@ -101,11 +103,10 @@ class PRS(object):
                 list_result = np.array(list_temp).flatten()
                 list_combine = np.hstack([list_combine, list_result])
             list_pre_x.append(np.hstack([[1] * X_Pre.shape[-1], list_combine]))
-        array_pre_x = np.array(list_pre_x)
-        print(array_pre_x)
-        array_pre_x = np.delete(array_pre_x, [0, 1], axis=1)
-        print(array_pre_x)
-
+        if self.m == 0:
+            array_pre_x = np.array([1] * X_Pre.shape[-1]).reshape(-1, 1)
+        else:
+            array_pre_x = np.delete(np.array(list_pre_x), range(X_Pre.shape[-1] - 1), axis=1)
         if self.name == 'zi':
             array_pre_x = np.delete(array_pre_x, 0, axis=1)
         for index in self.remove_index:

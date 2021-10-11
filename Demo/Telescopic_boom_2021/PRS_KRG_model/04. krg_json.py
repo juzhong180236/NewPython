@@ -5,7 +5,7 @@ from Demo.Telescopic_boom_2021.libs.readexcel import read_excel
 """
 将kriging模型转为json格式
 """
-path_prefix = r"H:\Code\DT_Telescopic_Boom_v2.0\APP_models\\"
+path_prefix = r"H:\Code\SANY_TB_DT\DT_Telescopic_Boom_v2.0\APP_models\\"
 path_switch = r'pre_telescopic_boom_v1.0\Kriging Model\\'
 # 读取路径(读pre)
 path_read_jin = path_prefix + path_switch + r'jin\\'

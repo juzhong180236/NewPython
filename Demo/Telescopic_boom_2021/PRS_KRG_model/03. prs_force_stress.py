@@ -9,7 +9,7 @@ import pandas as pd
 """
 3.3度的伸缩臂，应力和变形数据没有索引
 """
-path_prefix = r"H:\Code\DT_Telescopic_Boom_v2.0\APP_models\\"
+path_prefix = r"H:\Code\SANY_TB_DT\DT_Telescopic_Boom_v2.0\APP_models\\"
 path_switch = r'pre_telescopic_boom_v1.0\\'
 
 # 读取路径(读pre)

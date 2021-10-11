@@ -1,11 +1,12 @@
 from Demo.Telescopic_boom_2021.libs.element_data import ElementData
 import json
 import pandas as pd
+import os
 
 """
 因为ansys中的文件顺序（也就是工况顺序）是乱序排列，所以要使用filename_sort将文件排列好后进行存储
 """
-path_prefix = r"H:\Code\DT_Telescopic_Boom_v2.0\APP_models\\"
+path_prefix = r"H:\Code\SANY_TB_DT\DT_Telescopic_Boom_v2.0\APP_models\\"
 path_switch = r'pre_telescopic_boom_v1.0\\'
 # 读取路径(读pre)
 path_read = path_prefix + path_switch
@@ -46,14 +47,25 @@ ele_index_threejs_dict = ele_data.surfaceEle_Convert_aerofoil(path_read + r'coor
 index_max = pd.read_csv(path_read + 'Index_max.csv')
 list_index_max_threejs = []
 for _cd_index_max in index_max.values:
-    list_index_max_threejs.append(ele_index_threejs_dict[_cd_index_max[0]])
+    list_index_max_threejs.append(ele_index_threejs_dict[0][_cd_index_max[0]])
+
+# 读取并转换焊缝节点
+all_files = os.listdir(path_read + r"Weld\\")
+list_weld_joint_threejs = []
+for _i, _file in enumerate(all_files):
+    weld_joint = pd.read_csv(path_read + r"Weld\\" + _file)
+    _list_weld_joint_threejs = []
+    for _weld_joint in weld_joint.values:
+        # print(_file)
+        _list_weld_joint_threejs.append(ele_index_threejs_dict[_i // 8][_weld_joint[0]])
+    list_weld_joint_threejs.append(_list_weld_joint_threejs)
 
 test_points = pd.read_csv(path_read + 'test_points_real.csv')
 list_test_points_threejs = []
 for _test_points in test_points.values:
     list_test_points_threejs.append(
         [int(_test_points[0]),
-         int(ele_index_threejs_dict[_test_points[1]]),
+         int(ele_index_threejs_dict[0][_test_points[1]]),
          float(_test_points[2])])
 
 coordinates = open(path_read + r'coordinates.txt', 'rt')
@@ -88,6 +100,7 @@ dict_rbf_model = {
     "coordinates_negative": cd_result_list_negative,
     "elements_index": ele_data_save,
     "index_max": list_index_max_threejs,
+    "weld_joint": list_weld_joint_threejs,
     "cd_z_max": cd_z_max_list,
     "test_points": list_test_points_threejs,
 }

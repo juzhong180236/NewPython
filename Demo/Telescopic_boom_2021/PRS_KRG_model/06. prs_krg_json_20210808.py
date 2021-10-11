@@ -3,7 +3,7 @@ import json
 """
 因为json字符串中对象种类过多，load第一次解析出来的是str，再loads一次才能是字典对象
 """
-path_prefix = r"H:\Code\DT_Telescopic_Boom_v2.0\APP_models\\"
+path_prefix = r"H:\Code\SANY_TB_DT\DT_Telescopic_Boom_v2.0\APP_models\\"
 
 path_switch = r'pre_telescopic_boom_v3.0\\'
 path_read = path_prefix + path_switch
@@ -39,6 +39,8 @@ for i in range(4):
             "index_max": dict_c_e["index_max"],
             "cd_z_max": dict_c_e["cd_z_max"],
             "test_points": dict_c_e["test_points"],
+            # "weld_joint": dict_c_e["weld_joint"][i:8],  # js
+            "weld_joint_list": sum(dict_c_e["weld_joint"][i:8], []),  # C#
 
             "stress_w_jin": dict_s_d["stress_w_jin"][i],
             "deformation_w_jin": dict_s_d["deformation_w_jin"][i],
@@ -59,6 +61,8 @@ for i in range(4):
             "coordinates": dict_c_e["coordinates"][i],
             "coordinates_negative": dict_c_e["coordinates_negative"][i],
             "elements_index": dict_c_e["elements_index"][i],
+            # "weld_joint": dict_c_e["weld_joint"][i * 8:(i + 1) * 8],  # js
+            "weld_joint_list": sum(dict_c_e["weld_joint"][i * 8:(i + 1) * 8], []),  # C#
 
             "stress_w_jin": dict_s_d["stress_w_jin"][i],
             "deformation_w_jin": dict_s_d["deformation_w_jin"][i],

@@ -329,10 +329,10 @@ class ElementData(object):
                 if cd_index in set_surface_ele_list[i_cd_list]:  # 根据element_data中set_surfaceEle方法返回的信息，只需表面点的坐标
                     dict_coord[cd_index] = iCoord  # 将对应点的真实编号和要更新的iCoord一一对应起来
                     iCoord += 1
-            # cd_component_dict_list.append(dict_coord)
-            if i_cd_list == 0:
-                return dict_coord
-
+            cd_component_dict_list.append(dict_coord)
+            # if i_cd_list == 0:
+            #     return dict_coord
+        return cd_component_dict_list
 
 if __name__ == "__main__":
     # path_four_read = r"C:\Users\asus\Desktop\Demo_DT_Crane\APP_models\pulley\pre\ele\ELIST.lis"
