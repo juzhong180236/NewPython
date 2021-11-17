@@ -4,14 +4,14 @@ import time
 
 
 def gaussian(x, c, s):
-    if c.ndim != 1:  # 需要用shape来判断
+    if c.shape[-1] != 1:  # 需要用shape来判断
         return np.exp(-np.sqrt(np.sum((x - c) ** 2, axis=-1)) / (2 * s ** 2))
     else:
         return np.exp(-(x - c) ** 2 / (2 * s ** 2))
 
 
 def multiquadric(x, c, s):
-    if c.ndim != 1:
+    if c.shape[-1] != 1:
         return np.sqrt(np.sqrt(np.sum((x - c) ** 2, axis=-1)) + s ** 2)
     else:
         return np.sqrt((x - c) ** 2 + s ** 2)
@@ -22,7 +22,7 @@ def linear(x, c):
 
 
 def linear_abs(x, c):
-    if c.ndim != 1:
+    if c.shape[-1] != 1:
         return np.abs(np.sqrt(np.sum((x - c) ** 2, axis=-1)))  # lin_a多维正确公式
         # return np.sum(np.abs(x - c), axis=-1)  # lin_a多维，先求基函数，再相加
     else:
@@ -54,7 +54,7 @@ str_no_s = ['linear', 'cubic', 'square', 'linear_abs']
 
 class RBF(object):
     # def RBF(X, Y, X_Pre):
-    def __init__(self, rbf="lin_a", std=0, w=None, x=np.array([])):
+    def __init__(self, rbf="mq", std=0, w=None, x=np.array([])):
         self.rbf = func[rbf]  # rbf名称
         self.std = std
         self.w = w
@@ -67,7 +67,8 @@ class RBF(object):
         max_distance_list = []
         for i in range(X.shape[0]):
             max_distance_list.append(max([np.linalg.norm(m) for m in X - X[i]]))
-        self.std = max(max_distance_list) / X.shape[0]
+        # self.std = max(max_distance_list) / X.shape[0]
+        self.std = max(max_distance_list) / np.sqrt(2 * X.shape[0])
         for i in range(X.shape[0]):
             if self.rbf.__name__ in str_no_s:
                 list_result.append(self.rbf(X[i], X).ravel())

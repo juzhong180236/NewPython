@@ -68,6 +68,21 @@ for _test_points in test_points.values:
          int(ele_index_threejs_dict[0][_test_points[1]]),
          float(_test_points[2])])
 
+test_points_2 = pd.read_csv(path_read + 'test_points_real2.csv')
+test_points_3 = pd.read_csv(path_read + 'test_points_real3.csv')
+test_points_4 = pd.read_csv(path_read + 'test_points_real4.csv')
+test_points_234 = [test_points_2.values, test_points_3.values, test_points_4.values]
+threejs_test_points_234 = []
+for _i, _test_points in enumerate(test_points_234):
+    threejs_test_points = []
+    for _j, _temp in enumerate(_test_points):
+        threejs_test_points.append(
+            [_j + 1,
+             int(ele_index_threejs_dict[_i + 1][_temp[0]]),
+             0]
+        )
+    threejs_test_points_234.append(threejs_test_points)
+
 coordinates = open(path_read + r'coordinates.txt', 'rt')
 coordinates_str = coordinates.read()
 coordinates_list = coordinates_str.split("C")
@@ -103,6 +118,7 @@ dict_rbf_model = {
     "weld_joint": list_weld_joint_threejs,
     "cd_z_max": cd_z_max_list,
     "test_points": list_test_points_threejs,
+    "test_points_234": threejs_test_points_234,
 }
 json_rbf_model = json.dumps(dict_rbf_model)
 with open(path_prefix + r'pre_telescopic_boom_v3.0\\' + path_switch[4:-7] + "_ele_coord_prs.json", "w") as f:

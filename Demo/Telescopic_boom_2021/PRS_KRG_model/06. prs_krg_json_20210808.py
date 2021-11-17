@@ -39,7 +39,7 @@ for i in range(4):
             "index_max": dict_c_e["index_max"],
             "cd_z_max": dict_c_e["cd_z_max"],
             "test_points": dict_c_e["test_points"],
-            # "weld_joint": dict_c_e["weld_joint"][i:8],  # js
+            "weld_joint": dict_c_e["weld_joint"][i:8],  # js
             "weld_joint_list": sum(dict_c_e["weld_joint"][i:8], []),  # C#
 
             "stress_w_jin": dict_s_d["stress_w_jin"][i],
@@ -61,7 +61,8 @@ for i in range(4):
             "coordinates": dict_c_e["coordinates"][i],
             "coordinates_negative": dict_c_e["coordinates_negative"][i],
             "elements_index": dict_c_e["elements_index"][i],
-            # "weld_joint": dict_c_e["weld_joint"][i * 8:(i + 1) * 8],  # js
+            "test_points": dict_c_e["test_points_234"][i-1],
+            "weld_joint": dict_c_e["weld_joint"][i * 8:(i + 1) * 8],  # js
             "weld_joint_list": sum(dict_c_e["weld_joint"][i * 8:(i + 1) * 8], []),  # C#
 
             "stress_w_jin": dict_s_d["stress_w_jin"][i],

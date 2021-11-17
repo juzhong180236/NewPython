@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from collections import OrderedDict
 import pandas as pd
-from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF_Surrogate import RBF
+from Demo.Ansys_Data_Utils_2021.Surrogate_Models.RBF import RBF
 from Demo.Ansys_Data_Utils_2021.Surrogate_Models.MFS_RBF import MFS_RBF
 import json
 
@@ -21,7 +21,7 @@ import json
 """
 所谓low_fidelity，其实就是Beam188单元
 """
-path_prefix = r"C:\Users\asus\Desktop\Code\DT_Crane_Boom_v1.0\APP_models\\"
+path_prefix = r"H:\Code\DT_Crane_Boom_v1.0\APP_models\\"
 path_arr = \
     {
         "low": r"pre_low_fidelity_truss_point\deformation_point_more_nodes\\",
@@ -260,7 +260,7 @@ def ax_fun(_ax, _str):
     MIDDLE_SIZE = 12
     _ax.set_xlabel("The mass of lifting load (Kg)", fontsize=BIGGER_SIZE)
     _ax.set_ylabel("The degree of luffing angle (deg)", fontsize=BIGGER_SIZE)
-    _ax.set_zlabel('Stress (Mpa)', fontsize=BIGGER_SIZE)
+    _ax.set_zlabel('Deformation (mm)', fontsize=BIGGER_SIZE)
 
     plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
     _ax.view_init(elev=30., azim=-135)  # 调整视角
@@ -275,16 +275,16 @@ for i_point in range(18):
     2021.03.06 在出图的时候分别注释下面的4段代码中的3段。
     """
 
-    fig = plt.figure(figsize=(10, 8))
-    ax = Axes3D(fig)
-    create_figure(ax,
-                  verification_X, verification_Y, list_test_predict_deformation_high[i_point],
-                  train_high[:, 0], train_high[:, 1],
-                  array_real_deformation_high[i_point],
-                  'ocean',
-                  'r',
-                  )
-    ax_fun(ax, str(i_point) + "high")
+    # fig = plt.figure(figsize=(10, 8))
+    # ax = Axes3D(fig)
+    # create_figure(ax,
+    #               verification_X, verification_Y, list_test_predict_deformation_high[i_point],
+    #               train_high[:, 0], train_high[:, 1],
+    #               array_real_deformation_high[i_point],
+    #               'ocean',
+    #               'r',
+    #               )
+    # ax_fun(ax, str(i_point) + "high")
 
     # fig = plt.figure(figsize=(10, 8))
     # ax = Axes3D(fig)
@@ -302,24 +302,24 @@ for i_point in range(18):
     #                  )
     # ax_fun(ax, str(i_point) + "co")
 
-    # fig = plt.figure(figsize=(10, 8))
-    # ax = Axes3D(fig)
-    # create_figure_co(ax, verification_X, verification_Y,
-    #                  array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
-    #                  'inferno',
-    #                  )
+    fig = plt.figure(figsize=(10, 8))
+    ax = Axes3D(fig)
+    create_figure_co(ax, verification_X, verification_Y,
+                     array_real_deformation_verification[i_point].reshape(verification_X.T.shape).T,
+                     'inferno',
+                     )
+
+    ax_fun(ax, str(i_point) + "real")
+
+    # BIGGER_SIZE = 16
+    # MIDDLE_SIZE = 12
+    # ax.set_xlabel("The mass of lifting load (Kg)", fontsize=BIGGER_SIZE)
+    # ax.set_ylabel("The degree of luffing angle (deg)", fontsize=BIGGER_SIZE)
+    # ax.set_zlabel('Deformation (mm)', fontsize=BIGGER_SIZE)
     #
-    # ax_fun(ax, str(i_point) + "real")
-
-    BIGGER_SIZE = 16
-    MIDDLE_SIZE = 12
-    ax.set_xlabel("The mass of lifting load (Kg)", fontsize=BIGGER_SIZE)
-    ax.set_ylabel("The degree of luffing angle (deg)", fontsize=BIGGER_SIZE)
-    ax.set_zlabel('Stress (Mpa)', fontsize=BIGGER_SIZE)
-
-    plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
-    ax.view_init(elev=30., azim=-135)  # 调整视角
-    # plt.savefig(r"C:\Users\asus\Desktop\pics\\" + str(i_point) + '.png', bbox_inches='tight')
+    # plt.tick_params(labelsize=MIDDLE_SIZE)  # fontsize of the tick labels
+    # ax.view_init(elev=30., azim=-135)  # 调整视角
+    plt.savefig(r"C:\Users\laisir\Desktop\pics\\" + str(i_point) + '.png', bbox_inches='tight')
     # """
     # 2020.12.19 避免画图内存泄露
     # """
